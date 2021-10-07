@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.shinemo.task</groupId>
+    <artifactId>task-scheduler</artifactId>
+    <packaging>pom</packaging>
+    <name>task-scheduler</name>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>com.shinemo</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <properties>
+        <client-version>1.0.0-SNAPSHOT</client-version>
+        <core-version>1.0.0-SNAPSHOT</core-version>
+        <web-version>1.0.0-SNAPSHOT</web-version>
+        <slf4j-version>1.7.21</slf4j-version>
+        <lombok-version>1.18.4</lombok-version>
+        <junit-version>4.12</junit-version>
+        <spring-boot-maven-version>2.3.4.RELEASE</spring-boot-maven-version>
+        <aace-api-version>1.5.19.43</aace-api-version>
+        <aace-version>4.0.8-SNAPSHOT</aace-version>
+        <shinemo-ds-version>2.0.0</shinemo-ds-version>
+        <shinemo-utils-version>1.1.38-SNAPSHOT</shinemo-utils-version>
+        <guava-version>28.1-jre</guava-version>
+        <poi-version>3.17</poi-version>
+        <spring-boot-version>2.3.4.RELEASE</spring-boot-version>
+        <spring-version>5.2.9.RELEASE</spring-version>
+        <jackson.version>2.11.2</jackson.version>
+        <mybatis-generator-version>1.3.25-SM</mybatis-generator-version>
+        <druid-starter-version>1.1.20</druid-starter-version>
+        <mysql-connector-java-version>6.0.6</mysql-connector-java-version>
+        <mybatis-version>2.1.0</mybatis-version>
+        <commons-lang3-version>3.3.2</commons-lang3-version>
+        <logback-version>1.2.3</logback-version>
+        <junit-version>4.12</junit-version>
+        <mock.version>3.1.0</mock.version>
+        <perform-common-version>1.0.0</perform-common-version>
+        <jsqlparser-version>1.0</jsqlparser-version>
+        <shinemo-common-version>1.0-SNAPSHOT</shinemo-common-version>
+        <netty-version>4.1.48.Final</netty-version>
+        <os.detected.classifier>linux-x86_64</os.detected.classifier>
+        <redis.clients.version>3.1.0</redis.clients.version>
+        <common-codes-version>1.14</common-codes-version>
+        <jetcacheconfig-version>1.0.0-SNAPSHOT</jetcacheconfig-version>
+    </properties>
+
+    <dependencyManagement>
+
+        <dependencies>
+            <dependency>
+                <groupId>com.shinemo.task</groupId>
+                <artifactId>task-scheduler-client</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.shinemo.task</groupId>
+                <artifactId>task-scheduler-core</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.shinemo.task</groupId>
+                <artifactId>task-scheduler-web</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot-version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-logging</artifactId>
+                <version>${spring-boot-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${spring-boot-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.lettuce</groupId>
+                        <artifactId>lettuce-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <version>${spring-boot-version}</version>
+                <optional>true</optional>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid-starter-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.shinemo.ds</groupId>
+                <artifactId>datasource</artifactId>
+                <version>${shinemo-ds-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${spring-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis-generator-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.shinemo.aace</groupId>
+                <artifactId>aace-api</artifactId>
+                <version>${aace-api-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.shinemo.aace</groupId>
+                <artifactId>aace</artifactId>
+                <version>${aace-version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-parameter-names</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsqlparser-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.shinemo.portalapp</groupId>
+                <artifactId>perform-common</artifactId>
+                <version>${perform-common-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.shinemo.utils</groupId>
+                <artifactId>shinemo-utils</artifactId>
+                <version>${shinemo-utils-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>shinemoUtils</artifactId>
+                        <groupId>com.shinemo.shinemoUtils</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.jsonzou</groupId>
+                <artifactId>jmockdata</artifactId>
+                <version>${mock.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.shinemo.common</groupId>
+                <artifactId>common</artifactId>
+                <version>${shinemo-common-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-buffer</artifactId>
+                <version>${netty-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec</artifactId>
+                <version>${netty-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-common</artifactId>
+                <version>${netty-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-handler</artifactId>
+                <version>${netty-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-resolver</artifactId>
+                <version>${netty-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport</artifactId>
+                <version>${netty-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport-native-epoll</artifactId>
+                <classifier>${os.detected.classifier}</classifier>
+                <version>${netty-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport-native-unix-common</artifactId>
+                <version>${netty-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${redis.clients.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${common-codes-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.shinemo.ub.spingboot</groupId>
+                <artifactId>myjetcacheconfig-springboot-starter</artifactId>
+                <version>${jetcacheconfig-version}</version>
+            </dependency>
+        </dependencies>
+
+
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+<modules>  <module>task-scheduler-client</module>
+    <module>task-scheduler-core</module>
+    <module>task-scheduler-web</module>
+  </modules>
+</project>

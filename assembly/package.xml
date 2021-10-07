@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+    <id>bundle</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>../bin</directory>
+            <includes>
+                <include>run.sh</include>
+                <include>args.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
+            <outputDirectory>task-scheduler/bin</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>../task-scheduler-web/target</directory>
+            <outputDirectory>task-scheduler</outputDirectory>
+            <includes>
+                <include>task-scheduler.jar</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <directory>../task-scheduler-web/target/classes</directory>
+            <outputDirectory>task-scheduler/config</outputDirectory>
+            <includes>
+                <include>*.yml</include>
+                <include>*.xml</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+    </fileSets>
+</assembly>
