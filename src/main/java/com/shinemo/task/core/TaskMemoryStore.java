@@ -59,21 +59,36 @@ public class TaskMemoryStore {
     public static void cancelInvaildTask() {
 
         Date date = new Date();
+        List<String> needRmTaskIdList = new ArrayList<>();
+        List<String> needRmDefIdList = new ArrayList<>();
 
         DEF_ID_MAP_SCHEDULE_TASK_LIST.forEach((defId, taskIdList) -> {
 
             taskIdList.stream().forEach(taskId -> {
                 ScheduledTask scheduledTask = ID_MAP_SCHEDULE_TASK.get(taskId);
                 if(scheduledTask != null && (scheduledTask.getTask() instanceof LimitCronTask)) {
-                    
+
                     LimitCronTask limitCronTask = (LimitCronTask) scheduledTask.getTask();
                     Date limitEnd = limitCronTask.getLimitEnd();
                     if(date.after(limitEnd)) {
                         ID_MAP_SCHEDULE_TASK.remove(taskId);
+                        needRmTaskIdList.add(taskId);
                     }
                 }
             });
 
+            if(taskIdList.size() > 0 && needRmTaskIdList.size() == taskIdList.size()) {
+                needRmDefIdList.add(defId);
+            } else {
+                taskIdList.removeAll(needRmTaskIdList);
+            }
+            needRmTaskIdList.clear();
         });
+
+        if(needRmDefIdList.size() > 0) {
+            needRmDefIdList.stream().forEach(defId -> {
+                DEF_ID_MAP_SCHEDULE_TASK_LIST.remove(defId);
+            });
+        }
     }
 }
