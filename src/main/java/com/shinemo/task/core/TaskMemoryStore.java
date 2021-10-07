@@ -2,10 +2,7 @@ package com.shinemo.task.core;
 
 import org.springframework.scheduling.config.ScheduledTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -55,7 +52,28 @@ public class TaskMemoryStore {
             list.stream().forEach(id -> {
                 cancelByTaskId(id);
             });
-
+            DEF_ID_MAP_SCHEDULE_TASK_LIST.remove(defId);
         }
+    }
+
+    public static void cancelInvaildTask() {
+
+        Date date = new Date();
+
+        DEF_ID_MAP_SCHEDULE_TASK_LIST.forEach((defId, taskIdList) -> {
+
+            taskIdList.stream().forEach(taskId -> {
+                ScheduledTask scheduledTask = ID_MAP_SCHEDULE_TASK.get(taskId);
+                if(scheduledTask != null && (scheduledTask.getTask() instanceof LimitCronTask)) {
+                    
+                    LimitCronTask limitCronTask = (LimitCronTask) scheduledTask.getTask();
+                    Date limitEnd = limitCronTask.getLimitEnd();
+                    if(date.after(limitEnd)) {
+                        ID_MAP_SCHEDULE_TASK.remove(taskId);
+                    }
+                }
+            });
+
+        });
     }
 }

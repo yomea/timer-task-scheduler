@@ -5,15 +5,18 @@ package com.shinemo.task.core;
  */
 public class CommonTraceTask extends TraceTask {
 
+    // TODO: 10/7/21 引用对应的实体类
+
     public CommonTraceTask(Runnable runnable) {
         super(runnable);
     }
 
     @Override
-    protected void beforeStart(Runnable runnable) {
+    protected boolean beforeStart(Runnable runnable) {
 
-        // TODO: 10/7/21 检查该任务实例是否已经存在，已存在将状态为正在执行中
-        
+        // TODO: 10/7/21 检查该任务实例是否已经存在，已存在将状态为正在执行中，如果该任务是需要依赖上一个任务完成的，那么当前任务出发之后不会执行具体的逻辑
+
+        return true;
     }
 
     @Override

@@ -39,4 +39,12 @@ public class LimitCronTrigger extends CronTrigger {
 
         return nextDate;
     }
+
+    public Date getLimitStart() {
+        return limitStart;
+    }
+
+    public Date getLimitEnd() {
+        return limitEnd;
+    }
 }

@@ -14,9 +14,13 @@ public abstract class TraceTask implements Runnable {
     @Override
     public void run() {
 
-        this.beforeStart(this.runnable);
+
 
         try {
+            if(!this.beforeStart(this.runnable)) {
+                return;
+            }
+
             this.runnable.run();
 
             complete(this.runnable);
@@ -26,7 +30,7 @@ public abstract class TraceTask implements Runnable {
         }
     }
 
-    protected abstract void beforeStart(Runnable runnable);
+    protected abstract boolean beforeStart(Runnable runnable);
 
     protected abstract void complete(Runnable runnable);
 
