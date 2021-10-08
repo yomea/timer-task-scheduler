@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shinemo.task.dal.mapper.SmtTsTaskDefMapper">
+  <resultMap id="BaseResultMap" type="com.shinemo.task.dal.model.SmtTsTaskDef">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="smc_task_type" jdbcType="INTEGER" property="smcTaskType" />
+    <result column="smc_schedule_type" jdbcType="INTEGER" property="smcScheduleType" />
+    <result column="smc_conf_flag" jdbcType="INTEGER" property="smcConfFlag" />
+    <result column="smc_timeout" jdbcType="INTEGER" property="smcTimeout" />
+    <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
+    <result column="smc_del_flag" jdbcType="TINYINT" property="smcDelFlag" />
+  </resultMap>
+
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.shinemo.task.dal.model.SmtTsTaskDefWithBLOBs">
+    <result column="smc_extend" jdbcType="LONGVARCHAR" property="smcExtend" />
+  </resultMap>
+
+  <sql id="conditions">
+    <where>
+      <if test="id != null">
+         and id = #{id,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcTaskType != null">
+         and smc_task_type = #{smcTaskType,jdbcType=INTEGER}
+      </if>
+
+      <if test="smcScheduleType != null">
+         and smc_schedule_type = #{smcScheduleType,jdbcType=INTEGER}
+      </if>
+
+      <if test="smcConfFlag != null">
+         and smc_conf_flag = #{smcConfFlag,jdbcType=INTEGER}
+      </if>
+
+      <if test="smcTimeout != null">
+         and smc_timeout = #{smcTimeout,jdbcType=INTEGER}
+      </if>
+
+      <if test="smcStatus != null">
+         and smc_status = #{smcStatus,jdbcType=INTEGER}
+      </if>
+
+      <if test="smcDelFlag != null">
+         and smc_del_flag = #{smcDelFlag,jdbcType=TINYINT}
+      </if>
+
+    </where>
+
+  </sql>
+
+  <sql id="Base_Column_List">
+    id, gmt_create, gmt_modified, smc_task_type, smc_schedule_type, smc_conf_flag, smc_timeout, 
+    smc_status, smc_del_flag
+  </sql>
+
+  <sql id="Blob_Column_List">
+    smc_extend
+  </sql>
+
+  <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefQuery" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from smt_ts_task_def
+    <include refid="conditions" />
+    limit 1
+  </select>
+
+  <select id="selectBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefQuery" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from smt_ts_task_def
+    <include refid="conditions" />
+  </select>
+
+  <select id="countBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefQuery" resultType="java.lang.Integer">
+    select count(0) from smt_ts_task_def
+    <include refid="conditions" />
+  </select>
+
+  <update id="updateById" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefWithBLOBs">
+    update smt_ts_task_def
+    <set>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+
+      gmt_modified = now(),
+      <if test="smcTaskType != null">
+        smc_task_type = #{smcTaskType,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcScheduleType != null">
+        smc_schedule_type = #{smcScheduleType,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcConfFlag != null">
+        smc_conf_flag = #{smcConfFlag,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcTimeout != null">
+        smc_timeout = #{smcTimeout,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcStatus != null">
+        smc_status = #{smcStatus,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcDelFlag != null">
+        smc_del_flag = #{smcDelFlag,jdbcType=TINYINT},
+      </if>
+
+      <if test="smcExtend != null">
+        smc_extend = #{smcExtend,jdbcType=LONGVARCHAR},
+      </if>
+
+    </set>
+
+    <where>
+       id  = #{id,jdbcType=BIGINT}
+    </where>
+
+  </update>
+
+  <delete id="deleteById">
+    delete from smt_ts_task_def where id  = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <select id="pageBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefQuery" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from smt_ts_task_def
+    <include refid="conditions" />
+  </select>
+
+  <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefWithBLOBs" useGeneratedKeys="true">
+    insert into smt_ts_task_def
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      gmt_create,
+      gmt_modified,
+      <if test="smcTaskType != null">
+        smc_task_type,
+      </if>
+
+      <if test="smcScheduleType != null">
+        smc_schedule_type,
+      </if>
+
+      <if test="smcConfFlag != null">
+        smc_conf_flag,
+      </if>
+
+      <if test="smcTimeout != null">
+        smc_timeout,
+      </if>
+
+      <if test="smcStatus != null">
+        smc_status,
+      </if>
+
+      <if test="smcDelFlag != null">
+        smc_del_flag,
+      </if>
+
+      <if test="smcExtend != null">
+        smc_extend,
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      now(),
+      now(),
+      <if test="smcTaskType != null">
+        #{smcTaskType,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcScheduleType != null">
+        #{smcScheduleType,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcConfFlag != null">
+        #{smcConfFlag,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcTimeout != null">
+        #{smcTimeout,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcStatus != null">
+        #{smcStatus,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcDelFlag != null">
+        #{smcDelFlag,jdbcType=TINYINT},
+      </if>
+
+      <if test="smcExtend != null">
+        #{smcExtend,jdbcType=LONGVARCHAR},
+      </if>
+
+    </trim>
+
+  </insert>
+
+</mapper>
