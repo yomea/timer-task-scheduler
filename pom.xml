@@ -280,49 +280,18 @@
     </dependencies>
 
     <build>
-        <finalName>performance-report</finalName>
-
-
+        <finalName>task-scheduler</finalName>
         <plugins>
-
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot-maven-version}</version>
                 <configuration>
-                    <layout>ZIP</layout>
+                    <mainClass>com.shinemo.stat.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中 -->
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>assembly/package.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
+                            <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -338,26 +307,13 @@
             </plugin>
 
             <plugin>
-                <groupId>org.mybatis.generator</groupId>
-                <artifactId>mybatis-generator-maven-plugin</artifactId>
-                <version>1.3.6</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <configurationFile>src/main/generate/generatorConfig.xml</configurationFile>
-                    <verbose>true</verbose>
-                    <overwrite>true</overwrite>
+                    <source>8</source>
+                    <target>8</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.mybatis.generator</groupId>
-                        <artifactId>mybatis-generator-core</artifactId>
-                        <version>1.3.7</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>5.1.26</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>

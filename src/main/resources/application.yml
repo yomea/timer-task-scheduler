@@ -1,6 +1,6 @@
 log.home: /data/logs/task-scheduler
 app.version: 1.0.0
-loglevel: debug
+loglevel: info
 app.name: task-scheduler
 server:
   port: 9222
@@ -18,7 +18,7 @@ mybatis:
   mapper-locations: classpath*:/mybatis/*.xml
 
 spring:
-  datasource.confKey: obs
+  datasource.confKey: shinemo_im
   application.name: ${app.name}
   mvc:
     format:
