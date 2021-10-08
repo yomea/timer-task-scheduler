@@ -10,6 +10,11 @@ public class SmtTsTaskDefQuery {
     private Long id;
 
     /**
+     * 任务名称
+     */
+    private String smcTaskName;
+
+    /**
      * 任务类型，1: 数据源抽取，1000: other
      */
     private Integer smcTaskType;

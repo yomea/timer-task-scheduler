@@ -7,7 +7,8 @@
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="smc_stime" jdbcType="TIMESTAMP" property="smcStime" />
     <result column="smc_etime" jdbcType="TIMESTAMP" property="smcEtime" />
-    <result column="smc_def_id" jdbcType="INTEGER" property="smcDefId" />
+    <result column="smc_def_id" jdbcType="BIGINT" property="smcDefId" />
+    <result column="smc_task_name" jdbcType="VARCHAR" property="smcTaskName" />
     <result column="smc_timeout" jdbcType="INTEGER" property="smcTimeout" />
     <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
     <result column="smc_error" jdbcType="VARCHAR" property="smcError" />
@@ -32,7 +33,11 @@
       </if>
 
       <if test="smcDefId != null">
-         and smc_def_id = #{smcDefId,jdbcType=INTEGER}
+         and smc_def_id = #{smcDefId,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcTaskName != null">
+         and smc_task_name = #{smcTaskName,jdbcType=VARCHAR}
       </if>
 
       <if test="smcTimeout != null">
@@ -52,8 +57,8 @@
   </sql>
 
   <sql id="Base_Column_List">
-    id, gmt_create, gmt_modified, smc_stime, smc_etime, smc_def_id, smc_timeout, smc_status, 
-    smc_error
+    id, gmt_create, gmt_modified, smc_stime, smc_etime, smc_def_id, smc_task_name, smc_timeout, 
+    smc_status, smc_error
   </sql>
 
   <sql id="Blob_Column_List">
@@ -101,7 +106,11 @@
       </if>
 
       <if test="smcDefId != null">
-        smc_def_id = #{smcDefId,jdbcType=INTEGER},
+        smc_def_id = #{smcDefId,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcTaskName != null">
+        smc_task_name = #{smcTaskName,jdbcType=VARCHAR},
       </if>
 
       <if test="smcTimeout != null">
@@ -139,6 +148,15 @@
     <include refid="Blob_Column_List" />
     from smt_ts_task_instance
     <include refid="conditions" />
+
+    <if test="orderByStr != null and orderByStr != ''">
+      order by ${orderByStr}
+    </if>
+
+    <bind name="offSet" value="(pageIndex - 1) * pageSize"/>
+
+    limit #{offSet}, #{pageSize}
+
   </select>
 
   <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskInstanceWithBLOBs" useGeneratedKeys="true">
@@ -156,6 +174,10 @@
 
       <if test="smcDefId != null">
         smc_def_id,
+      </if>
+
+      <if test="smcTaskName != null">
+        smc_task_name,
       </if>
 
       <if test="smcTimeout != null">
@@ -188,7 +210,11 @@
       </if>
 
       <if test="smcDefId != null">
-        #{smcDefId,jdbcType=INTEGER},
+        #{smcDefId,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcTaskName != null">
+        #{smcTaskName,jdbcType=VARCHAR},
       </if>
 
       <if test="smcTimeout != null">

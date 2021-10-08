@@ -24,7 +24,12 @@ public class SmtTsTaskInstanceQuery {
     /**
      * 任务定义ID
      */
-    private Integer smcDefId;
+    private Long smcDefId;
+
+    /**
+     * 任务名称
+     */
+    private String smcTaskName;
 
     /**
      * 任务执行超时时间，单位s，超时将视为执行失败，会重跑

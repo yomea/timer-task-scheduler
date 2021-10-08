@@ -162,6 +162,15 @@
     <include refid="Blob_Column_List" />
     from smt_ts_task_timer
     <include refid="conditions" />
+
+    <if test="orderByStr != null and orderByStr != ''">
+      order by ${orderByStr}
+    </if>
+
+    <bind name="offSet" value="(pageIndex - 1) * pageSize"/>
+
+    limit #{offSet}, #{pageSize}
+
   </select>
 
   <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerWithBLOBs" useGeneratedKeys="true">
