@@ -11,6 +11,7 @@ import java.util.TimeZone;
  */
 public class LimitCronTrigger extends CronTrigger {
 
+
     private Date limitStart;
     private Date limitEnd;
 

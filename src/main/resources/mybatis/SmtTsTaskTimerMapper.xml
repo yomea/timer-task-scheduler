@@ -8,8 +8,8 @@
     <result column="smc_def_id" jdbcType="BIGINT" property="smcDefId" />
     <result column="smc_timer_type" jdbcType="INTEGER" property="smcTimerType" />
     <result column="smc_init_delay" jdbcType="BIGINT" property="smcInitDelay" />
-    <result column="smc_start_day" jdbcType="VARCHAR" property="smcStartDay" />
-    <result column="smc_end_day" jdbcType="VARCHAR" property="smcEndDay" />
+    <result column="smc_start_day" jdbcType="TIMESTAMP" property="smcStartDay" />
+    <result column="smc_end_day" jdbcType="TIMESTAMP" property="smcEndDay" />
     <result column="smc_period" jdbcType="BIGINT" property="smcPeriod" />
     <result column="smc_cron" jdbcType="VARCHAR" property="smcCron" />
     <result column="smc_view_type" jdbcType="INTEGER" property="smcViewType" />
@@ -30,6 +30,12 @@
          and smc_def_id = #{smcDefId,jdbcType=BIGINT}
       </if>
 
+      <if test="smcDefIdList != null and smcDefIdList.size() > 0">
+         and smc_def_id in <foreach collection="smcDefIdList" separator="," index="index" close=")" open="(" item="item">
+        #{item}
+      </foreach>
+      </if>
+
       <if test="smcTimerType != null">
          and smc_timer_type = #{smcTimerType,jdbcType=INTEGER}
       </if>
@@ -39,11 +45,15 @@
       </if>
 
       <if test="smcStartDay != null">
-         and smc_start_day = #{smcStartDay,jdbcType=VARCHAR}
+         and smc_start_day &lt;= #{smcStartDay}
       </if>
 
       <if test="smcEndDay != null">
-         and smc_end_day = #{smcEndDay,jdbcType=VARCHAR}
+         and smc_end_day &gt;= #{smcEndDay}
+      </if>
+
+      <if test="triggerDate != null">
+         and smc_end_day &gt;= #{triggerDate}
       </if>
 
       <if test="smcPeriod != null">
@@ -116,11 +126,11 @@
       </if>
 
       <if test="smcStartDay != null">
-        smc_start_day = #{smcStartDay,jdbcType=VARCHAR},
+        smc_start_day = #{smcStartDay},
       </if>
 
       <if test="smcEndDay != null">
-        smc_end_day = #{smcEndDay,jdbcType=VARCHAR},
+        smc_end_day = #{smcEndDay},
       </if>
 
       <if test="smcPeriod != null">

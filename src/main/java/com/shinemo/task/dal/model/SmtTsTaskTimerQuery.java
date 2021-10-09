@@ -2,6 +2,9 @@ package com.shinemo.task.dal.model;
 
 import lombok.Data;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * SmtTsTaskTimerQuery
  */
@@ -13,6 +16,8 @@ public class SmtTsTaskTimerQuery {
      * 任务定义ID
      */
     private Long smcDefId;
+
+    private List<Long> smcDefIdList;
 
     /**
      * 1: 固定定时，2:固定延时，3:一次延时，4:cron
@@ -27,12 +32,17 @@ public class SmtTsTaskTimerQuery {
     /**
      * 定时器有效开启时间
      */
-    private String smcStartDay;
+    private Date smcStartDay;
 
     /**
      * 定时器有效结束时间
      */
-    private String smcEndDay;
+    private Date smcEndDay;
+
+    /**
+     * 出发时间
+     */
+    private Date triggerDate;
 
     /**
      * 定时周期

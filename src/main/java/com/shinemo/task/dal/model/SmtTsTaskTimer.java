@@ -39,12 +39,12 @@ public class SmtTsTaskTimer {
     /**
      * 定时器有效开启时间
      */
-    private String smcStartDay;
+    private Date smcStartDay;
 
     /**
      * 定时器有效结束时间
      */
-    private String smcEndDay;
+    private Date smcEndDay;
 
     /**
      * 定时周期

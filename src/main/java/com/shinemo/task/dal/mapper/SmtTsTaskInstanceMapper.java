@@ -20,4 +20,6 @@ public interface SmtTsTaskInstanceMapper {
     Integer deleteById(@Param("id") Long id);
 
     List<SmtTsTaskInstanceWithBLOBs> pageBy(SmtTsTaskInstanceQuery query);
+
+    Integer batchSave(List<SmtTsTaskInstanceWithBLOBs> taskInstanceList);
 }
