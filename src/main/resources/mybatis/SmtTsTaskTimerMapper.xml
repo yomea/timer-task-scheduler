@@ -8,16 +8,11 @@
     <result column="smc_def_id" jdbcType="BIGINT" property="smcDefId" />
     <result column="smc_timer_type" jdbcType="INTEGER" property="smcTimerType" />
     <result column="smc_init_delay" jdbcType="BIGINT" property="smcInitDelay" />
+    <result column="smc_once_delay" jdbcType="BIGINT" property="smcOnceDelay" />
     <result column="smc_start_day" jdbcType="TIMESTAMP" property="smcStartDay" />
     <result column="smc_end_day" jdbcType="TIMESTAMP" property="smcEndDay" />
     <result column="smc_period" jdbcType="BIGINT" property="smcPeriod" />
     <result column="smc_cron" jdbcType="VARCHAR" property="smcCron" />
-    <result column="smc_view_type" jdbcType="INTEGER" property="smcViewType" />
-  </resultMap>
-
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.shinemo.task.dal.model.SmtTsTaskTimerWithBLOBs">
-    <result column="smc_view_extend" jdbcType="LONGVARCHAR" property="smcViewExtend" />
-    <result column="smc_common_extend" jdbcType="LONGVARCHAR" property="smcCommonExtend" />
   </resultMap>
 
   <sql id="conditions">
@@ -31,7 +26,7 @@
       </if>
 
       <if test="smcDefIdList != null and smcDefIdList.size() > 0">
-         and smc_def_id in <foreach collection="smcDefIdList" separator="," index="index" close=")" open="(" item="item">
+         and smc_def_id in <foreach collection="smcDefIdList" item="item" open="(" close=")" index="index" separator=",">
         #{item}
       </foreach>
       </if>
@@ -44,16 +39,20 @@
          and smc_init_delay = #{smcInitDelay,jdbcType=BIGINT}
       </if>
 
+      <if test="smcOnceDelay != null">
+         and smc_once_delay = #{smcOnceDelay,jdbcType=BIGINT}
+      </if>
+
       <if test="smcStartDay != null">
-         and smc_start_day &lt;= #{smcStartDay}
+         and smc_start_day = #{smcStartDay,jdbcType=TIMESTAMP}
       </if>
 
       <if test="smcEndDay != null">
-         and smc_end_day &gt;= #{smcEndDay}
+         and smc_end_day = #{smcEndDay,jdbcType=TIMESTAMP}
       </if>
 
       <if test="triggerDate != null">
-         and smc_end_day &gt;= #{triggerDate}
+         and smc_end_day &gt; #{triggerDate,jdbcType=TIMESTAMP}
       </if>
 
       <if test="smcPeriod != null">
@@ -64,38 +63,26 @@
          and smc_cron = #{smcCron,jdbcType=VARCHAR}
       </if>
 
-      <if test="smcViewType != null">
-         and smc_view_type = #{smcViewType,jdbcType=INTEGER}
-      </if>
-
     </where>
 
   </sql>
 
   <sql id="Base_Column_List">
-    id, gmt_create, gmt_modified, smc_def_id, smc_timer_type, smc_init_delay, smc_start_day, 
-    smc_end_day, smc_period, smc_cron, smc_view_type
+    id, gmt_create, gmt_modified, smc_def_id, smc_timer_type, smc_init_delay, smc_once_delay, 
+    smc_start_day, smc_end_day, smc_period, smc_cron
   </sql>
 
-  <sql id="Blob_Column_List">
-    smc_view_extend, smc_common_extend
-  </sql>
-
-  <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="ResultMapWithBLOBs">
+  <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from smt_ts_task_timer
     <include refid="conditions" />
     limit 1
   </select>
 
-  <select id="selectBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="ResultMapWithBLOBs">
+  <select id="selectBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from smt_ts_task_timer
     <include refid="conditions" />
   </select>
@@ -105,7 +92,7 @@
     <include refid="conditions" />
   </select>
 
-  <update id="updateById" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerWithBLOBs">
+  <update id="updateById" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimer">
     update smt_ts_task_timer
     <set>
       <if test="gmtCreate != null">
@@ -125,12 +112,16 @@
         smc_init_delay = #{smcInitDelay,jdbcType=BIGINT},
       </if>
 
+      <if test="smcOnceDelay != null">
+        smc_once_delay = #{smcOnceDelay,jdbcType=BIGINT},
+      </if>
+
       <if test="smcStartDay != null">
-        smc_start_day = #{smcStartDay},
+        smc_start_day = #{smcStartDay,jdbcType=TIMESTAMP},
       </if>
 
       <if test="smcEndDay != null">
-        smc_end_day = #{smcEndDay},
+        smc_end_day = #{smcEndDay,jdbcType=TIMESTAMP},
       </if>
 
       <if test="smcPeriod != null">
@@ -139,18 +130,6 @@
 
       <if test="smcCron != null">
         smc_cron = #{smcCron,jdbcType=VARCHAR},
-      </if>
-
-      <if test="smcViewType != null">
-        smc_view_type = #{smcViewType,jdbcType=INTEGER},
-      </if>
-
-      <if test="smcViewExtend != null">
-        smc_view_extend = #{smcViewExtend,jdbcType=LONGVARCHAR},
-      </if>
-
-      <if test="smcCommonExtend != null">
-        smc_common_extend = #{smcCommonExtend,jdbcType=LONGVARCHAR},
       </if>
 
     </set>
@@ -165,25 +144,14 @@
     delete from smt_ts_task_timer where id  = #{id,jdbcType=BIGINT}
   </delete>
 
-  <select id="pageBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="ResultMapWithBLOBs">
+  <select id="pageBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from smt_ts_task_timer
     <include refid="conditions" />
-
-    <if test="orderByStr != null and orderByStr != ''">
-      order by ${orderByStr}
-    </if>
-
-    <bind name="offSet" value="(pageIndex - 1) * pageSize"/>
-
-    limit #{offSet}, #{pageSize}
-
   </select>
 
-  <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerWithBLOBs" useGeneratedKeys="true">
+  <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimer" useGeneratedKeys="true">
     insert into smt_ts_task_timer
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,
@@ -200,6 +168,10 @@
         smc_init_delay,
       </if>
 
+      <if test="smcOnceDelay != null">
+        smc_once_delay,
+      </if>
+
       <if test="smcStartDay != null">
         smc_start_day,
       </if>
@@ -214,18 +186,6 @@
 
       <if test="smcCron != null">
         smc_cron,
-      </if>
-
-      <if test="smcViewType != null">
-        smc_view_type,
-      </if>
-
-      <if test="smcViewExtend != null">
-        smc_view_extend,
-      </if>
-
-      <if test="smcCommonExtend != null">
-        smc_common_extend,
       </if>
 
     </trim>
@@ -245,12 +205,16 @@
         #{smcInitDelay,jdbcType=BIGINT},
       </if>
 
+      <if test="smcOnceDelay != null">
+        #{smcOnceDelay,jdbcType=BIGINT},
+      </if>
+
       <if test="smcStartDay != null">
-        #{smcStartDay,jdbcType=VARCHAR},
+        #{smcStartDay,jdbcType=TIMESTAMP},
       </if>
 
       <if test="smcEndDay != null">
-        #{smcEndDay,jdbcType=VARCHAR},
+        #{smcEndDay,jdbcType=TIMESTAMP},
       </if>
 
       <if test="smcPeriod != null">
@@ -259,18 +223,6 @@
 
       <if test="smcCron != null">
         #{smcCron,jdbcType=VARCHAR},
-      </if>
-
-      <if test="smcViewType != null">
-        #{smcViewType,jdbcType=INTEGER},
-      </if>
-
-      <if test="smcViewExtend != null">
-        #{smcViewExtend,jdbcType=LONGVARCHAR},
-      </if>
-
-      <if test="smcCommonExtend != null">
-        #{smcCommonExtend,jdbcType=LONGVARCHAR},
       </if>
 
     </trim>

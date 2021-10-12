@@ -1,15 +1,14 @@
 package com.shinemo.task.config;
 
-import com.shinemo.task.core.LimitCronTask;
-import com.shinemo.task.core.LimitCronTrigger;
-import com.shinemo.task.core.ScheduledTaskRegistrarHolder;
-import com.shinemo.task.core.TaskMemoryStore;
-import com.shinemo.task.dal.mapper.SmtTsTaskDefMapper;
-import com.shinemo.task.dal.mapper.SmtTsTaskInstanceMapper;
-import com.shinemo.task.dal.mapper.SmtTsTaskTimerMapper;
-import com.shinemo.task.dal.model.*;
-import com.shinemo.task.enums.TaskInstanceEnum;
-import com.shinemo.task.enums.TimerTypeEnum;
+import com.shinemo.task.context.SchedulerContext;
+import com.shinemo.task.core.*;
+import com.shinemo.task.dal.model.SmtTsTaskDef;
+import com.shinemo.task.dal.model.SmtTsTaskDefQuery;
+import com.shinemo.task.dal.model.SmtTsTaskTimer;
+import com.shinemo.task.dal.model.SmtTsTaskTimerQuery;
+import com.shinemo.task.dal.wrapper.SmtTsTaskDefWrapper;
+import com.shinemo.task.dal.wrapper.SmtTsTaskTimerWrapper;
+import com.shinemo.task.model.TaskContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.CronTask;
@@ -33,83 +32,70 @@ import java.util.stream.Collectors;
 public class TaskSchedulingConfigurer implements SchedulingConfigurer {
 
     @Resource
-    private SmtTsTaskDefMapper smtTsTaskDefMapper;
+    private SmtTsTaskDefWrapper smtTsTaskDefWrapper;
 
     @Resource
-    private SmtTsTaskInstanceMapper smtTsTaskInstanceMapper;
-
-    @Resource
-    private SmtTsTaskTimerMapper smtTsTaskTimerMapper;
+    private SmtTsTaskTimerWrapper smtTsTaskTimerWrapper;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-
-        // TODO: 10/7/21 从数据库中获取任务并创建一个任务实例，将任务修改为待调度
 
         SmtTsTaskDefQuery query = new SmtTsTaskDefQuery();
         query.setOrderByStr(" id asc ");
         query.setPageIndex(1);
 
-        while(true) {
+        while (true) {
 
             query.setPageSize(500);
             //分页查询数据
-            List<SmtTsTaskDefWithBLOBs> list = smtTsTaskDefMapper.pageBy(query);
-            if(CollectionUtils.isEmpty(list)) {
+            List<SmtTsTaskDef> list = smtTsTaskDefWrapper.pageBy(query);
+            if (CollectionUtils.isEmpty(list)) {
                 break;
             }
 
             List<Long> taskDefIdList = new ArrayList<>();
 
-            List<SmtTsTaskInstanceWithBLOBs> taskInstanceList = list.stream().map(taskDef -> {
-                SmtTsTaskInstanceWithBLOBs taskInstance = new  SmtTsTaskInstanceWithBLOBs();
-                taskInstance.setSmcTimeout(taskDef.getSmcTimeout());
-                taskInstance.setSmcStatus(TaskInstanceEnum.WAIT_EXEC.getStatus());
-                taskInstance.setSmcDefId(taskDef.getId());
-                taskInstance.setSmcTaskName(taskDef.getSmcTaskName());
-
-                taskDefIdList.add(taskDef.getId());
-
-                return taskInstance;
-            }).collect(Collectors.toList());
-
             SmtTsTaskTimerQuery taskTimerQuery = new SmtTsTaskTimerQuery();
             taskTimerQuery.setSmcDefIdList(taskDefIdList);
             taskTimerQuery.setTriggerDate(new Date());
             //获取定时器
-            List<SmtTsTaskTimerWithBLOBs> taskTimerList = smtTsTaskTimerMapper.selectBy(taskTimerQuery);
-            Map<Long, List<SmtTsTaskTimerWithBLOBs>> taskDefIdMapTimers = taskTimerList.stream().collect(Collectors.groupingBy(SmtTsTaskTimerWithBLOBs::getSmcDefId));
-
-            smtTsTaskInstanceMapper.batchSave(taskInstanceList);
+            List<SmtTsTaskTimer> taskTimerList = smtTsTaskTimerWrapper.selectBy(taskTimerQuery);
+            Map<Long, List<SmtTsTaskTimer>> taskDefIdMapTimers = taskTimerList.stream().collect(Collectors.groupingBy(SmtTsTaskTimer::getSmcDefId));
 
             list.stream().filter(taskDef -> taskDefIdMapTimers.containsKey(taskDef.getId())).forEach(taskDef -> {
 
-                List<SmtTsTaskTimerWithBLOBs> timerWithBLOBsList = taskDefIdMapTimers.get(taskDef.getId());
+                //应用服务名
+                String appServiceName = taskDef.getAppServiceName();
+
+                //注册 worker
+                TaskHandlerBeanFactory.registryWorker(appServiceName);
+
+                List<SmtTsTaskTimer> timerWithBLOBsList = taskDefIdMapTimers.get(taskDef.getId());
                 timerWithBLOBsList.stream().forEach(timer -> {
 
-                    //定时任务，cron，延时
-                    Integer timerType = timer.getSmcTimerType();
+                    LimitCronTrigger cronTrigger = new LimitCronTrigger(timer.getSmcCron(), timer.getSmcStartDay(), timer.getSmcEndDay());
 
-                    if(TimerTypeEnum.CRON.getType().equals(timerType)) {
+                    TaskContext taskContext = TaskContext.builder().appServiceName(appServiceName).apiServiceName(taskDef.getApiServiceName())
+                            .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).build();
 
-                        LimitCronTrigger cronTrigger = new LimitCronTrigger(timer.getSmcCron(), timer.getSmcStartDay(), timer.getSmcEndDay());
 
-                        // TODO: 10/8/21 创建Task工厂，更具任务定义类型
-                        Integer taskType = taskDef.getSmcTaskType();
+                    SchedulerContext schedulerContext = SchedulerContext.builder().smtTsTaskDef(taskDef).build();
 
-                        CronTask task = new LimitCronTask(null, cronTrigger);
+                    CommonTraceTask task = new CommonTraceTask(taskContext, schedulerContext);
 
-                        //设置调度任务注册器
-                        ScheduledTaskRegistrarHolder.setScheduledTaskRegistrar(taskRegistrar);
+                    CronTask cronTask = new LimitCronTask(task, cronTrigger);
 
-                        ScheduledTask scheduledTask = taskRegistrar.scheduleCronTask(task);
+                    //设置调度任务注册器
+                    ScheduledTaskRegistrarHolder.setScheduledTaskRegistrar(taskRegistrar);
 
-                        TaskMemoryStore.putScheduledTask("", "", scheduledTask);
-                    }
+                    ScheduledTask scheduledTask = taskRegistrar.scheduleCronTask(cronTask);
+
+                    TaskMemoryStore.putScheduledTask(taskDef.getId(), scheduledTask);
+
                 });
             });
 
-            if(list.size() < query.getPageSize()) {
+            if (list.size() < query.getPageSize()) {
                 break;
             }
 

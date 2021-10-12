@@ -2,7 +2,10 @@ package com.shinemo.task.core;
 
 import org.springframework.scheduling.config.ScheduledTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -10,84 +13,44 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TaskMemoryStore {
 
-    private static final Object OBJECT = new Object();
-    private static final Map<String, Object> LOCK_MAP = new ConcurrentHashMap<>(16);
-    private static final Map<String, List<String>> DEF_ID_MAP_SCHEDULE_TASK_LIST = new HashMap<>(16);
-    private static final Map<String, ScheduledTask> ID_MAP_SCHEDULE_TASK = new ConcurrentHashMap<>(16);
+    private static final Map<Long, ScheduledTask> DEF_ID_MAP_SCHEDULE_TASK = new ConcurrentHashMap<>(16);
 
-    public static void putScheduledTask(String defId, String id, ScheduledTask task) {
+    public static void putScheduledTask(Long defId, ScheduledTask task) {
 
-        //加锁
-        while (LOCK_MAP.putIfAbsent(defId, OBJECT) != null) {
-            Thread.yield();
-        }
-
-        try {
-            List<String> list = DEF_ID_MAP_SCHEDULE_TASK_LIST.get(defId);
-            if (list == null) {
-                list = new ArrayList<>();
-                DEF_ID_MAP_SCHEDULE_TASK_LIST.put(defId, list);
-            }
-            list.add(id);
-        } finally {
-            LOCK_MAP.remove(defId);
-        }
-
-        ID_MAP_SCHEDULE_TASK.put(id, task);
-    }
-
-    public static void cancelByTaskId(String id) {
-
-        ScheduledTask scheduledTask = ID_MAP_SCHEDULE_TASK.get(id);
-        if (scheduledTask != null) {
-            scheduledTask.cancel();
-            ID_MAP_SCHEDULE_TASK.remove(id);
-        }
+        DEF_ID_MAP_SCHEDULE_TASK.put(defId, task);
     }
 
     public static void cancelByTaskDefId(String defId) {
 
-        List<String> list = DEF_ID_MAP_SCHEDULE_TASK_LIST.get(defId);
-        if (list != null) {
-            list.stream().forEach(id -> {
-                cancelByTaskId(id);
-            });
-            DEF_ID_MAP_SCHEDULE_TASK_LIST.remove(defId);
+        ScheduledTask scheduledTask = DEF_ID_MAP_SCHEDULE_TASK.remove(defId);
+
+        if (scheduledTask == null) {
+            return;
         }
+
+        scheduledTask.cancel();
     }
 
     public static void cancelInvaildTask() {
 
         Date date = new Date();
-        List<String> needRmTaskIdList = new ArrayList<>();
-        List<String> needRmDefIdList = new ArrayList<>();
+        List<Long> needRmDefIdList = new ArrayList<>();
 
-        DEF_ID_MAP_SCHEDULE_TASK_LIST.forEach((defId, taskIdList) -> {
+        DEF_ID_MAP_SCHEDULE_TASK.forEach((defId, scheduledTask) -> {
 
-            taskIdList.stream().forEach(taskId -> {
-                ScheduledTask scheduledTask = ID_MAP_SCHEDULE_TASK.get(taskId);
-                if(scheduledTask != null && (scheduledTask.getTask() instanceof LimitCronTask)) {
+            if (scheduledTask != null && (scheduledTask.getTask() instanceof LimitCronTask)) {
 
-                    LimitCronTask limitCronTask = (LimitCronTask) scheduledTask.getTask();
-                    Date limitEnd = limitCronTask.getLimitEnd();
-                    if(date.after(limitEnd)) {
-                        ID_MAP_SCHEDULE_TASK.remove(taskId);
-                        needRmTaskIdList.add(taskId);
-                    }
+                LimitCronTask limitCronTask = (LimitCronTask) scheduledTask.getTask();
+                Date limitEnd = limitCronTask.getLimitEnd();
+                if (date.after(limitEnd)) {
+                    needRmDefIdList.add(defId);
                 }
-            });
-
-            if(taskIdList.size() > 0 && needRmTaskIdList.size() == taskIdList.size()) {
-                needRmDefIdList.add(defId);
-            } else {
-                taskIdList.removeAll(needRmTaskIdList);
             }
-            needRmTaskIdList.clear();
         });
 
-        if(needRmDefIdList.size() > 0) {
+        if (needRmDefIdList.size() > 0) {
             needRmDefIdList.stream().forEach(defId -> {
-                DEF_ID_MAP_SCHEDULE_TASK_LIST.remove(defId);
+                DEF_ID_MAP_SCHEDULE_TASK.remove(defId);
             });
         }
     }

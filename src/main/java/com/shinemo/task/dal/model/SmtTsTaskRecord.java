@@ -5,10 +5,10 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * SmtTsTaskHistory
+ * SmtTsTaskRecord
  */
 @Data
-public class SmtTsTaskHistory {
+public class SmtTsTaskRecord {
     private Long id;
 
     /**
@@ -32,27 +32,37 @@ public class SmtTsTaskHistory {
     private Date smcEtime;
 
     /**
-     * 任务名称
-     */
-    private String smcTaskName;
-
-    /**
      * 任务定义ID
      */
     private Long smcDefId;
 
     /**
-     * 任务执行超时时间，单位s，超时将视为执行失败，会重跑
+     * 任务名称
      */
-    private Integer smcTimeout;
+    private String smcTaskName;
 
     /**
-     * 任务状态，-1:失败，0: 待执行，1:执行中，2:执行即将完成，3:执行完成
+     * 任务执行超时时间，超时将视为执行失败，会重跑
+     */
+    private Long smcTimeout;
+
+    /**
+     * 任务状态，-1:失败，1:执行中，2:执行超时，3:执行完成
      */
     private Integer smcStatus;
+
+    /**
+     * 失败次数
+     */
+    private Integer failureNum;
 
     /**
      * 失败原因
      */
     private String smcError;
+
+    /**
+     * 调度的机器ip
+     */
+    private String smcIp;
 }

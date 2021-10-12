@@ -27,9 +27,23 @@
         <os.detected.classifier>linux-x86_64</os.detected.classifier>
         <aace.version>4.0.8-SNAPSHOT</aace.version>
         <spring-boot-maven-version>2.3.4.RELEASE</spring-boot-maven-version>
+        <task-scheduler-starter.version>1.0.0-SNAPSHOT</task-scheduler-starter.version>
+        <perform-common-version>1.0.0</perform-common-version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.shinemo.portalapp</groupId>
+            <artifactId>perform-common</artifactId>
+            <version>${perform-common-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.shinemo.task</groupId>
+            <artifactId>task-scheduler-starter</artifactId>
+            <version>${task-scheduler-starter.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.shinemo.utils</groupId>

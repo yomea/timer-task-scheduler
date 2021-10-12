@@ -1,38 +1,45 @@
 package com.shinemo.task.core;
 
+import com.shinemo.common.tools.result.ApiResult;
+import com.shinemo.task.model.TaskContext;
+
 /**
  * Created by wuzhenhong on 10/7/21 11:31 AM
  */
 public abstract class TraceTask implements Runnable {
 
-    private Runnable runnable;
+    private TaskContext taskContext;
 
-    public TraceTask(Runnable runnable) {
-        this.runnable = runnable;
+    public TraceTask(TaskContext taskContext) {
+        this.taskContext = taskContext;
     }
 
     @Override
     public void run() {
 
-
-
         try {
-            if(!this.beforeStart(this.runnable)) {
+            if(!this.allowExec(taskContext)) {
                 return;
             }
+            
+            startExec(taskContext);
+            
+            ApiResult<Long> apiResult = doRun(taskContext);
 
-            this.runnable.run();
-
-            complete(this.runnable);
+            complete(apiResult, taskContext);
 
         } catch (Exception e) {
-            exception(this.runnable, e);
+            exception(taskContext, e);
         }
     }
 
-    protected abstract boolean beforeStart(Runnable runnable);
+    protected abstract void startExec(TaskContext taskContext);
 
-    protected abstract void complete(Runnable runnable);
+    protected abstract ApiResult<Long> doRun(TaskContext taskContext);
 
-    protected abstract void exception(Runnable runnable, Exception e);
+    protected abstract boolean allowExec(TaskContext taskContext);
+
+    protected abstract void complete(ApiResult<Long> apiResult, TaskContext taskContext);
+
+    protected abstract void exception(TaskContext taskContext, Exception e);
 }

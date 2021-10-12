@@ -1,23 +1,24 @@
 package com.shinemo.task.dal.mapper;
 
+import com.shinemo.perform.common.mybatis.Page;
+import com.shinemo.task.dal.model.SmtTsTaskTimer;
 import com.shinemo.task.dal.model.SmtTsTaskTimerQuery;
-import com.shinemo.task.dal.model.SmtTsTaskTimerWithBLOBs;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface SmtTsTaskTimerMapper {
-    int insertSelective(SmtTsTaskTimerWithBLOBs record);
+    int insertSelective(SmtTsTaskTimer record);
 
-    SmtTsTaskTimerWithBLOBs getBy(SmtTsTaskTimerQuery query);
+    SmtTsTaskTimer getBy(SmtTsTaskTimerQuery query);
 
-    List<SmtTsTaskTimerWithBLOBs> selectBy(SmtTsTaskTimerQuery query);
+    List<SmtTsTaskTimer> selectBy(SmtTsTaskTimerQuery query);
 
     Integer countBy(SmtTsTaskTimerQuery query);
 
-    Integer updateById(SmtTsTaskTimerWithBLOBs record);
+    Integer updateById(SmtTsTaskTimer record);
 
     Integer deleteById(@Param("id") Long id);
 
-    List<SmtTsTaskTimerWithBLOBs> pageBy(SmtTsTaskTimerQuery query);
+    Page<SmtTsTaskTimer> pageBy(SmtTsTaskTimerQuery query);
 }

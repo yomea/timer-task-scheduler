@@ -27,7 +27,7 @@ public class SmtTsTaskTimer {
     private Long smcDefId;
 
     /**
-     * 1: 固定定时，2:固定延时，3:一次延时，4:cron
+     * 保留字段，目前就支持 cron，1:cron
      */
     private Integer smcTimerType;
 
@@ -35,6 +35,11 @@ public class SmtTsTaskTimer {
      * 初始延时时间
      */
     private Long smcInitDelay;
+
+    /**
+     * 延时时间
+     */
+    private Long smcOnceDelay;
 
     /**
      * 定时器有效开启时间
@@ -55,9 +60,4 @@ public class SmtTsTaskTimer {
      * cron表达式
      */
     private String smcCron;
-
-    /**
-     * 可视化类型，用于实现翻译策略，一般和任务类型一样1:API抽取定时任务
-     */
-    private Integer smcViewType;
 }

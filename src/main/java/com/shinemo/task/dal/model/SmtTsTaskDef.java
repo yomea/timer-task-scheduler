@@ -27,32 +27,32 @@ public class SmtTsTaskDef {
     private String smcTaskName;
 
     /**
-     * 任务类型，1: 数据源抽取，1000: other
+     * 注册到注册中心的服务名
      */
-    private Integer smcTaskType;
+    private String appServiceName;
 
     /**
-     * 调度类型，1: 定时任务，2:一次性任务
+     * 接口服务名
      */
-    private Integer smcScheduleType;
+    private String apiServiceName;
 
     /**
-     * 配置标记，第1位表示是否异步任务
+     * 接口方法名，为了简单期间，方法不要重载
+     */
+    private String apiMethodName;
+
+    /**
+     * 配置标记,预留字段
      */
     private Integer smcConfFlag;
 
     /**
-     * 任务执行超时时间，单位s，超时将视为执行失败，会重跑，-1表示永不超时
+     * 任务执行超时时间，单位ms，超时将视为执行失败，会重跑，-1表示永不超时
      */
-    private Integer smcTimeout;
+    private Long smcTimeout;
 
     /**
      * 任务是否启动，1:启动，-1:禁用
      */
     private Integer smcStatus;
-
-    /**
-     * 删除标志，0:未删除，1:已删除
-     */
-    private Byte smcDelFlag;
 }
