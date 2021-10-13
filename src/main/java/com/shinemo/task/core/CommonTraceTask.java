@@ -100,7 +100,7 @@ public class CommonTraceTask extends TraceTask {
     @Override
     protected void startExec(TaskContext taskContext) {
 
-        SchedulerContextUtils.newRecord(schedulerContext);
+        SchedulerContextUtils.newRecord(taskContext, schedulerContext);
     }
 
     @Override

@@ -40,4 +40,6 @@ public class SmtTsTaskLock {
      * 执行状态，-1:失败，1:执行中，2:执行超时，3:执行完成
      */
     private Integer smcStatus;
+
+    private Long smcStartTime;
 }

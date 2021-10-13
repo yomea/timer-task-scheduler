@@ -47,4 +47,8 @@ public class SmtTsTaskMsgWrapper {
     public Integer updateById(SmtTsTaskMsg domain) {
         return smtTsTaskMsgMapper.updateById(domain);
     }
+
+    public Integer cleanOldTaskUpdateMsg(SmtTsTaskMsgQuery query) {
+        return smtTsTaskMsgMapper.cleanOldTaskUpdateMsg(query);
+    }
 }

@@ -2,12 +2,16 @@ package com.shinemo.task.dal.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * SmtTsTaskDefQuery
  */
 @Data
 public class SmtTsTaskDefQuery {
     private Long id;
+
+    private List<Long> idList;
 
     /**
      * 任务名称

@@ -29,14 +29,33 @@
         <spring-boot-maven-version>2.3.4.RELEASE</spring-boot-maven-version>
         <task-scheduler-starter.version>1.0.0-SNAPSHOT</task-scheduler-starter.version>
         <perform-common-version>1.0.0</perform-common-version>
+        <logback-version>1.2.6</logback-version>
     </properties>
 
     <dependencies>
 
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.shinemo.portalapp</groupId>
             <artifactId>perform-common</artifactId>
             <version>${perform-common-version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -218,6 +237,12 @@
             <groupId>com.shinemo.ds</groupId>
             <artifactId>datasource</artifactId>
             <version>2.0.2-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

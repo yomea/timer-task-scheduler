@@ -40,4 +40,8 @@ public class SmtTsTaskLockQuery {
     private Integer pageSize;
 
     private String orderByStr;
+
+    private Long smcStartTime;
+
+    private Long ltStartTime;
 }

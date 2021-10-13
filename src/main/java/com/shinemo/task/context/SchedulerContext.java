@@ -3,6 +3,7 @@ package com.shinemo.task.context;
 import com.shinemo.task.dal.model.SmtTsTaskDef;
 import com.shinemo.task.dal.wrapper.SmtTsTaskLockWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskRecordWrapper;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @Builder
+@AllArgsConstructor
 public class SchedulerContext {
 
     private SmtTsTaskDef smtTsTaskDef;

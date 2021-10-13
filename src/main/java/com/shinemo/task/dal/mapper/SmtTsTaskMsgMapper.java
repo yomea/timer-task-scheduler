@@ -21,4 +21,6 @@ public interface SmtTsTaskMsgMapper {
     Integer deleteById(@Param("id") Long id);
 
     Page<SmtTsTaskMsg> pageBy(SmtTsTaskMsgQuery query);
+
+    Integer cleanOldTaskUpdateMsg(SmtTsTaskMsgQuery query);
 }

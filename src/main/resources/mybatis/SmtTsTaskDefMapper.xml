@@ -20,6 +20,10 @@
          and id = #{id,jdbcType=BIGINT}
       </if>
 
+      <if test="idList != null and idList.size() > 0">
+         and id in <foreach collection="idList" item="item" open="(" close=")" index="index" separator=",">#{item}</foreach>
+      </if>
+
       <if test="smcTaskName != null">
          and smc_task_name = #{smcTaskName,jdbcType=VARCHAR}
       </if>

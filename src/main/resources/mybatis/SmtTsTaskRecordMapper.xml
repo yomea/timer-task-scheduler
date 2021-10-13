@@ -11,8 +11,8 @@
     <result column="smc_task_name" jdbcType="VARCHAR" property="smcTaskName" />
     <result column="smc_timeout" jdbcType="BIGINT" property="smcTimeout" />
     <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
-    <result column="failure_num" jdbcType="INTEGER" property="failureNum" />
     <result column="smc_error" jdbcType="VARCHAR" property="smcError" />
+    <result column="smc_desc" jdbcType="VARCHAR" property="smcDesc" />
     <result column="smc_ip" jdbcType="VARCHAR" property="smcIp" />
   </resultMap>
 
@@ -46,12 +46,12 @@
          and smc_status = #{smcStatus,jdbcType=INTEGER}
       </if>
 
-      <if test="failureNum != null">
-         and failure_num = #{failureNum,jdbcType=INTEGER}
-      </if>
-
       <if test="smcError != null">
          and smc_error = #{smcError,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcDesc != null">
+         and smc_desc = #{smcDesc,jdbcType=VARCHAR}
       </if>
 
       <if test="smcIp != null">
@@ -64,7 +64,7 @@
 
   <sql id="Base_Column_List">
     id, gmt_create, gmt_modified, smc_stime, smc_etime, smc_def_id, smc_task_name, smc_timeout, 
-    smc_status, failure_num, smc_error, smc_ip
+    smc_status, smc_error, smc_desc, smc_ip
   </sql>
 
   <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
@@ -119,12 +119,12 @@
         smc_status = #{smcStatus,jdbcType=INTEGER},
       </if>
 
-      <if test="failureNum != null">
-        failure_num = #{failureNum,jdbcType=INTEGER},
-      </if>
-
       <if test="smcError != null">
         smc_error = #{smcError,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcDesc != null">
+        smc_desc = #{smcDesc,jdbcType=VARCHAR},
       </if>
 
       <if test="smcIp != null">
@@ -179,12 +179,12 @@
         smc_status,
       </if>
 
-      <if test="failureNum != null">
-        failure_num,
-      </if>
-
       <if test="smcError != null">
         smc_error,
+      </if>
+
+      <if test="smcDesc != null">
+        smc_desc,
       </if>
 
       <if test="smcIp != null">
@@ -220,12 +220,12 @@
         #{smcStatus,jdbcType=INTEGER},
       </if>
 
-      <if test="failureNum != null">
-        #{failureNum,jdbcType=INTEGER},
-      </if>
-
       <if test="smcError != null">
         #{smcError,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcDesc != null">
+        #{smcDesc,jdbcType=VARCHAR},
       </if>
 
       <if test="smcIp != null">

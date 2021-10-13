@@ -8,7 +8,9 @@ import com.shinemo.task.dal.model.SmtTsTaskTimer;
 import com.shinemo.task.dal.model.SmtTsTaskTimerQuery;
 import com.shinemo.task.dal.wrapper.SmtTsTaskDefWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskTimerWrapper;
+import com.shinemo.task.enums.TaskStatusEnum;
 import com.shinemo.task.model.TaskContext;
+import com.shinemo.task.utils.SchedulerContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.CronTask;
@@ -40,9 +42,12 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 
+        ScheduledTaskRegistrarHolder.setAppStartTime(new Date());
+
         SmtTsTaskDefQuery query = new SmtTsTaskDefQuery();
         query.setOrderByStr(" id asc ");
         query.setPageIndex(1);
+        query.setSmcStatus(TaskStatusEnum.ENABLE.getStatus());
 
         while (true) {
 
@@ -73,25 +78,7 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
                 List<SmtTsTaskTimer> timerWithBLOBsList = taskDefIdMapTimers.get(taskDef.getId());
                 timerWithBLOBsList.stream().forEach(timer -> {
 
-                    LimitCronTrigger cronTrigger = new LimitCronTrigger(timer.getSmcCron(), timer.getSmcStartDay(), timer.getSmcEndDay());
-
-                    TaskContext taskContext = TaskContext.builder().appServiceName(appServiceName).apiServiceName(taskDef.getApiServiceName())
-                            .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).build();
-
-
-                    SchedulerContext schedulerContext = SchedulerContext.builder().smtTsTaskDef(taskDef).build();
-
-                    CommonTraceTask task = new CommonTraceTask(taskContext, schedulerContext);
-
-                    CronTask cronTask = new LimitCronTask(task, cronTrigger);
-
-                    //设置调度任务注册器
-                    ScheduledTaskRegistrarHolder.setScheduledTaskRegistrar(taskRegistrar);
-
-                    ScheduledTask scheduledTask = taskRegistrar.scheduleCronTask(cronTask);
-
-                    TaskMemoryStore.putScheduledTask(taskDef.getId(), scheduledTask);
-
+                    SchedulerContextUtils.schedulerTask(taskRegistrar, taskDef, timer);
                 });
             });
 

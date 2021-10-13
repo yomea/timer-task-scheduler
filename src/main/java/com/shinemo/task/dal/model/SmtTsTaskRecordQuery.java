@@ -42,14 +42,14 @@ public class SmtTsTaskRecordQuery {
     private Integer smcStatus;
 
     /**
-     * 失败次数
-     */
-    private Integer failureNum;
-
-    /**
      * 失败原因
      */
     private String smcError;
+
+    /**
+     * 描述
+     */
+    private String smcDesc;
 
     /**
      * 调度的机器ip

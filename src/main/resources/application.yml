@@ -16,7 +16,7 @@ aace:
 
 mybatis:
   mapper-locations: classpath*:/mybatis/*.xml
-  config-location: classpath*:mybatis-config.xml
+  config-location: classpath:mybatis-config.xml
 
 spring:
   datasource.confKey: shinemo_im

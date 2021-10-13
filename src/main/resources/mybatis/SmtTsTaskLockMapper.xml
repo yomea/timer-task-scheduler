@@ -5,6 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="smc_start_time" jdbcType="BIGINT" property="smcStartTime" />
     <result column="smc_def_id" jdbcType="BIGINT" property="smcDefId" />
     <result column="smc_time_out" jdbcType="BIGINT" property="smcTimeOut" />
     <result column="smc_ip" jdbcType="VARCHAR" property="smcIp" />
@@ -19,6 +20,10 @@
 
       <if test="smcDefId != null">
          and smc_def_id = #{smcDefId,jdbcType=BIGINT}
+      </if>
+
+      <if test="ltStartTime != null">
+         and smc_start_time &lt; #{ltStartTime} - smc_time_out
       </if>
 
       <if test="smcTimeOut != null">
@@ -46,7 +51,7 @@
   </sql>
 
   <sql id="Base_Column_List">
-    id, gmt_create, gmt_modified, smc_def_id, smc_time_out, smc_ip, smc_status
+    id, gmt_create, gmt_modified, smc_def_id, smc_time_out, smc_ip, smc_status,smc_start_time
   </sql>
 
   <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
@@ -93,6 +98,10 @@
         smc_status = #{smcStatus,jdbcType=INTEGER},
       </if>
 
+      <if test="smcStartTime != null">
+        smc_start_time = #{smcStartTime,jdbcType=BIGINT},
+      </if>
+
     </set>
 
     <where>
@@ -133,6 +142,10 @@
         smc_status,
       </if>
 
+      <if test="smcStartTime != null">
+        smc_start_time,
+      </if>
+
     </trim>
 
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -152,6 +165,10 @@
 
       <if test="smcStatus != null">
         #{smcStatus,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcStartTime != null">
+        #{smcStartTime},
       </if>
 
     </trim>
@@ -178,6 +195,9 @@
       <if test="smcStatus != null">
         smc_status,
       </if>
+      <if test="smcStartTime != null">
+        smc_start_time,
+      </if>
 
     </trim>
 
@@ -198,6 +218,9 @@
 
       <if test="smcStatus != null">
         #{smcStatus,jdbcType=INTEGER},
+      </if>
+      <if test="smcStartTime != null">
+        #{smcStartTime},
       </if>
 
     </trim>

@@ -20,7 +20,7 @@ public class TaskMemoryStore {
         DEF_ID_MAP_SCHEDULE_TASK.put(defId, task);
     }
 
-    public static void cancelByTaskDefId(String defId) {
+    public static void cancelByTaskDefId(Long defId) {
 
         ScheduledTask scheduledTask = DEF_ID_MAP_SCHEDULE_TASK.remove(defId);
 

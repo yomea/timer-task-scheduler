@@ -47,4 +47,12 @@ public class SmtTsTaskTimerWrapper {
     public Integer updateById(SmtTsTaskTimer domain) {
         return smtTsTaskTimerMapper.updateById(domain);
     }
+
+    public Integer batchSave(List<SmtTsTaskTimer> taskTimerList) {
+        return smtTsTaskTimerMapper.batchSave(taskTimerList);
+    }
+
+    public Integer deleteByTaskId(Long taskId) {
+        return smtTsTaskTimerMapper.deleteByTaskId(taskId);
+    }
 }

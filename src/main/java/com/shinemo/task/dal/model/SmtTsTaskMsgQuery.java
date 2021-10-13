@@ -2,12 +2,19 @@ package com.shinemo.task.dal.model;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * SmtTsTaskMsgQuery
  */
 @Data
 public class SmtTsTaskMsgQuery {
+
     private Long id;
+
+    private Long gtId;
+
+    private Date ltDate;
 
     /**
      * 任务定义ID
@@ -24,4 +31,6 @@ public class SmtTsTaskMsgQuery {
     private Integer pageSize;
 
     private String orderByStr;
+
+    private Date appStartTime;
 }

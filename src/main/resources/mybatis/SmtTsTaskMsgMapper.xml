@@ -15,12 +15,24 @@
          and id = #{id,jdbcType=BIGINT}
       </if>
 
+      <if test="gtId != null">
+         and id &gt; #{gtId,jdbcType=BIGINT}
+      </if>
+
       <if test="smcDefId != null">
          and smc_def_id = #{smcDefId,jdbcType=BIGINT}
       </if>
 
       <if test="smcAction != null">
          and smc_action = #{smcAction,jdbcType=INTEGER}
+      </if>
+
+      <if test="appStartTime != null">
+         and gmt_create &gt;= #{appStartTime}
+      </if>
+
+      <if test="ltDate != null">
+         and gmt_create &lt; #{ltDate}
       </if>
 
     </where>
@@ -115,5 +127,10 @@
     </trim>
 
   </insert>
+
+  <delete id="cleanOldTaskUpdateMsg" parameterType="com.shinemo.task.dal.model.SmtTsTaskMsgQuery">
+
+      delete from smt_ts_task_msg where gmt_create &lt; #{ltDate}
+  </delete>
 
 </mapper>

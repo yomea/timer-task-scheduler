@@ -24,6 +24,15 @@ public class SmtTsTaskLockWrapper {
         return smtTsTaskLockMapper.pageBy(query);
     }
 
+    public Page<SmtTsTaskLock> pageTimeoutBy(SmtTsTaskLockQuery query) {
+        if(query.getPageIndex()!=null && query.getPageSize()!=null){
+            PageHelper.startPage(query.getPageIndex(), query.getPageSize(), query.getOrderByStr());
+        }else{
+            PageHelper.startPage(0, 999999999, query.getOrderByStr());}
+
+        return smtTsTaskLockMapper.pageTimeoutBy(query);
+    }
+
     public Integer countBy(SmtTsTaskLockQuery query) {
         return smtTsTaskLockMapper.countBy(query);
     }

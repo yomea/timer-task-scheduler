@@ -88,4 +88,23 @@ public class AfterMathJob {
 
         taskSchedulerService.taskUpdateMsg();
     }
+
+    /**
+     * 用于清理历史消息，消息只保存3天
+     */
+    @Scheduled(cron = "00 00 00 0/2 * ?")
+    public void cleanOldTaskUpdateMsg() {
+
+        String lock = "com.shinemo.task.job.AfterMathJob.cleanOldTaskUpdateMsg";
+
+        if(!redisLock.tryLock(lock, 60)) {
+            return;
+        }
+
+        try {
+            taskSchedulerService.cleanOldTaskUpdateMsg();
+        } finally {
+            redisLock.unlock(lock);
+        }
+    }
 }

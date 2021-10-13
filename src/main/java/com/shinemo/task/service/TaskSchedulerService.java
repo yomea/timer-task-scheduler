@@ -15,11 +15,32 @@ public interface TaskSchedulerService {
      */
     ApiResult<Long> submitCronTask(CronTaskRequest cronTaskRequest);
 
+    /**
+     * 删除任务
+     * @param taskId
+     * @return
+     */
     ApiResult<Void> cronTaskDel(Long taskId);
+
+    /**
+     * 禁止某定时任务
+     * @param taskId
+     * @return
+     */
+    ApiResult<Void> disableTask(Long taskId);
+
+    /**
+     * 立即调用某任务
+     * @param taskId
+     * @return
+     */
+    ApiResult<Void> execTaskImmediately(Long taskId);
 
     void taskRetry();
 
     void dealDownLineTask();
 
     void taskUpdateMsg();
+
+    void cleanOldTaskUpdateMsg();
 }

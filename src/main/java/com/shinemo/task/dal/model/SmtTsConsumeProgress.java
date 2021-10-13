@@ -27,11 +27,6 @@ public class SmtTsConsumeProgress {
     private String smcIp;
 
     /**
-     * 机器启动时间
-     */
-    private Date smcStartTime;
-
-    /**
      * 消费进度id
      */
     private Long smcMsgId;

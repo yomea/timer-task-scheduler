@@ -21,4 +21,8 @@ public interface SmtTsTaskTimerMapper {
     Integer deleteById(@Param("id") Long id);
 
     Page<SmtTsTaskTimer> pageBy(SmtTsTaskTimerQuery query);
+
+    Integer batchSave(List<SmtTsTaskTimer> taskTimerList);
+
+    Integer deleteByTaskId(Long taskId);
 }

@@ -2,8 +2,6 @@ package com.shinemo.task.dal.model;
 
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * SmtTsConsumeProgressQuery
  */
@@ -15,11 +13,6 @@ public class SmtTsConsumeProgressQuery {
      * 消费机器ip
      */
     private String smcIp;
-
-    /**
-     * 机器启动时间
-     */
-    private Date smcStartTime;
 
     /**
      * 消费进度id

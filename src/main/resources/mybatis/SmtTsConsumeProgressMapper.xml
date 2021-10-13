@@ -6,7 +6,6 @@
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="smc_ip" jdbcType="VARCHAR" property="smcIp" />
-    <result column="smc_start_time" jdbcType="TIMESTAMP" property="smcStartTime" />
     <result column="smc_msg_id" jdbcType="BIGINT" property="smcMsgId" />
   </resultMap>
 
@@ -20,10 +19,6 @@
          and smc_ip = #{smcIp,jdbcType=VARCHAR}
       </if>
 
-      <if test="smcStartTime != null">
-         and smc_start_time = #{smcStartTime,jdbcType=TIMESTAMP}
-      </if>
-
       <if test="smcMsgId != null">
          and smc_msg_id = #{smcMsgId,jdbcType=BIGINT}
       </if>
@@ -33,7 +28,7 @@
   </sql>
 
   <sql id="Base_Column_List">
-    id, gmt_create, gmt_modified, smc_ip, smc_start_time, smc_msg_id
+    id, gmt_create, gmt_modified, smc_ip, smc_msg_id
   </sql>
 
   <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsConsumeProgressQuery" resultMap="BaseResultMap">
@@ -68,10 +63,6 @@
         smc_ip = #{smcIp,jdbcType=VARCHAR},
       </if>
 
-      <if test="smcStartTime != null">
-        smc_start_time = #{smcStartTime,jdbcType=TIMESTAMP},
-      </if>
-
       <if test="smcMsgId != null">
         smc_msg_id = #{smcMsgId,jdbcType=BIGINT},
       </if>
@@ -104,10 +95,6 @@
         smc_ip,
       </if>
 
-      <if test="smcStartTime != null">
-        smc_start_time,
-      </if>
-
       <if test="smcMsgId != null">
         smc_msg_id,
       </if>
@@ -121,15 +108,15 @@
         #{smcIp,jdbcType=VARCHAR},
       </if>
 
-      <if test="smcStartTime != null">
-        #{smcStartTime,jdbcType=TIMESTAMP},
-      </if>
-
       <if test="smcMsgId != null">
         #{smcMsgId,jdbcType=BIGINT},
       </if>
 
     </trim>
+
+    ON DUPLICATE KEY UPDATE
+
+    smc_msg_id = #{smcMsgId,jdbcType=BIGINT}
 
   </insert>
 

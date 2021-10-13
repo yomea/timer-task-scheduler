@@ -27,4 +27,6 @@ public interface SmtTsTaskLockMapper {
     Integer updateStatusByOldStatus(@Param("id") Long id, @Param("newStatus") Integer newStatus, @Param("oldStatus") Integer oldStatus);
 
     Integer updateStatusByIdList(@Param("idList") List<Long> idList, @Param("newStatus") Integer newStatus, @Param("oldStatus") Integer oldStatus);
+
+    Page<SmtTsTaskLock> pageTimeoutBy(SmtTsTaskLockQuery query);
 }
