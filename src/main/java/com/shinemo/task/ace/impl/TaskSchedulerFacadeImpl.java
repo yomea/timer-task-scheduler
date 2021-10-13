@@ -25,4 +25,14 @@ public class TaskSchedulerFacadeImpl implements TaskSchedulerFacade {
     public ApiResult cronTaskDel(Long taskId) {
         return taskSchedulerService.cronTaskDel(taskId);
     }
+
+    @Override
+    public ApiResult<Void> disableTask(Long taskId) {
+        return taskSchedulerService.disableTask(taskId);
+    }
+
+    @Override
+    public ApiResult<Void> execTaskImmediately(Long taskId) {
+        return taskSchedulerService.execTaskImmediately(taskId);
+    }
 }
