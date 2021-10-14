@@ -32,6 +32,11 @@ public class TaskSchedulerFacadeImpl implements TaskSchedulerFacade {
     }
 
     @Override
+    public ApiResult<Void> enableTask(Long taskId) {
+        return taskSchedulerService.enableTask(taskId);
+    }
+
+    @Override
     public ApiResult<Void> execTaskImmediately(Long taskId) {
         return taskSchedulerService.execTaskImmediately(taskId);
     }

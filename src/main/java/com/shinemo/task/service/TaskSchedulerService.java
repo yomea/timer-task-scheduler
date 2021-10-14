@@ -29,6 +29,11 @@ public interface TaskSchedulerService {
      */
     ApiResult<Void> disableTask(Long taskId);
 
+    /**
+     * 启动某定时任务
+     * @param taskId
+     * @return
+     */
     ApiResult<Void> enableTask(Long taskId);
 
     /**
