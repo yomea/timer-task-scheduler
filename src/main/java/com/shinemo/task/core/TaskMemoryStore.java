@@ -42,7 +42,7 @@ public class TaskMemoryStore {
 
                 LimitCronTask limitCronTask = (LimitCronTask) scheduledTask.getTask();
                 Date limitEnd = limitCronTask.getLimitEnd();
-                if (date.after(limitEnd)) {
+                if (limitEnd != null && date.after(limitEnd)) {
                     needRmDefIdList.add(defId);
                 }
             }

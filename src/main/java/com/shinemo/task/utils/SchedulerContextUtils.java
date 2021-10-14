@@ -2,19 +2,19 @@ package com.shinemo.task.utils;
 
 import com.google.common.collect.Maps;
 import com.shinemo.ace4j.Ace;
+import com.shinemo.common.tools.result.ApiResult;
 import com.shinemo.task.constant.TaskSchedulerCons;
 import com.shinemo.task.context.SchedulerContext;
 import com.shinemo.task.core.*;
-import com.shinemo.task.dal.model.SmtTsTaskDef;
-import com.shinemo.task.dal.model.SmtTsTaskRecord;
-import com.shinemo.task.dal.model.SmtTsTaskRecordQuery;
-import com.shinemo.task.dal.model.SmtTsTaskTimer;
+import com.shinemo.task.dal.model.*;
+import com.shinemo.task.dal.wrapper.SmtTsTaskLockWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskRecordWrapper;
 import com.shinemo.task.enums.TaskExecEnum;
 import com.shinemo.task.model.TaskContext;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Date;
 import java.util.Map;
@@ -24,64 +24,84 @@ import java.util.Map;
  */
 public class SchedulerContextUtils {
 
-    public static void failure(SchedulerContext schedulerContext) {
+    public static void failure(SchedulerContext schedulerContext, ApiResult<Long> apiResult) {
 
-        SmtTsTaskRecord smtTsTaskRecord = SchedulerContextUtils.getRecord(schedulerContext);
-        if(smtTsTaskRecord == null) {
-            return;
-        }
+        SmtTsTaskRecord smtTsTaskRecord = new SmtTsTaskRecord();
 
         smtTsTaskRecord.setSmcStatus(TaskExecEnum.FAILURE.getStatus());
-        smtTsTaskRecord.setSmcError("执行失败！");
+        smtTsTaskRecord.setSmcError(apiResult.getMsg());
         smtTsTaskRecord.setSmcEtime(new Date());
 
-        SmtTsTaskRecordWrapper smtTsTaskRecordWrapper = schedulerContext.getSmtTsTaskRecordWrapper();
-
-        smtTsTaskRecordWrapper.updateById(smtTsTaskRecord);
+        doDealData(schedulerContext, smtTsTaskRecord, TaskExecEnum.FAILURE.getStatus());
     }
 
-    public static void exception(SchedulerContext schedulerContext, Throwable e) {
+    public static void exception(SchedulerContext schedulerContext, ApiResult<Long> apiResult) {
 
-        SmtTsTaskRecord smtTsTaskRecord = SchedulerContextUtils.getRecord(schedulerContext);
-        if(smtTsTaskRecord == null) {
-            return;
-        }
-        smtTsTaskRecord.setSmcError(e.getMessage());
+        SmtTsTaskRecord smtTsTaskRecord = new SmtTsTaskRecord();
+
         smtTsTaskRecord.setSmcStatus(TaskExecEnum.FAILURE.getStatus());
         smtTsTaskRecord.setSmcEtime(new Date());
+        smtTsTaskRecord.setSmcError(apiResult.getMsg());
 
-        SmtTsTaskRecordWrapper smtTsTaskRecordWrapper = schedulerContext.getSmtTsTaskRecordWrapper();
-
-        smtTsTaskRecordWrapper.updateById(smtTsTaskRecord);
+        doDealData(schedulerContext, smtTsTaskRecord, TaskExecEnum.FAILURE.getStatus());
     }
 
-    public static void success(SchedulerContext schedulerContext) {
+    public static void success(SchedulerContext schedulerContext, ApiResult<Long> apiResult) {
 
-        SmtTsTaskRecord smtTsTaskRecord = SchedulerContextUtils.getRecord(schedulerContext);
-        if(smtTsTaskRecord == null) {
-            return;
-        }
+        SmtTsTaskRecord smtTsTaskRecord = new SmtTsTaskRecord();
+
         smtTsTaskRecord.setSmcStatus(TaskExecEnum.FINISHED.getStatus());
         smtTsTaskRecord.setSmcEtime(new Date());
 
-        SmtTsTaskRecordWrapper smtTsTaskRecordWrapper = schedulerContext.getSmtTsTaskRecordWrapper();
-
-        smtTsTaskRecordWrapper.updateById(smtTsTaskRecord);
+        doDealData(schedulerContext, smtTsTaskRecord, TaskExecEnum.FINISHED.getStatus());
     }
 
-    public static void timeout(SchedulerContext schedulerContext) {
+    public static void timeout(SchedulerContext schedulerContext, ApiResult<Long> apiResult) {
 
-        SmtTsTaskRecord smtTsTaskRecord = SchedulerContextUtils.getRecord(schedulerContext);
-        if(smtTsTaskRecord == null) {
-            return;
-        }
+        SmtTsTaskRecord smtTsTaskRecord = new SmtTsTaskRecord();
+
         smtTsTaskRecord.setSmcStatus(TaskExecEnum.EXEC_TIMEOUT.getStatus());
         smtTsTaskRecord.setSmcEtime(new Date());
-        smtTsTaskRecord.setSmcError("执行任务超时！");
+        smtTsTaskRecord.setSmcError(apiResult.getMsg());
+
+        doDealData(schedulerContext, smtTsTaskRecord, TaskExecEnum.EXEC_TIMEOUT.getStatus());
+    }
+
+    private static void doDealData(SchedulerContext schedulerContext, SmtTsTaskRecord taskRecordParam, Integer lockStatus) {
+
+        SmtTsTaskLockWrapper smtTsTaskLockWrapper = schedulerContext.getSmtTsTaskLockWrapper();
+
+        SmtTsTaskDef smtTsTaskDef = schedulerContext.getSmtTsTaskDef();
+
+        SmtTsTaskLockQuery query = new SmtTsTaskLockQuery();
+        query.setSmcDefId(smtTsTaskDef.getId());
+        SmtTsTaskLock smtTsTaskLock = smtTsTaskLockWrapper.getBy(query);
+        SmtTsTaskRecord smtTsTaskRecord = SchedulerContextUtils.getRecord(schedulerContext);
 
         SmtTsTaskRecordWrapper smtTsTaskRecordWrapper = schedulerContext.getSmtTsTaskRecordWrapper();
 
-        smtTsTaskRecordWrapper.updateById(smtTsTaskRecord);
+        TransactionTemplate transactionTemplate = schedulerContext.getTransactionTemplate();
+
+        transactionTemplate.execute(status -> {
+
+            if(smtTsTaskRecord != null) {
+
+                smtTsTaskRecord.setSmcStatus(taskRecordParam.getSmcStatus());
+                smtTsTaskRecord.setSmcError(taskRecordParam.getSmcError());
+                smtTsTaskRecord.setSmcEtime(taskRecordParam.getSmcEtime());
+                smtTsTaskRecord.setSmcDesc(taskRecordParam.getSmcDesc());
+
+                //更新状态
+                smtTsTaskRecordWrapper.updateById(smtTsTaskRecord);
+            }
+
+            if(smtTsTaskLock != null) {
+                smtTsTaskLock.setSmcStatus(lockStatus);
+                smtTsTaskLockWrapper.updateById(smtTsTaskLock);
+            }
+
+            return null;
+        });
     }
 
     private static SmtTsTaskRecord getRecord(SchedulerContext schedulerContext) {
@@ -129,7 +149,7 @@ public class SchedulerContextUtils {
 
     }
 
-    public static void schedulerTask(ScheduledTaskRegistrar taskRegistrar, SmtTsTaskDef taskDef, SmtTsTaskTimer timer) {
+    public static void schedulerTask(ScheduledTaskRegistrar taskRegistrar, TransactionTemplate transactionTemplate, SmtTsTaskLockWrapper smtTsTaskLockWrapper, SmtTsTaskRecordWrapper smtTsTaskRecordWrapper, SmtTsTaskDef taskDef, SmtTsTaskTimer timer) {
 
         LimitCronTrigger cronTrigger = new LimitCronTrigger(timer.getSmcCron(), timer.getSmcStartDay(), timer.getSmcEndDay());
 
@@ -137,7 +157,8 @@ public class SchedulerContextUtils {
                 .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).build();
 
 
-        SchedulerContext schedulerContext = SchedulerContext.builder().smtTsTaskDef(taskDef).build();
+        SchedulerContext schedulerContext = SchedulerContext.builder().smtTsTaskDef(taskDef).smtTsTaskRecordWrapper(smtTsTaskRecordWrapper)
+                .smtTsTaskLockWrapper(smtTsTaskLockWrapper).transactionTemplate(transactionTemplate).build();
 
         CommonTraceTask task = new CommonTraceTask(taskContext, schedulerContext);
 

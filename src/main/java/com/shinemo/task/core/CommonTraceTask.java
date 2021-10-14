@@ -4,8 +4,8 @@ import com.shinemo.Aace.context.AaceContext;
 import com.shinemo.ace4j.Ace;
 import com.shinemo.common.tools.result.ApiResult;
 import com.shinemo.task.ace.TaskSchedulerWorker;
-import com.shinemo.task.callback.TaskSchedulerCallback;
-import com.shinemo.task.callback.TaskSchedulerCallbackImpl;
+import com.shinemo.task.callback.AceTaskSchedulerCallback;
+import com.shinemo.task.callback.AceTaskSchedulerCallbackImpl;
 import com.shinemo.task.context.SchedulerContext;
 import com.shinemo.task.dal.model.SmtTsTaskDef;
 import com.shinemo.task.dal.model.SmtTsTaskLock;
@@ -30,14 +30,14 @@ public class CommonTraceTask extends TraceTask {
     }
 
     @Override
-    protected ApiResult<Long> doRun(TaskContext taskContext) {
+    protected void doRun(TaskContext taskContext) {
 
         String appServiceName = taskContext.getAppServiceName();
 
         TaskSchedulerWorker worker = TaskHandlerBeanFactory.getWorker(appServiceName);
         if(worker == null) {
             log.error("应用名（appServiceName）为 {} 的服务不在线！", appServiceName);
-            return ApiResult.fail(String.format("应用名（appServiceName）为 %s 的服务不在线！", appServiceName), 500);
+            return;
         }
 
         SmtTsTaskDef smtTsTaskDef = schedulerContext.getSmtTsTaskDef();
@@ -48,9 +48,9 @@ public class CommonTraceTask extends TraceTask {
         //设置超时时间
         aaceContext.setTimeout(timeout.intValue());
 
-        TaskSchedulerCallback callback = new TaskSchedulerCallbackImpl(schedulerContext);
+        AceTaskSchedulerCallback callback = new AceTaskSchedulerCallbackImpl(schedulerContext);
 
-        return worker.asyncDealTask(taskContext, callback, aaceContext);
+        worker.asyncDealTask(taskContext, callback, aaceContext);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class CommonTraceTask extends TraceTask {
         }
 
 
-        int row = smtTsTaskLockWrapper.updateStatusByOldStatus(smtTsTaskLock.getId(), TaskExecEnum.EXEC_ING.getStatus(), status);
+        int row = smtTsTaskLockWrapper.updateStatusByOldStatus(smtTsTaskLock.getId(), Ace.get().getLocalHost(), TaskExecEnum.EXEC_ING.getStatus(), status);
         if(row > 0) {
             return true;
         }
@@ -104,15 +104,15 @@ public class CommonTraceTask extends TraceTask {
     }
 
     @Override
-    protected void complete(ApiResult<Long> apiResult, TaskContext taskContext) {
+    protected void complete(TaskContext taskContext) {
 
-        SchedulerContextUtils.success(schedulerContext);
+//        SchedulerContextUtils.success(schedulerContext);
     }
 
     @Override
     protected void exception(TaskContext taskContext, Exception e) {
 
-        SchedulerContextUtils.exception(schedulerContext, e);
+        SchedulerContextUtils.exception(schedulerContext, ApiResult.fail(e.getMessage(), 500));
     }
 
 

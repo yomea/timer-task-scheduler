@@ -7,16 +7,20 @@ import com.shinemo.task.dal.model.SmtTsTaskDefQuery;
 import com.shinemo.task.dal.model.SmtTsTaskTimer;
 import com.shinemo.task.dal.model.SmtTsTaskTimerQuery;
 import com.shinemo.task.dal.wrapper.SmtTsTaskDefWrapper;
+import com.shinemo.task.dal.wrapper.SmtTsTaskLockWrapper;
+import com.shinemo.task.dal.wrapper.SmtTsTaskRecordWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskTimerWrapper;
 import com.shinemo.task.enums.TaskStatusEnum;
 import com.shinemo.task.model.TaskContext;
 import com.shinemo.task.utils.SchedulerContextUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -38,6 +42,15 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
 
     @Resource
     private SmtTsTaskTimerWrapper smtTsTaskTimerWrapper;
+
+    @Resource
+    private SmtTsTaskLockWrapper smtTsTaskLockWrapper;
+
+    @Resource
+    private SmtTsTaskRecordWrapper smtTsTaskRecordWrapper;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
@@ -78,7 +91,7 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
                 List<SmtTsTaskTimer> timerWithBLOBsList = taskDefIdMapTimers.get(taskDef.getId());
                 timerWithBLOBsList.stream().forEach(timer -> {
 
-                    SchedulerContextUtils.schedulerTask(taskRegistrar, taskDef, timer);
+                    SchedulerContextUtils.schedulerTask(taskRegistrar, transactionTemplate, smtTsTaskLockWrapper, smtTsTaskRecordWrapper, taskDef, timer);
                 });
             });
 

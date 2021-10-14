@@ -61,8 +61,8 @@ public class SmtTsTaskLockWrapper {
         return smtTsTaskLockMapper.lock(lock);
     }
 
-    public int updateStatusByOldStatus(Long id, Integer newStatus, Integer oldStatus) {
-        return smtTsTaskLockMapper.updateStatusByOldStatus(id, newStatus, oldStatus);
+    public int updateStatusByOldStatus(Long id, String ip, Integer newStatus, Integer oldStatus) {
+        return smtTsTaskLockMapper.updateStatusByOldStatus(id, ip, newStatus, oldStatus);
     }
 
     public Integer updateStatusByIdList(List<Long> idList, Integer newStatus, Integer oldStatus) {

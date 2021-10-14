@@ -53,7 +53,7 @@
             </if>
 
             <if test="triggerDate != null">
-                and smc_end_day &gt; #{triggerDate,jdbcType=TIMESTAMP}
+                and (smc_end_day &gt; #{triggerDate,jdbcType=TIMESTAMP} or smc_end_day is null)
             </if>
 
             <if test="smcPeriod != null">

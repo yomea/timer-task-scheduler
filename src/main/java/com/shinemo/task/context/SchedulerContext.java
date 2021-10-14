@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Map;
 
@@ -18,6 +19,8 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 public class SchedulerContext {
+
+    private TransactionTemplate transactionTemplate;
 
     private SmtTsTaskDef smtTsTaskDef;
 

@@ -1,6 +1,5 @@
 package com.shinemo.task.core;
 
-import com.shinemo.common.tools.result.ApiResult;
 import com.shinemo.task.model.TaskContext;
 
 /**
@@ -24,9 +23,9 @@ public abstract class TraceTask implements Runnable {
             
             startExec(taskContext);
             
-            ApiResult<Long> apiResult = doRun(taskContext);
+            doRun(taskContext);
 
-            complete(apiResult, taskContext);
+            complete(taskContext);
 
         } catch (Exception e) {
             exception(taskContext, e);
@@ -35,11 +34,11 @@ public abstract class TraceTask implements Runnable {
 
     protected abstract void startExec(TaskContext taskContext);
 
-    protected abstract ApiResult<Long> doRun(TaskContext taskContext);
+    protected abstract void doRun(TaskContext taskContext);
 
     protected abstract boolean allowExec(TaskContext taskContext);
 
-    protected abstract void complete(ApiResult<Long> apiResult, TaskContext taskContext);
+    protected abstract void complete(TaskContext taskContext);
 
     protected abstract void exception(TaskContext taskContext, Exception e);
 }

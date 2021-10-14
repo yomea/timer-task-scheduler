@@ -228,11 +228,11 @@
   </insert>
 
   <update id="updateStatusByOldStatus">
-    update smt_ts_task_lock set status = #{newStatus} where id = #{id} and status = #{oldStatus}
+    update smt_ts_task_lock set smc_status = #{newStatus}, smc_ip = #{ip} where id = #{id} and smc_status = #{oldStatus}
   </update>
 
   <update id="updateStatusByIdList">
-    update smt_ts_task_lock set status = #{newStatus} where id in <foreach collection="idList" separator="," index="index" close=")" open="(" item="item">#{item}</foreach> and status = #{oldStatus}
+    update smt_ts_task_lock set smc_status = #{newStatus} where id in <foreach collection="idList" separator="," index="index" close=")" open="(" item="item">#{item}</foreach> and smc_status = #{oldStatus}
   </update>
 
 </mapper>

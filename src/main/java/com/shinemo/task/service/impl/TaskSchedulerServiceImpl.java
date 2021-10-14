@@ -15,6 +15,7 @@ import com.shinemo.task.dal.wrapper.*;
 import com.shinemo.task.enums.TaskActionEnum;
 import com.shinemo.task.enums.TaskExecEnum;
 import com.shinemo.task.enums.TaskStatusEnum;
+import com.shinemo.task.model.TimerTask;
 import com.shinemo.task.model.*;
 import com.shinemo.task.service.TaskSchedulerService;
 import com.shinemo.task.utils.AceServiceUtils;
@@ -26,16 +27,14 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,10 +62,16 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     private SmtTsTaskLockWrapper smtTsTaskLockWrapper;
 
     @Resource
+    private SmtTsTaskRecordWrapper smtTsTaskRecordWrapper;
+
+    @Resource
     private SmtTsConsumeProgressWrapper smtTsConsumeProgressWrapper;
 
     @Resource
     private ExecutorService retryExecutor;
+
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -184,7 +189,8 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
             return ApiResult.fail("要执行的任务不存在！", 404);
         }
 
-        SchedulerContext schedulerContext = SchedulerContext.builder().smtTsTaskDef(taskDef).build();
+        SchedulerContext schedulerContext = SchedulerContext.builder().smtTsTaskDef(taskDef).smtTsTaskRecordWrapper(smtTsTaskRecordWrapper)
+                .smtTsTaskLockWrapper(smtTsTaskLockWrapper).transactionTemplate(transactionTemplate).build();
 
         TaskContext taskContext = TaskContext.builder().appServiceName(taskDef.getAppServiceName()).apiServiceName(taskDef.getApiServiceName())
                 .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(false).build();
@@ -234,7 +240,8 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
             taskDefList.stream().forEach(taskDef -> {
 
-                SchedulerContext schedulerContext = SchedulerContext.builder().smtTsTaskDef(taskDef).build();
+                SchedulerContext schedulerContext = SchedulerContext.builder().smtTsTaskDef(taskDef).smtTsTaskRecordWrapper(smtTsTaskRecordWrapper)
+                        .smtTsTaskLockWrapper(smtTsTaskLockWrapper).transactionTemplate(transactionTemplate).build();
 
                 TaskContext taskContext = TaskContext.builder().appServiceName(taskDef.getAppServiceName()).apiServiceName(taskDef.getApiServiceName())
                         .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(true).build();
@@ -334,13 +341,13 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
                 //新增
                 if(TaskActionEnum.NEW.getType().equals(action)) {
                     timerList.stream().forEach(timer -> {
-                        SchedulerContextUtils.schedulerTask(scheduledTaskRegistrar, smtTsTaskDef, timer);
+                        SchedulerContextUtils.schedulerTask(scheduledTaskRegistrar, transactionTemplate, smtTsTaskLockWrapper, smtTsTaskRecordWrapper, smtTsTaskDef, timer);
                     });
                 } else if(TaskActionEnum.MODIFY.getType().equals(action)) {
                     TaskMemoryStore.cancelByTaskDefId(defId);
                     if(TaskStatusEnum.DISABLE.getStatus().equals(smtTsTaskDef.getSmcStatus())) {
                         timerList.stream().forEach(timer -> {
-                            SchedulerContextUtils.schedulerTask(scheduledTaskRegistrar, smtTsTaskDef, timer);
+                            SchedulerContextUtils.schedulerTask(scheduledTaskRegistrar, transactionTemplate, smtTsTaskLockWrapper, smtTsTaskRecordWrapper, smtTsTaskDef, timer);
                         });
                     }
                 } else {
@@ -371,7 +378,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        appStartDealBeforeShutDownTask();
+        new Thread(this::appStartDealBeforeShutDownTask).start();
     }
 
     private void appDownLineDealBeforeShutDownTask(List<String> notInIps) {
