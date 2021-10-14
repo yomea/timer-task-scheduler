@@ -331,7 +331,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.shinemo.stat.Application</mainClass>
+                    <mainClass>com.shinemo.task.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>
