@@ -29,11 +29,11 @@ public class AceTaskSchedulerCallbackImpl implements AceTaskSchedulerCallback {
         if(RetCode.RET_SUCCESS == retCode) {
             success(retCode, ApiResult.success(taskId));
         } else if(RetCode.RET_TIMEOUT == retCode) {
-            timeout(retCode, ApiResult.fail("请求超时！", retCode));
+            timeout(retCode, ApiResult.fail(String.format("请求超时！retCode: %s", retCode), retCode));
         } else if(RetCode.RET_FAILURE == retCode) {
-            exception(retCode, ApiResult.fail(msg, retCode));
+            exception(retCode, ApiResult.fail(String.format("调度任务失败，失败原因：%s, retCode: %s", msg, retCode), retCode));
         } else {
-            failure(retCode, ApiResult.fail(msg, retCode));
+            failure(retCode, ApiResult.fail(String.format("调度任务失败，失败原因：%s, retCode: %s", msg, retCode), retCode));
         }
 
     }

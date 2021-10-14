@@ -111,7 +111,7 @@ public class CommonTraceTask extends TraceTask {
 
     @Override
     protected void exception(TaskContext taskContext, Exception e) {
-
+        log.error("调度任务失败！", e);
         SchedulerContextUtils.exception(schedulerContext, ApiResult.fail(e.getMessage(), 500));
     }
 
