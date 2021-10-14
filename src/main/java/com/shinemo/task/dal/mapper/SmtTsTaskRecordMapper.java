@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-@TableSplit(splitType = TypeEnum.DATE, tableName = "smt_ts_task_record", dateType = DateSplitType.YEAR)
+@TableSplit(splitType = TypeEnum.DATE, tableName = "smt_ts_task_record", dateType = DateSplitType.MONTH)
 public interface SmtTsTaskRecordMapper {
 
     int insertSelective(SmtTsTaskRecord record);
@@ -26,4 +26,6 @@ public interface SmtTsTaskRecordMapper {
     Integer deleteById(@Param("id") Long id);
 
     Page<SmtTsTaskRecord> pageBy(SmtTsTaskRecordQuery query);
+
+    void createMontTable(@Param("tableName") String newTableName);
 }

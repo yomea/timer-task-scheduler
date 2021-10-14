@@ -14,7 +14,8 @@
     <typeHandlers>
     </typeHandlers>
     <plugins>
-        <plugin interceptor="com.shinemo.mybatis.common.interceptor.SplitTableInterceptor"></plugin>
         <plugin interceptor="com.shinemo.perform.common.mybatis.PageInterceptor"></plugin>
+        <plugin interceptor="com.shinemo.mybatis.common.interceptor.SplitTableInterceptor">
+        </plugin>
     </plugins>
 </configuration>

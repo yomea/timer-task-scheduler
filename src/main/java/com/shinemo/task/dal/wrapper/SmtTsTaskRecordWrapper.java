@@ -47,4 +47,9 @@ public class SmtTsTaskRecordWrapper {
     public Integer updateById(SmtTsTaskRecord domain) {
         return smtTsTaskRecordMapper.updateById(domain);
     }
+
+    public void createMontTable(String newTableName) {
+
+        smtTsTaskRecordMapper.createMontTable(newTableName);
+    }
 }
