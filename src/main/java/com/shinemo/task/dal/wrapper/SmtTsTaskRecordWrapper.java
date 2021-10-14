@@ -2,6 +2,7 @@ package com.shinemo.task.dal.wrapper;
 
 import com.shinemo.perform.common.mybatis.Page;
 import com.shinemo.perform.common.mybatis.PageHelper;
+import com.shinemo.task.dal.mapper.SmtTsTaskRecordCommonMapper;
 import com.shinemo.task.dal.mapper.SmtTsTaskRecordMapper;
 import com.shinemo.task.dal.model.SmtTsTaskRecord;
 import com.shinemo.task.dal.model.SmtTsTaskRecordQuery;
@@ -14,6 +15,8 @@ import java.util.List;
 public class SmtTsTaskRecordWrapper {
     @Resource
     private SmtTsTaskRecordMapper smtTsTaskRecordMapper;
+    @Resource
+    private SmtTsTaskRecordCommonMapper smtTsTaskRecordCommonMapper;
 
     public Page<SmtTsTaskRecord> pageBy(SmtTsTaskRecordQuery query) {
         if(query.getPageIndex()!=null && query.getPageSize()!=null){
@@ -28,8 +31,8 @@ public class SmtTsTaskRecordWrapper {
         return smtTsTaskRecordMapper.countBy(query);
     }
 
-    public Integer deleteById(Long id) {
-        return smtTsTaskRecordMapper.deleteById(id);
+    public Integer deleteById(Long id, int splitKey) {
+        return smtTsTaskRecordMapper.deleteById(id, splitKey);
     }
 
     public SmtTsTaskRecord getBy(SmtTsTaskRecordQuery query) {
@@ -50,6 +53,6 @@ public class SmtTsTaskRecordWrapper {
 
     public void createMontTable(String newTableName) {
 
-        smtTsTaskRecordMapper.createMontTable(newTableName);
+        smtTsTaskRecordCommonMapper.createMontTable(newTableName);
     }
 }

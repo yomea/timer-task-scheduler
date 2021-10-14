@@ -1,6 +1,7 @@
 package com.shinemo.task.dal.model;
 
 import lombok.Data;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.util.Date;
 
@@ -65,4 +66,6 @@ public class SmtTsTaskRecord {
      * 调度的机器ip
      */
     private String smcIp;
+
+    private int splitKey = Integer.valueOf(DateFormatUtils.format(new Date(), "yyyyMM"));
 }

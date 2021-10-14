@@ -5,6 +5,7 @@ import com.shinemo.mybatis.common.interceptor.util.TableUtils;
 import com.shinemo.task.dal.wrapper.SmtTsTaskRecordWrapper;
 import com.shinemo.task.processor.TaskConfigurePostProcessor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
@@ -49,13 +50,13 @@ public class SplitTableGenPostProcessor implements TaskConfigurePostProcessor {
         Date curDate = new Date();
 
         //当月分表
-        String newTableName = TableUtils.getTableName(tableName, DateSplitType.MONTH, curDate);
+        String newTableName = tableName + "_" + DateFormatUtils.format(curDate, "yyyyMM");
 
         smtTsTaskRecordWrapper.createMontTable(newTableName);
 
         //下月分表，避免时间接近导致表不存在的错误
         Date nextMonth = DateUtils.addMonths(curDate, 1);
-        String nextNewTableName = TableUtils.getTableName(tableName, DateSplitType.MONTH, nextMonth);
+        String nextNewTableName = tableName + "_" + DateFormatUtils.format(nextMonth, "yyyyMM");
 
         smtTsTaskRecordWrapper.createMontTable(nextNewTableName);
     }

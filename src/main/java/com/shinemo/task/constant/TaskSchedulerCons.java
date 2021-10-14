@@ -5,5 +5,5 @@ package com.shinemo.task.constant;
  */
 public interface TaskSchedulerCons {
 
-    String TASK_RECORD_ID = "taskRecordId";
+    String TASK_RECORD = "taskRecordPojo";
 }

@@ -1,7 +1,6 @@
 package com.shinemo.task.dal.mapper;
 
 import com.shinemo.mybatis.common.interceptor.annotation.TableSplit;
-import com.shinemo.mybatis.common.interceptor.enums.DateSplitType;
 import com.shinemo.mybatis.common.interceptor.enums.TypeEnum;
 import com.shinemo.perform.common.mybatis.Page;
 import com.shinemo.task.dal.model.SmtTsTaskRecord;
@@ -10,7 +9,10 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-@TableSplit(splitType = TypeEnum.DATE, tableName = "smt_ts_task_record", dateType = DateSplitType.MONTH)
+/**
+ * 指定 分表 key，目前的
+ */
+@TableSplit(splitType = TypeEnum.FIELD, tableName = "smt_ts_task_record", field = "splitKey")
 public interface SmtTsTaskRecordMapper {
 
     int insertSelective(SmtTsTaskRecord record);
@@ -23,9 +25,7 @@ public interface SmtTsTaskRecordMapper {
 
     Integer updateById(SmtTsTaskRecord record);
 
-    Integer deleteById(@Param("id") Long id);
+    Integer deleteById(@Param("id") Long id, int splitKey);
 
     Page<SmtTsTaskRecord> pageBy(SmtTsTaskRecordQuery query);
-
-    void createMontTable(@Param("tableName") String newTableName);
 }

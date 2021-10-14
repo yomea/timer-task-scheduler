@@ -107,14 +107,15 @@ public class SchedulerContextUtils {
     private static SmtTsTaskRecord getRecord(SchedulerContext schedulerContext) {
 
         Map<String, Object> extParams = schedulerContext.getExtParams();
-        Long recordId = (Long)extParams.get(TaskSchedulerCons.TASK_RECORD_ID);
-        if(recordId == null) {
+        SmtTsTaskRecord record = (SmtTsTaskRecord)extParams.get(TaskSchedulerCons.TASK_RECORD);
+        if(record == null || record.getId() == null) {
             return null;
         }
         SmtTsTaskRecordWrapper smtTsTaskRecordWrapper = schedulerContext.getSmtTsTaskRecordWrapper();
 
         SmtTsTaskRecordQuery query = new SmtTsTaskRecordQuery();
-        query.setId(recordId);
+        query.setId(record.getId());
+        query.setSplitKey(record.getSplitKey());
 
         SmtTsTaskRecord smtTsTaskRecord = smtTsTaskRecordWrapper.getBy(query);
         return smtTsTaskRecord;
@@ -144,7 +145,7 @@ public class SchedulerContextUtils {
                 schedulerContext.setExtParams(extParams);
             }
 
-            extParams.put(TaskSchedulerCons.TASK_RECORD_ID, smtTsTaskRecord.getId());
+            extParams.put(TaskSchedulerCons.TASK_RECORD, smtTsTaskRecord);
         }
 
     }

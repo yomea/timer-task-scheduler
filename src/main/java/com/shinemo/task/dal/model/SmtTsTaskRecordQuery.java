@@ -1,6 +1,7 @@
 package com.shinemo.task.dal.model;
 
 import lombok.Data;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.util.Date;
 
@@ -61,4 +62,6 @@ public class SmtTsTaskRecordQuery {
     private Integer pageSize;
 
     private String orderByStr;
+
+    private int splitKey = Integer.valueOf(DateFormatUtils.format(new Date(), "yyyyMM"));
 }
