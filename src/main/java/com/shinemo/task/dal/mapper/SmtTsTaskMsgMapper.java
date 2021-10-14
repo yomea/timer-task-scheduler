@@ -5,6 +5,7 @@ import com.shinemo.task.dal.model.SmtTsTaskMsg;
 import com.shinemo.task.dal.model.SmtTsTaskMsgQuery;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface SmtTsTaskMsgMapper {
@@ -23,4 +24,6 @@ public interface SmtTsTaskMsgMapper {
     Page<SmtTsTaskMsg> pageBy(SmtTsTaskMsgQuery query);
 
     Integer cleanOldTaskUpdateMsg(SmtTsTaskMsgQuery query);
+
+    String getCurDbDate();
 }

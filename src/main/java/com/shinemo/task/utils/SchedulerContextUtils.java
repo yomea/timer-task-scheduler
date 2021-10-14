@@ -165,9 +165,6 @@ public class SchedulerContextUtils {
 
         CronTask cronTask = new LimitCronTask(task, cronTrigger);
 
-        //设置调度任务注册器
-        ScheduledTaskRegistrarHolder.setScheduledTaskRegistrar(taskRegistrar);
-
         ScheduledTask scheduledTask = taskRegistrar.scheduleCronTask(cronTask);
 
         TaskMemoryStore.putScheduledTask(taskDef.getId(), scheduledTask);

@@ -24,7 +24,7 @@ public class AceServiceUtils {
             return Collections.emptyList();
         }
 
-        log.info("注册到注册中心的机器：{}", GsonUtil.toJson(apiResult.getData()));
+        log.debug("注册到注册中心的机器：{}", GsonUtil.toJson(apiResult.getData()));
 
         return apiResult.getData();
     }

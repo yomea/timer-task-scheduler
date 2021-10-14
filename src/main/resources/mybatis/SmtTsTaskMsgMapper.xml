@@ -133,4 +133,8 @@
       delete from smt_ts_task_msg where gmt_create &lt; #{ltDate}
   </delete>
 
+  <select id="getCurDbDate" resultType="string">
+    select `date` from ( select DATE_FORMAT(now(),"%Y-%m-%d %H:%i:%s") as `date`) as a
+  </select>
+
 </mapper>

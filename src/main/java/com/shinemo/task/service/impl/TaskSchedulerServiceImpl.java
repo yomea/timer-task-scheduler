@@ -87,7 +87,6 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
         Long taskId = taskInfoConf.getTaskId();
 
-        Integer action;
         if(taskId != null && taskId > 0) {
             SmtTsTaskDefQuery query = new SmtTsTaskDefQuery();
             query.setId(taskId);
@@ -95,32 +94,52 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
             if(smtTsTaskDef == null) {
                 return ApiResult.fail("要修改的任务不存在！", 404);
             }
-            smtTsTaskDefWrapper.deleteById(taskId);
-            smtTsTaskTimerWrapper.deleteByTaskId(taskId);
-            action = TaskActionEnum.MODIFY.getType();
-        } else {
-            action = TaskActionEnum.NEW.getType();
-        }
-
-        //构建任务定义
-        SmtTsTaskDef smtTsTaskDef = instanceByTaskInfoConf(taskInfoConf);
-
-        int row = smtTsTaskDefWrapper.insertSelective(smtTsTaskDef);
-        if(row > 0) {
-            List<SmtTsTaskTimer> taskTimerList = instanceByTaskScheduleConf(taskScheduleConf, smtTsTaskDef);
-            row = smtTsTaskTimerWrapper.batchSave(taskTimerList);
+            Integer action = TaskActionEnum.MODIFY.getType();
+            copyProperty(smtTsTaskDef, taskInfoConf);
+            int row = smtTsTaskDefWrapper.updateById(smtTsTaskDef);
             if(row > 0) {
-
-                SmtTsTaskMsg domain = new SmtTsTaskMsg();
-                domain.setSmcAction(action);
-                domain.setSmcDefId(smtTsTaskDef.getId());
-
-                row = smtTsTaskMsgWrapper.insertSelective(domain);
+                smtTsTaskTimerWrapper.deleteByTaskId(taskId);
+                List<SmtTsTaskTimer> taskTimerList = instanceByTaskScheduleConf(taskScheduleConf, smtTsTaskDef);
+                row = smtTsTaskTimerWrapper.batchSave(taskTimerList);
                 if(row > 0) {
-                    return ApiResult.success(smtTsTaskDef.getId());
+
+                    SmtTsTaskMsg domain = new SmtTsTaskMsg();
+                    domain.setSmcDefId(smtTsTaskDef.getId());
+                    domain.setSmcAction(action);
+
+                    row = smtTsTaskMsgWrapper.insertSelective(domain);
+                    if(row > 0) {
+                        return ApiResult.success(smtTsTaskDef.getId());
+                    }
+                }
+            }
+
+
+
+        } else {
+            Integer action = TaskActionEnum.NEW.getType();
+
+            //构建任务定义
+            SmtTsTaskDef smtTsTaskDef = instanceByTaskInfoConf(taskInfoConf);
+
+            int row = smtTsTaskDefWrapper.insertSelective(smtTsTaskDef);
+            if(row > 0) {
+                List<SmtTsTaskTimer> taskTimerList = instanceByTaskScheduleConf(taskScheduleConf, smtTsTaskDef);
+                row = smtTsTaskTimerWrapper.batchSave(taskTimerList);
+                if(row > 0) {
+
+                    SmtTsTaskMsg domain = new SmtTsTaskMsg();
+                    domain.setSmcAction(action);
+                    domain.setSmcDefId(smtTsTaskDef.getId());
+
+                    row = smtTsTaskMsgWrapper.insertSelective(domain);
+                    if(row > 0) {
+                        return ApiResult.success(smtTsTaskDef.getId());
+                    }
                 }
             }
         }
+
         throw new RuntimeException("提交任务失败！");
     }
 
@@ -131,6 +150,8 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
             SmtTsTaskTimer smtTsTaskTimer = new SmtTsTaskTimer();
             smtTsTaskTimer.setSmcCron(timerTask.getCron());
             smtTsTaskTimer.setSmcDefId(smtTsTaskDef.getId());
+            smtTsTaskTimer.setSmcStartDay(timerTask.getStartDateTime());
+            smtTsTaskTimer.setSmcEndDay(timerTask.getEndDateTime());
 
             return smtTsTaskTimer;
         }).collect(Collectors.toList());
@@ -146,7 +167,10 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
         Integer rows = smtTsTaskDefWrapper.deleteById(taskId);
         if(rows > 0) {
-            rows = smtTsTaskMsgWrapper.insertSelective(domain);
+            rows = smtTsTaskTimerWrapper.deleteByTaskId(taskId);
+            if(rows > 0) {
+                rows = smtTsTaskMsgWrapper.insertSelective(domain);
+            }
         }
 
         if(rows < 1) {
@@ -157,7 +181,19 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ApiResult<Void> disableTask(Long taskId) {
+
+        return modifyTaskStatus(taskId, TaskStatusEnum.DISABLE.getStatus());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ApiResult<Void> enableTask(Long taskId) {
+        return modifyTaskStatus(taskId, TaskStatusEnum.ENABLE.getStatus());
+    }
+
+    private ApiResult<Void> modifyTaskStatus(Long taskId, Integer status) {
 
         SmtTsTaskDefQuery query = new SmtTsTaskDefQuery();
         query.setId(taskId);
@@ -167,7 +203,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
             return ApiResult.fail("该任务不存在！", 404);
         }
 
-        taskDef.setSmcStatus(TaskStatusEnum.DISABLE.getStatus());
+        taskDef.setSmcStatus(status);
 
         smtTsTaskDefWrapper.updateById(taskDef);
         SmtTsTaskMsg domain = new SmtTsTaskMsg();
@@ -314,46 +350,62 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
                 break;
             }
 
-            List<Long> defIdList = page.stream().map(SmtTsTaskMsg::getSmcDefId).collect(Collectors.toList());
-            taskDefQuery.setIdList(defIdList);
-
-            List<SmtTsTaskDef> tsTaskDefList = smtTsTaskDefWrapper.selectBy(taskDefQuery);
-            Map<Long, SmtTsTaskDef> taskIdMapTaskDef = tsTaskDefList.stream().collect(Collectors.toMap(SmtTsTaskDef::getId, Function.identity()));
-
-            timerQuery.setSmcDefIdList(defIdList);
-            List<SmtTsTaskTimer> taskTimerList = smtTsTaskTimerWrapper.selectBy(timerQuery);
-            Map<Long, List<SmtTsTaskTimer>> defIdMapTaskTimerList = taskTimerList.stream().collect(Collectors.groupingBy(SmtTsTaskTimer::getSmcDefId));
-
-            page.stream().forEach(smtTsTaskMsg -> {
-
-                Long defId = smtTsTaskMsg.getSmcDefId();
-                SmtTsTaskDef smtTsTaskDef = taskIdMapTaskDef.get(defId);
-                if(smtTsTaskDef == null) {
-                    return;
+            List<SmtTsTaskMsg> taskMsgList = page.stream().filter(taskMsg -> {
+                Integer action = taskMsg.getSmcAction();
+                if(TaskActionEnum.DELETE.getType().equals(action)) {
+                    TaskMemoryStore.cancelByTaskDefId(taskMsg.getSmcDefId());
+                    return false;
                 }
+                return true;
+            }).collect(Collectors.toList());
 
-                List<SmtTsTaskTimer> timerList = defIdMapTaskTimerList.get(defId);
-                if(CollectionUtils.isEmpty(timerList)) {
-                    return;
-                }
+            if(taskMsgList.size() > 0) {
 
-                Integer action = smtTsTaskMsg.getSmcAction();
-                //新增
-                if(TaskActionEnum.NEW.getType().equals(action)) {
-                    timerList.stream().forEach(timer -> {
-                        SchedulerContextUtils.schedulerTask(scheduledTaskRegistrar, transactionTemplate, smtTsTaskLockWrapper, smtTsTaskRecordWrapper, smtTsTaskDef, timer);
-                    });
-                } else if(TaskActionEnum.MODIFY.getType().equals(action)) {
-                    TaskMemoryStore.cancelByTaskDefId(defId);
-                    if(TaskStatusEnum.DISABLE.getStatus().equals(smtTsTaskDef.getSmcStatus())) {
+                List<Long> defIdList = taskMsgList.stream().map(SmtTsTaskMsg::getSmcDefId).collect(Collectors.toList());
+                taskDefQuery.setIdList(defIdList);
+
+                List<SmtTsTaskDef> tsTaskDefList = smtTsTaskDefWrapper.selectBy(taskDefQuery);
+                Map<Long, SmtTsTaskDef> taskIdMapTaskDef = tsTaskDefList.stream().collect(Collectors.toMap(SmtTsTaskDef::getId, Function.identity()));
+
+                timerQuery.setSmcDefIdList(defIdList);
+                List<SmtTsTaskTimer> taskTimerList = smtTsTaskTimerWrapper.selectBy(timerQuery);
+                Map<Long, List<SmtTsTaskTimer>> defIdMapTaskTimerList = taskTimerList.stream().collect(Collectors.groupingBy(SmtTsTaskTimer::getSmcDefId));
+
+                taskMsgList.stream().forEach(smtTsTaskMsg -> {
+
+                    Long defId = smtTsTaskMsg.getSmcDefId();
+                    SmtTsTaskDef smtTsTaskDef = taskIdMapTaskDef.get(defId);
+                    if(smtTsTaskDef == null) {
+                        return;
+                    }
+
+                    List<SmtTsTaskTimer> timerList = defIdMapTaskTimerList.get(defId);
+                    if(CollectionUtils.isEmpty(timerList)) {
+                        return;
+                    }
+
+                    Integer action = smtTsTaskMsg.getSmcAction();
+                    //新增
+                    if(TaskActionEnum.NEW.getType().equals(action)) {
                         timerList.stream().forEach(timer -> {
                             SchedulerContextUtils.schedulerTask(scheduledTaskRegistrar, transactionTemplate, smtTsTaskLockWrapper, smtTsTaskRecordWrapper, smtTsTaskDef, timer);
                         });
+                    } else if(TaskActionEnum.MODIFY.getType().equals(action)) {
+                        TaskMemoryStore.cancelByTaskDefId(defId);
+                        if(TaskStatusEnum.ENABLE.getStatus().equals(smtTsTaskDef.getSmcStatus())) {
+                            timerList.stream().forEach(timer -> {
+                                SchedulerContextUtils.schedulerTask(scheduledTaskRegistrar, transactionTemplate, smtTsTaskLockWrapper, smtTsTaskRecordWrapper, smtTsTaskDef, timer);
+                            });
+                        }
+                    } else {
+                        TaskMemoryStore.cancelByTaskDefId(defId);
                     }
-                } else {
-                    TaskMemoryStore.cancelByTaskDefId(defId);
-                }
-            });
+                });
+            }
+
+            //消费成功
+            Long maxId = page.get(page.size() - 1).getId();
+            query.setGtId(maxId);
 
             if(page.size() < query.getPageSize()) {
                 break;
@@ -361,6 +413,10 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
             pageIndex += 1;
         }
+
+        //TODO 更新消费进度，这里的消息可以重复消费，为了简单起见，这里就不做幂等性检查了
+        smtTsConsumeProgress.setSmcMsgId(query.getGtId());
+        smtTsConsumeProgressWrapper.updateById(smtTsConsumeProgress);
     }
 
     @Override
@@ -482,14 +538,17 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     private SmtTsTaskDef instanceByTaskInfoConf(TaskInfoConf taskInfoConf) {
 
         SmtTsTaskDef smtTsTaskDef = new SmtTsTaskDef();
-        smtTsTaskDef.setId(taskInfoConf.getTaskId());
+        copyProperty(smtTsTaskDef, taskInfoConf);
+        return smtTsTaskDef;
+    }
+
+    private void copyProperty(SmtTsTaskDef smtTsTaskDef, TaskInfoConf taskInfoConf) {
+
         smtTsTaskDef.setSmcStatus(taskInfoConf.getStatus());
         smtTsTaskDef.setSmcTimeout(taskInfoConf.getTimeout());
         smtTsTaskDef.setSmcTaskName(taskInfoConf.getTaskName());
         smtTsTaskDef.setAppServiceName(taskInfoConf.getAppServiceName());
         smtTsTaskDef.setApiServiceName(taskInfoConf.getApiServiceName());
         smtTsTaskDef.setApiMethodName(taskInfoConf.getApiMethodName());
-
-        return smtTsTaskDef;
     }
 }

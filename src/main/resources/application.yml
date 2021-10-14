@@ -26,6 +26,8 @@ spring:
       date-time: "yyyy-MM-dd HH:mm:ss"
     dispatch-trace-request: true
   jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
     default-property-inclusion: NON_NULL
     #https://www.cnblogs.com/woshimrf/p/LocalDate-serialize-json-springboot.html
     serialization.WRITE_DATES_AS_TIMESTAMPS: false

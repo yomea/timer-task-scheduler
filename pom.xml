@@ -253,11 +253,6 @@
 
         <dependency>
             <groupId>com.shinemo.springboot</groupId>
-            <artifactId>spring-boot-starter-common</artifactId>
-            <version>1.0.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.shinemo.springboot</groupId>
             <artifactId>smcache-spring-boot-starter</artifactId>
             <version>1.0.1-SNAPSHOT</version>
             <exclusions>

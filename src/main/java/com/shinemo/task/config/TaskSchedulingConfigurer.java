@@ -6,10 +6,7 @@ import com.shinemo.task.dal.model.SmtTsTaskDef;
 import com.shinemo.task.dal.model.SmtTsTaskDefQuery;
 import com.shinemo.task.dal.model.SmtTsTaskTimer;
 import com.shinemo.task.dal.model.SmtTsTaskTimerQuery;
-import com.shinemo.task.dal.wrapper.SmtTsTaskDefWrapper;
-import com.shinemo.task.dal.wrapper.SmtTsTaskLockWrapper;
-import com.shinemo.task.dal.wrapper.SmtTsTaskRecordWrapper;
-import com.shinemo.task.dal.wrapper.SmtTsTaskTimerWrapper;
+import com.shinemo.task.dal.wrapper.*;
 import com.shinemo.task.enums.TaskStatusEnum;
 import com.shinemo.task.processor.TaskConfigurePostProcessor;
 import com.shinemo.task.utils.SchedulerContextUtils;
@@ -47,6 +44,9 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
     @Resource
     private SmtTsTaskRecordWrapper smtTsTaskRecordWrapper;
 
+    @Resource
+    private SmtTsTaskMsgWrapper smtTsTaskMsgWrapper;
+
     @Autowired
     private TransactionTemplate transactionTemplate;
 
@@ -57,8 +57,11 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 
         beforeConfigure(taskRegistrar);
-
-        ScheduledTaskRegistrarHolder.setAppStartTime(new Date());
+        //使用数据库的时间
+        Date date = smtTsTaskMsgWrapper.getCurDbDate();
+        ScheduledTaskRegistrarHolder.setAppStartTime(date);
+        //设置调度任务注册器
+        ScheduledTaskRegistrarHolder.setScheduledTaskRegistrar(taskRegistrar);
 
         SmtTsTaskDefQuery query = new SmtTsTaskDefQuery();
         query.setOrderByStr(" id asc ");

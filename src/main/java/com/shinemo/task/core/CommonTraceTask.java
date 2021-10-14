@@ -49,7 +49,8 @@ public class CommonTraceTask extends TraceTask {
         aaceContext.setTimeout(timeout.intValue());
 
         AceTaskSchedulerCallback callback = new AceTaskSchedulerCallbackImpl(schedulerContext);
-
+        //透传调度该任务的机器 IP
+        taskContext.setScheduleIp(Ace.get().getLocalHost());
         worker.asyncDealTask(taskContext, callback, aaceContext);
     }
 
