@@ -68,4 +68,8 @@ public class SmtTsTaskLockWrapper {
     public Integer updateStatusByIdList(List<Long> idList, Integer newStatus, Integer oldStatus) {
         return smtTsTaskLockMapper.updateStatusByIdList(idList, newStatus, oldStatus);
     }
+
+    public Integer deleteByDefIdList(List<Long> defIdList) {
+        return smtTsTaskLockMapper.deleteByDefIdList(defIdList);
+    }
 }

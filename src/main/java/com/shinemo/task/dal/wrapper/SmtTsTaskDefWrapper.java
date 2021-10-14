@@ -47,4 +47,10 @@ public class SmtTsTaskDefWrapper {
     public Integer updateById(SmtTsTaskDef domain) {
         return smtTsTaskDefMapper.updateById(domain);
     }
+
+    public Integer deleteByTopId(Long taskId) {
+
+        return smtTsTaskDefMapper.deleteByTopId(taskId);
+    }
+
 }

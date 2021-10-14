@@ -11,6 +11,8 @@ import java.util.Date;
 public class SmtTsTaskDef {
     private Long id;
 
+    private Long smcDefPid;
+
     /**
      * 创建时间
      */
@@ -55,4 +57,8 @@ public class SmtTsTaskDef {
      * 任务是否启动，1:启动，-1:禁用
      */
     private Integer smcStatus;
+
+    private Boolean smcHasChild;
+
+    private Long smcTopPid;
 }

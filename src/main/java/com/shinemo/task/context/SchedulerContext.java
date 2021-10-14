@@ -1,14 +1,17 @@
 package com.shinemo.task.context;
 
 import com.shinemo.task.dal.model.SmtTsTaskDef;
+import com.shinemo.task.dal.wrapper.SmtTsTaskDefWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskLockWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskRecordWrapper;
+import com.shinemo.task.listener.AceTaskSchedulerListener;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +30,10 @@ public class SchedulerContext {
     private SmtTsTaskLockWrapper smtTsTaskLockWrapper;
 
     private SmtTsTaskRecordWrapper smtTsTaskRecordWrapper;
+
+    private SmtTsTaskDefWrapper smtTsTaskDefWrapper;
+
+    private List<AceTaskSchedulerListener> listenerList;
 
     private Map<String, Object> extParams;
 }

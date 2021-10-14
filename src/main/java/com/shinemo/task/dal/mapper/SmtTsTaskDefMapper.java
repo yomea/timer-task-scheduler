@@ -21,4 +21,6 @@ public interface SmtTsTaskDefMapper {
     Integer deleteById(@Param("id") Long id);
 
     Page<SmtTsTaskDef> pageBy(SmtTsTaskDefQuery query);
+
+    Integer deleteByTopId(Long taskId);
 }

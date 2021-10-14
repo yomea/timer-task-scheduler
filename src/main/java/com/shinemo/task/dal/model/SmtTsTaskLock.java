@@ -26,6 +26,8 @@ public class SmtTsTaskLock {
      */
     private Long smcDefId;
 
+    private Long smcDefPid;
+
     /**
      * 任务执行超时时间，超时时需要释放锁
      */

@@ -8,6 +8,7 @@ import com.shinemo.task.dal.model.SmtTsTaskTimer;
 import com.shinemo.task.dal.model.SmtTsTaskTimerQuery;
 import com.shinemo.task.dal.wrapper.*;
 import com.shinemo.task.enums.TaskStatusEnum;
+import com.shinemo.task.listener.AceTaskSchedulerListener;
 import com.shinemo.task.processor.TaskConfigurePostProcessor;
 import com.shinemo.task.utils.SchedulerContextUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,9 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
     @Autowired
     private List<TaskConfigurePostProcessor> processorList;
 
+    @Autowired
+    private List<AceTaskSchedulerListener> listenerList;
+
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 
@@ -67,6 +71,8 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
         query.setOrderByStr(" id asc ");
         query.setPageIndex(1);
         query.setSmcStatus(TaskStatusEnum.ENABLE.getStatus());
+        //排除子任务，子任务没有定时器，它与父任务绑定
+        query.setExculeSubTask(true);
 
         while (true) {
 
@@ -97,7 +103,7 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
                 List<SmtTsTaskTimer> timerWithBLOBsList = taskDefIdMapTimers.get(taskDef.getId());
                 timerWithBLOBsList.stream().forEach(timer -> {
 
-                    SchedulerContextUtils.schedulerTask(taskRegistrar, transactionTemplate, smtTsTaskLockWrapper, smtTsTaskRecordWrapper, taskDef, timer);
+                    SchedulerContextUtils.schedulerTask(listenerList, taskRegistrar, transactionTemplate, smtTsTaskLockWrapper, smtTsTaskRecordWrapper, smtTsTaskDefWrapper, taskDef, timer);
                 });
             });
 

@@ -7,9 +7,11 @@ import com.shinemo.task.constant.TaskSchedulerCons;
 import com.shinemo.task.context.SchedulerContext;
 import com.shinemo.task.core.*;
 import com.shinemo.task.dal.model.*;
+import com.shinemo.task.dal.wrapper.SmtTsTaskDefWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskLockWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskRecordWrapper;
 import com.shinemo.task.enums.TaskExecEnum;
+import com.shinemo.task.listener.AceTaskSchedulerListener;
 import com.shinemo.task.model.TaskContext;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTask;
@@ -17,6 +19,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -150,7 +153,7 @@ public class SchedulerContextUtils {
 
     }
 
-    public static void schedulerTask(ScheduledTaskRegistrar taskRegistrar, TransactionTemplate transactionTemplate, SmtTsTaskLockWrapper smtTsTaskLockWrapper, SmtTsTaskRecordWrapper smtTsTaskRecordWrapper, SmtTsTaskDef taskDef, SmtTsTaskTimer timer) {
+    public static void schedulerTask(List<AceTaskSchedulerListener> listenerList, ScheduledTaskRegistrar taskRegistrar, TransactionTemplate transactionTemplate, SmtTsTaskLockWrapper smtTsTaskLockWrapper, SmtTsTaskRecordWrapper smtTsTaskRecordWrapper, SmtTsTaskDefWrapper smtTsTaskDefWrapper, SmtTsTaskDef taskDef, SmtTsTaskTimer timer) {
 
         LimitCronTrigger cronTrigger = new LimitCronTrigger(timer.getSmcCron(), timer.getSmcStartDay(), timer.getSmcEndDay());
 
@@ -158,8 +161,8 @@ public class SchedulerContextUtils {
                 .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).build();
 
 
-        SchedulerContext schedulerContext = SchedulerContext.builder().smtTsTaskDef(taskDef).smtTsTaskRecordWrapper(smtTsTaskRecordWrapper)
-                .smtTsTaskLockWrapper(smtTsTaskLockWrapper).transactionTemplate(transactionTemplate).build();
+        SchedulerContext schedulerContext = SchedulerContext.builder().listenerList(listenerList).smtTsTaskDef(taskDef).smtTsTaskRecordWrapper(smtTsTaskRecordWrapper)
+                .smtTsTaskLockWrapper(smtTsTaskLockWrapper).smtTsTaskDefWrapper(smtTsTaskDefWrapper).transactionTemplate(transactionTemplate).build();
 
         CommonTraceTask task = new CommonTraceTask(taskContext, schedulerContext);
 

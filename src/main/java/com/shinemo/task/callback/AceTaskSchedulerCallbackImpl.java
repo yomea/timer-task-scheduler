@@ -4,10 +4,10 @@ import com.shinemo.Aace.RetCode;
 import com.shinemo.Aace.context.AaceContext;
 import com.shinemo.common.tools.result.ApiResult;
 import com.shinemo.task.context.SchedulerContext;
-import com.shinemo.task.dal.model.SmtTsTaskDef;
-import com.shinemo.task.utils.SchedulerContextUtils;
-import com.shinemo.util.GsonUtil;
+import com.shinemo.task.listener.AceTaskSchedulerListener;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * Created by wuzhenhong on 10/13/21 5:40 PM
@@ -16,8 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 public class AceTaskSchedulerCallbackImpl implements AceTaskSchedulerCallback {
 
     private SchedulerContext schedulerContext;
+    private List<AceTaskSchedulerListener> listenerList;
 
     public AceTaskSchedulerCallbackImpl(SchedulerContext schedulerContext) {
+        this.listenerList = schedulerContext.getListenerList();
         this.schedulerContext = schedulerContext;
     }
 
@@ -39,26 +41,26 @@ public class AceTaskSchedulerCallbackImpl implements AceTaskSchedulerCallback {
     }
 
     private void failure(int retCode, ApiResult<Long> apiResult) {
-        printErrMsg(retCode, apiResult);
-        SchedulerContextUtils.failure(schedulerContext, apiResult);
+        listenerList.stream().forEach(listener -> {
+            listener.failure(schedulerContext, retCode, apiResult);
+        });
     }
 
     private void exception(int retCode, ApiResult<Long> apiResult) {
-        printErrMsg(retCode, apiResult);
-        SchedulerContextUtils.exception(schedulerContext, apiResult);
+        listenerList.stream().forEach(listener -> {
+            listener.exception(schedulerContext, retCode, apiResult);
+        });
     }
 
     private void success(int retCode, ApiResult<Long> apiResult) {
-        SchedulerContextUtils.success(schedulerContext, apiResult);
+        listenerList.stream().forEach(listener -> {
+            listener.success(schedulerContext, retCode, apiResult);
+        });
     }
 
     private void timeout(int retCode, ApiResult<Long> apiResult) {
-        printErrMsg(retCode, apiResult);
-        SchedulerContextUtils.timeout(schedulerContext, apiResult);
-    }
-
-    private void printErrMsg(int retCode, ApiResult<Long> apiResult) {
-        SmtTsTaskDef smtTsTaskDef = schedulerContext.getSmtTsTaskDef();
-        log.error("定时任务 =》{} 执行失败，ace返回编码为 {}, 业务编码为 {}", GsonUtil.toJson(smtTsTaskDef), retCode, apiResult.getCode());
+        listenerList.stream().forEach(listener -> {
+            listener.timeout(schedulerContext, retCode, apiResult);
+        });
     }
 }

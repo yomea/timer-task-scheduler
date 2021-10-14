@@ -11,6 +11,8 @@ import java.util.List;
 public class SmtTsTaskDefQuery {
     private Long id;
 
+    private Long smcDefPid;
+
     private List<Long> idList;
 
     /**
@@ -53,4 +55,8 @@ public class SmtTsTaskDefQuery {
     private Integer pageSize;
 
     private String orderByStr;
+
+    private boolean exculeSubTask;
+
+    private Boolean smcHasChild;
 }
