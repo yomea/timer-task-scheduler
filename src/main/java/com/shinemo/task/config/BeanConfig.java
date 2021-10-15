@@ -1,6 +1,7 @@
 package com.shinemo.task.config;
 
 import com.shinemo.common.tools.redis.RedisLock;
+import com.shinemo.task.constant.GlobalConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
@@ -32,9 +33,7 @@ public class BeanConfig {
     @Bean
     public ExecutorService retryExecutor() {
 
-        return new ThreadPoolExecutor(NCPUS, NCPUS,
-                0L, TimeUnit.MILLISECONDS,
-                new ArrayBlockingQueue<>(1000));
+        return GlobalConfig.getGlobalExecutor();
     }
 
 }

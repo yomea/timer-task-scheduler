@@ -3,11 +3,13 @@ package com.shinemo.task.callback;
 import com.shinemo.Aace.RetCode;
 import com.shinemo.Aace.context.AaceContext;
 import com.shinemo.common.tools.result.ApiResult;
+import com.shinemo.task.constant.GlobalConfig;
 import com.shinemo.task.context.SchedulerContext;
 import com.shinemo.task.listener.AceTaskSchedulerListener;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * Created by wuzhenhong on 10/13/21 5:40 PM
@@ -38,6 +40,11 @@ public class AceTaskSchedulerCallbackImpl implements AceTaskSchedulerCallback {
             failure(retCode, ApiResult.fail(String.format("调度任务失败，失败原因：%s, retCode: %s", msg, retCode), retCode));
         }
 
+    }
+
+    @Override
+    public Executor getExecutor() {
+        return GlobalConfig.getGlobalExecutor();
     }
 
     private void failure(int retCode, ApiResult<Long> apiResult) {
