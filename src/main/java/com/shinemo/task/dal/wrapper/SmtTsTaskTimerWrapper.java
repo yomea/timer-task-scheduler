@@ -55,4 +55,12 @@ public class SmtTsTaskTimerWrapper {
     public Integer deleteByTaskId(Long taskId) {
         return smtTsTaskTimerMapper.deleteByTaskId(taskId);
     }
+
+    public Integer deleteByIdList(List<Long> delayTaskTimerIdList) {
+        return smtTsTaskTimerMapper.deleteByIdList(delayTaskTimerIdList);
+    }
+
+    public Integer modifyStatusByIdList(Integer status, List<Long> delayTaskTimerIdList) {
+        return smtTsTaskTimerMapper.modifyStatusByIdList(status, delayTaskTimerIdList);
+    }
 }

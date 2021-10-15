@@ -1,6 +1,8 @@
 package com.shinemo.task.core;
 
+import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.config.ScheduledTask;
+import org.springframework.scheduling.config.TriggerTask;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,12 +37,27 @@ public class TaskMemoryStore {
 
         DEF_ID_MAP_SCHEDULE_TASK.forEach((defId, scheduledTask) -> {
 
-            if (scheduledTask != null && (scheduledTask.getTask() instanceof LimitCronTask)) {
+            if (scheduledTask != null && (scheduledTask.getTask() instanceof TriggerTask)) {
 
-                LimitCronTask limitCronTask = (LimitCronTask) scheduledTask.getTask();
-                Date limitEnd = limitCronTask.getLimitEnd();
-                if (limitEnd != null && date.after(limitEnd)) {
-                    needRmDefIdList.add(defId);
+                TriggerTask triggerTask = (TriggerTask) scheduledTask.getTask();
+                Trigger trigger = triggerTask.getTrigger();
+                if(trigger instanceof LimitCronTrigger) {
+                    LimitCronTrigger limitCronTrigger = (LimitCronTrigger) trigger;
+                    Date limitEnd = limitCronTrigger.getLimitEnd();
+                    if (limitEnd != null && date.after(limitEnd)) {
+                        needRmDefIdList.add(defId);
+                    }
+                } else if(trigger instanceof LimitPeriodicTrigger) {
+                    LimitPeriodicTrigger limitPeriodicTrigger = (LimitPeriodicTrigger) trigger;
+                    Date limitEnd = limitPeriodicTrigger.getLimitEnd();
+                    if (limitEnd != null && date.after(limitEnd)) {
+                        needRmDefIdList.add(defId);
+                    }
+                } else if(trigger instanceof DelayTrigger) {
+                    DelayTrigger delayTrigger = (DelayTrigger) trigger;
+                    if(delayTrigger.isHasExec()) {
+                        needRmDefIdList.add(defId);
+                    }
                 }
             }
         });

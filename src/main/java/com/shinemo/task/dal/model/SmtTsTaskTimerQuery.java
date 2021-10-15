@@ -12,6 +12,7 @@ import java.util.List;
 public class SmtTsTaskTimerQuery {
     private Long id;
 
+    private Integer smcStatus;
     /**
      * 任务定义ID
      */

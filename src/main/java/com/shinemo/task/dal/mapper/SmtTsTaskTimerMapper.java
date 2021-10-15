@@ -25,4 +25,8 @@ public interface SmtTsTaskTimerMapper {
     Integer batchSave(List<SmtTsTaskTimer> taskTimerList);
 
     Integer deleteByTaskId(Long taskId);
+
+    Integer deleteByIdList(List<Long> delayTaskTimerIdList);
+
+    Integer modifyStatusByIdList(@Param("status") Integer status, @Param("list") List<Long> delayTaskTimerIdList);
 }

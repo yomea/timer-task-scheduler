@@ -1,12 +1,15 @@
 package com.shinemo.task.controller;
 
 import com.shinemo.common.tools.result.ApiResult;
-import com.shinemo.task.model.CronTaskRequest;
+import com.shinemo.task.model.TimerTaskRequest;
 import com.shinemo.task.service.TaskSchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Slf4j
@@ -16,16 +19,16 @@ public class TaskSchedulerController {
     @Autowired
     private TaskSchedulerService taskSchedulerService;
 
-    @PostMapping("/submitCronTask")
+    @PostMapping("/submitTimerTask")
     @ResponseBody
-    public ApiResult<Long> submitCronTask(@RequestBody CronTaskRequest cronTaskRequest) {
-        return taskSchedulerService.submitCronTask(cronTaskRequest);
+    public ApiResult<Long> submitTimerTask(@RequestBody TimerTaskRequest timerTaskRequest) {
+        return taskSchedulerService.submitTimerTask(timerTaskRequest);
     }
 
-    @PostMapping("/cronTaskDel")
+    @PostMapping("/timerTaskDel")
     @ResponseBody
-    public ApiResult<Void> cronTaskDel(Long taskId) {
-        return taskSchedulerService.cronTaskDel(taskId);
+    public ApiResult<Void> timerTaskDel(Long taskId) {
+        return taskSchedulerService.timerTaskDel(taskId);
     }
 
     @PostMapping("/disableTask")

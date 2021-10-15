@@ -2,6 +2,7 @@ package com.shinemo.task.utils;
 
 import com.google.common.collect.Maps;
 import com.shinemo.ace4j.Ace;
+import com.shinemo.common.tools.exception.ApiException;
 import com.shinemo.common.tools.result.ApiResult;
 import com.shinemo.task.constant.TaskSchedulerCons;
 import com.shinemo.task.context.SchedulerContext;
@@ -11,11 +12,13 @@ import com.shinemo.task.dal.wrapper.SmtTsTaskDefWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskLockWrapper;
 import com.shinemo.task.dal.wrapper.SmtTsTaskRecordWrapper;
 import com.shinemo.task.enums.TaskExecEnum;
+import com.shinemo.task.enums.TimerTypeEnum;
 import com.shinemo.task.listener.AceTaskSchedulerListener;
 import com.shinemo.task.model.TaskContext;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.scheduling.config.TriggerTask;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Date;
@@ -155,8 +158,6 @@ public class SchedulerContextUtils {
 
     public static void schedulerTask(List<AceTaskSchedulerListener> listenerList, ScheduledTaskRegistrar taskRegistrar, TransactionTemplate transactionTemplate, SmtTsTaskLockWrapper smtTsTaskLockWrapper, SmtTsTaskRecordWrapper smtTsTaskRecordWrapper, SmtTsTaskDefWrapper smtTsTaskDefWrapper, SmtTsTaskDef taskDef, SmtTsTaskTimer timer) {
 
-        LimitCronTrigger cronTrigger = new LimitCronTrigger(timer.getSmcCron(), timer.getSmcStartDay(), timer.getSmcEndDay());
-
         TaskContext taskContext = TaskContext.builder().appServiceName(taskDef.getAppServiceName()).apiServiceName(taskDef.getApiServiceName())
                 .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).build();
 
@@ -166,10 +167,63 @@ public class SchedulerContextUtils {
 
         CommonTraceTask task = new CommonTraceTask(taskContext, schedulerContext);
 
+        Integer timerType = timer.getSmcTimerType();
+        ScheduledTask scheduledTask;
+        if(TimerTypeEnum.CRON.getType().equals(timerType)) {
+            scheduledTask = scheduleCronTask(taskRegistrar, timer, task);
+        } else if(TimerTypeEnum.DELAY_TRIGGER.getType().equals(timerType)) {
+            scheduledTask = scheduleDelayTriggerTask(taskRegistrar, timer, task);
+        } else if(TimerTypeEnum.FIX_DELAY.getType().equals(timerType)) {
+            scheduledTask = scheduleFixDelayTriggerTask(taskRegistrar, timer, task);
+        } else if(TimerTypeEnum.FIX_RATE.getType().equals(timerType)) {
+            scheduledTask = scheduleFixRateTriggerTask(taskRegistrar, timer, task);
+        } else {
+            throw new ApiException(String.format("不支持的定时器类型 %s", timerType), 500);
+        }
+
+        TaskMemoryStore.putScheduledTask(taskDef.getId(), scheduledTask);
+    }
+
+    private static ScheduledTask scheduleFixRateTriggerTask(ScheduledTaskRegistrar taskRegistrar, SmtTsTaskTimer timer, CommonTraceTask task) {
+
+        LimitPeriodicTrigger fixDelayTrigger = new LimitPeriodicTrigger(timer.getSmcPeriod(), timer.getSmcStartDay(), timer.getSmcEndDay());
+        fixDelayTrigger.setFixedRate(true);
+        TriggerTask triggerTask = new TriggerTask(task, fixDelayTrigger);
+
+        ScheduledTask scheduledTask = taskRegistrar.scheduleTriggerTask(triggerTask);
+
+        return scheduledTask;
+    }
+
+    private static ScheduledTask scheduleFixDelayTriggerTask(ScheduledTaskRegistrar taskRegistrar, SmtTsTaskTimer timer, CommonTraceTask task) {
+
+        LimitPeriodicTrigger fixDelayTrigger = new LimitPeriodicTrigger(timer.getSmcPeriod(), timer.getSmcStartDay(), timer.getSmcEndDay());
+        fixDelayTrigger.setFixedRate(false);
+        TriggerTask triggerTask = new TriggerTask(task, fixDelayTrigger);
+
+        ScheduledTask scheduledTask = taskRegistrar.scheduleTriggerTask(triggerTask);
+
+        return scheduledTask;
+    }
+
+    private static ScheduledTask scheduleDelayTriggerTask(ScheduledTaskRegistrar taskRegistrar, SmtTsTaskTimer timer, CommonTraceTask task) {
+
+        DelayTrigger delayTrigger = new DelayTrigger(timer.getSmcOnceDelay());
+
+        TriggerTask triggerTask = new TriggerTask(task, delayTrigger);
+
+        ScheduledTask scheduledTask = taskRegistrar.scheduleTriggerTask(triggerTask);
+
+        return scheduledTask;
+    }
+
+    private static ScheduledTask scheduleCronTask(ScheduledTaskRegistrar taskRegistrar, SmtTsTaskTimer timer, CommonTraceTask task) {
+
+        LimitCronTrigger cronTrigger = new LimitCronTrigger(timer.getSmcCron(), timer.getSmcStartDay(), timer.getSmcEndDay());
         CronTask cronTask = new LimitCronTask(task, cronTrigger);
 
         ScheduledTask scheduledTask = taskRegistrar.scheduleCronTask(cronTask);
 
-        TaskMemoryStore.putScheduledTask(taskDef.getId(), scheduledTask);
+        return scheduledTask;
     }
 }

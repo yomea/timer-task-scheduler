@@ -3,6 +3,7 @@ package com.shinemo.task.service.impl;
 import com.google.common.collect.Lists;
 import com.shinemo.ace4j.Ace;
 import com.shinemo.ace4j.common.service.dto.ServerInfoDTO;
+import com.shinemo.common.tools.exception.ApiException;
 import com.shinemo.common.tools.result.ApiResult;
 import com.shinemo.perform.common.mybatis.Page;
 import com.shinemo.task.constant.TaskScheduleConstant;
@@ -15,6 +16,7 @@ import com.shinemo.task.dal.wrapper.*;
 import com.shinemo.task.enums.TaskActionEnum;
 import com.shinemo.task.enums.TaskExecEnum;
 import com.shinemo.task.enums.TaskStatusEnum;
+import com.shinemo.task.enums.TimerTypeEnum;
 import com.shinemo.task.listener.AceTaskSchedulerListener;
 import com.shinemo.task.model.TimerTask;
 import com.shinemo.task.model.*;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -80,15 +83,15 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public ApiResult<Long> submitCronTask(CronTaskRequest cronTaskRequest) {
+    public ApiResult<Long> submitTimerTask(TimerTaskRequest timerTaskRequest) {
 
-        ApiResult<Void> apiResult = cronSubmitArgsCheck(cronTaskRequest);
+        ApiResult<Void> apiResult = cronSubmitArgsCheck(timerTaskRequest);
         if(!apiResult.isSuccess()) {
             return ApiResult.fail(apiResult.getMsg(), apiResult.getCode());
         }
 
-        TaskInfoConf taskInfoConf = cronTaskRequest.getTaskInfoConf();
-        TaskScheduleConf taskScheduleConf = cronTaskRequest.getTaskScheduleConf();
+        TaskInfoConf taskInfoConf = timerTaskRequest.getTaskInfoConf();
+        TaskScheduleConf taskScheduleConf = timerTaskRequest.getTaskScheduleConf();
 
         Long taskId = taskInfoConf.getTaskId();
 
@@ -175,11 +178,31 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
         List<TimerTask> timerList = taskScheduleConf.getTimerList();
         return timerList.stream().map(timerTask -> {
+
             SmtTsTaskTimer smtTsTaskTimer = new SmtTsTaskTimer();
-            smtTsTaskTimer.setSmcCron(timerTask.getCron());
             smtTsTaskTimer.setSmcDefId(smtTsTaskDef.getId());
             smtTsTaskTimer.setSmcStartDay(timerTask.getStartDateTime());
             smtTsTaskTimer.setSmcEndDay(timerTask.getEndDateTime());
+            smtTsTaskTimer.setSmcStatus(timerTask.getStatus() == null ? TaskStatusEnum.ENABLE.getStatus() : TaskStatusEnum.DISABLE.getStatus());
+            Integer timerType = timerTask.getTimerType();
+            if(TimerTypeEnum.CRON.getType().equals(timerType)) {
+                smtTsTaskTimer.setSmcCron(timerTask.getCron());
+                smtTsTaskTimer.setSmcTimerType(TimerTypeEnum.CRON.getType());
+
+            } else if(TimerTypeEnum.DELAY_TRIGGER.getType().equals(timerType)) {
+                smtTsTaskTimer.setSmcOnceDelay(timerTask.getDelay());
+                smtTsTaskTimer.setSmcTimerType(TimerTypeEnum.DELAY_TRIGGER.getType());
+            } else if(TimerTypeEnum.FIX_DELAY.getType().equals(timerType)) {
+                smtTsTaskTimer.setSmcInitDelay(timerTask.getInitDelay());
+                smtTsTaskTimer.setSmcPeriod(timerTask.getPeriodic());
+                smtTsTaskTimer.setSmcTimerType(TimerTypeEnum.FIX_DELAY.getType());
+            } else if(TimerTypeEnum.FIX_RATE.getType().equals(timerType)){
+                smtTsTaskTimer.setSmcInitDelay(timerTask.getInitDelay());
+                smtTsTaskTimer.setSmcPeriod(timerTask.getPeriodic());
+                smtTsTaskTimer.setSmcTimerType(TimerTypeEnum.FIX_RATE.getType());
+            } else {
+                throw new ApiException(String.format("不支持的定时任务类型！timerType = %s", timerType), 500);
+            }
 
             return smtTsTaskTimer;
         }).collect(Collectors.toList());
@@ -187,7 +210,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResult cronTaskDel(Long taskId) {
+    public ApiResult timerTaskDel(Long taskId) {
 
         SmtTsTaskMsg domain = new SmtTsTaskMsg();
         domain.setSmcDefId(taskId);
@@ -414,6 +437,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
                 Map<Long, SmtTsTaskDef> taskIdMapTaskDef = tsTaskDefList.stream().collect(Collectors.toMap(SmtTsTaskDef::getId, Function.identity()));
 
                 timerQuery.setSmcDefIdList(defIdList);
+                timerQuery.setSmcStatus(TaskStatusEnum.ENABLE.getStatus());
                 List<SmtTsTaskTimer> taskTimerList = smtTsTaskTimerWrapper.selectBy(timerQuery);
                 Map<Long, List<SmtTsTaskTimer>> defIdMapTaskTimerList = taskTimerList.stream().collect(Collectors.groupingBy(SmtTsTaskTimer::getSmcDefId));
 
@@ -532,7 +556,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
     }
 
-    private ApiResult<Void> cronSubmitArgsCheck(CronTaskRequest cronTaskRequest) {
+    private ApiResult<Void> cronSubmitArgsCheck(TimerTaskRequest cronTaskRequest) {
 
         TaskInfoConf taskInfoConf = cronTaskRequest.getTaskInfoConf();
         if(taskInfoConf == null) {
@@ -556,11 +580,33 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
 
         List<TimerTask> timerList = taskScheduleConf.getTimerList();
         for(TimerTask timerTask : timerList) {
-
-            String cron = timerTask.getCron();
-            if(StringUtils.isEmpty(cron)) {
-                return ApiResult.fail("定时任务表达式 cron 不能为空！", 500);
+            Integer timerType = timerTask.getTimerType();
+            if(TimerTypeEnum.CRON.getType().equals(timerType)) {
+                String cron = timerTask.getCron();
+                if(StringUtils.isEmpty(cron)) {
+                    return ApiResult.fail("定时任务表达式 cron 不能为空！", 500);
+                }
+                if(!CronSequenceGenerator.isValidExpression(cron)) {
+                    return ApiResult.fail("定时任务表达式 cron 不合法！", 500);
+                }
+            } else if(TimerTypeEnum.FIX_RATE.getType().equals(timerType) || TimerTypeEnum.FIX_DELAY.getType().equals(timerType)) {
+                long initDelay = timerTask.getInitDelay();
+                long periodic = timerTask.getPeriodic();
+                if(initDelay < 0) {
+                    return ApiResult.fail("固定频率定时任务初始延时时间 initDelay 不能小于零！", 500);
+                }
+                if(periodic <= 0) {
+                    return ApiResult.fail("固定频率定时任务的频率 periodic 必须大于零！", 500);
+                }
+            } else if(TimerTypeEnum.DELAY_TRIGGER.getType().equals(timerType)) {
+                long delay = timerTask.getDelay();
+                if(delay < 0) {
+                    return ApiResult.fail("延时定时任务的延时时间 delay 不能小于零！", 500);
+                }
+            } else {
+                throw new ApiException(String.format("不支持的定时任务类型！class = [%s]", timerTask.getClass().getName()), 500);
             }
+
         }
 
         return ApiResult.success();

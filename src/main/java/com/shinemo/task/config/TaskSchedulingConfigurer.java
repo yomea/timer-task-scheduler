@@ -88,6 +88,7 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
             SmtTsTaskTimerQuery taskTimerQuery = new SmtTsTaskTimerQuery();
             taskTimerQuery.setSmcDefIdList(taskDefIdList);
             taskTimerQuery.setTriggerDate(new Date());
+            taskTimerQuery.setSmcStatus(TaskStatusEnum.ENABLE.getStatus());
             //获取定时器
             List<SmtTsTaskTimer> taskTimerList = smtTsTaskTimerWrapper.selectBy(taskTimerQuery);
             Map<Long, List<SmtTsTaskTimer>> taskDefIdMapTimers = taskTimerList.stream().collect(Collectors.groupingBy(SmtTsTaskTimer::getSmcDefId));

@@ -60,4 +60,6 @@ public class SmtTsTaskTimer {
      * cron表达式
      */
     private String smcCron;
+
+    private Integer smcStatus;
 }

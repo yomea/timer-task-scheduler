@@ -13,6 +13,7 @@
         <result column="smc_end_day" jdbcType="TIMESTAMP" property="smcEndDay"/>
         <result column="smc_period" jdbcType="BIGINT" property="smcPeriod"/>
         <result column="smc_cron" jdbcType="VARCHAR" property="smcCron"/>
+        <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
     </resultMap>
 
     <sql id="conditions">
@@ -64,13 +65,17 @@
                 and smc_cron = #{smcCron,jdbcType=VARCHAR}
             </if>
 
+            <if test="smcStatus != null">
+                and smc_status = #{smcStatus,jdbcType=INTEGER}
+            </if>
+
         </where>
 
     </sql>
 
     <sql id="Base_Column_List">
     id, gmt_create, gmt_modified, smc_def_id, smc_timer_type, smc_init_delay, smc_once_delay, 
-    smc_start_day, smc_end_day, smc_period, smc_cron
+    smc_start_day, smc_end_day, smc_period, smc_cron, smc_status
   </sql>
 
     <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
@@ -133,6 +138,10 @@
                 smc_cron = #{smcCron,jdbcType=VARCHAR},
             </if>
 
+            <if test="smcStatus != null">
+                smc_status = #{smcStatus,jdbcType=INTEGER},
+            </if>
+
         </set>
 
         <where>
@@ -190,6 +199,10 @@
                 smc_cron,
             </if>
 
+            <if test="smcStatus != null">
+                smc_status,
+            </if>
+
         </trim>
 
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -227,6 +240,10 @@
                 #{smcCron,jdbcType=VARCHAR},
             </if>
 
+            <if test="smcStatus != null">
+                #{smcStatus},
+            </if>
+
         </trim>
 
     </insert>
@@ -244,7 +261,8 @@
         smc_start_day,
         smc_end_day,
         smc_period,
-        smc_cron
+        smc_cron,
+        smc_status
         )
         values
         <foreach collection="list" separator="," index="index" close="" open="" item="item">
@@ -259,7 +277,8 @@
             #{item.smcStartDay,jdbcType=TIMESTAMP},
             #{item.smcEndDay,jdbcType=TIMESTAMP},
             #{item.smcPeriod,jdbcType=BIGINT},
-            #{item.smcCron,jdbcType=VARCHAR}
+            #{item.smcCron,jdbcType=VARCHAR},
+            #{item.smcStatus}
 
             )
 
@@ -271,5 +290,15 @@
 
         delete from smt_ts_task_timer where smc_def_id = #{_parameter}
     </delete>
+
+    <delete id="deleteByIdList" parameterType="list">
+
+        delete from smt_ts_task_timer where id in <foreach collection="list" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
+    </delete>
+
+    <update id="modifyStatusByIdList">
+
+        update smt_ts_task_timer set smc_status = #{status} where id in <foreach collection="list" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
+    </update>
 
 </mapper>
