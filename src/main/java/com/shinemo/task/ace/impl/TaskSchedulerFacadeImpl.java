@@ -17,12 +17,12 @@ public class TaskSchedulerFacadeImpl implements TaskSchedulerFacade {
     private TaskSchedulerService taskSchedulerService;
 
     @Override
-    public ApiResult<Long> submitCronTask(TimerTaskRequest timerTaskRequest) {
+    public ApiResult<Long> submitTimerTask(TimerTaskRequest timerTaskRequest) {
         return taskSchedulerService.submitTimerTask(timerTaskRequest);
     }
 
     @Override
-    public ApiResult cronTaskDel(Long taskId) {
+    public ApiResult timerTaskDel(Long taskId) {
         return taskSchedulerService.timerTaskDel(taskId);
     }
 
