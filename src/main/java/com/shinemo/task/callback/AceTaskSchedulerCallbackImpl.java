@@ -28,16 +28,21 @@ public class AceTaskSchedulerCallbackImpl implements AceTaskSchedulerCallback {
     @Override
     public void onResponse(int retCode, Long taskId, AaceContext aaceContext) {
 
-        String msg = aaceContext.getError();
+        try {
+            String msg = aaceContext.getError();
 
-        if(RetCode.RET_SUCCESS == retCode) {
-            success(retCode, ApiResult.success(taskId));
-        } else if(RetCode.RET_TIMEOUT == retCode) {
-            timeout(retCode, ApiResult.fail(String.format("请求超时！retCode: %s", retCode), retCode));
-        } else if(RetCode.RET_FAILURE == retCode) {
-            exception(retCode, ApiResult.fail(String.format("调度任务失败，失败原因：%s, retCode: %s", msg, retCode), retCode));
-        } else {
-            failure(retCode, ApiResult.fail(String.format("调度任务失败，失败原因：%s, retCode: %s", msg, retCode), retCode));
+            if (RetCode.RET_SUCCESS == retCode) {
+                success(retCode, ApiResult.success(taskId));
+            } else if (RetCode.RET_TIMEOUT == retCode) {
+                timeout(retCode, ApiResult.fail(String.format("请求超时！retCode: %s", retCode), retCode));
+            } else if (RetCode.RET_FAILURE == retCode) {
+                exception(retCode, ApiResult.fail(String.format("调度任务失败，失败原因：%s, retCode: %s", msg, retCode), retCode));
+            } else {
+                failure(retCode, ApiResult.fail(String.format("调度任务失败，失败原因：%s, retCode: %s", msg, retCode), retCode));
+            }
+        } catch (Exception e) {
+            log.error("任务回调失败！", e);
+            throw e;
         }
 
     }

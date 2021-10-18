@@ -24,7 +24,7 @@ public interface SmtTsTaskLockMapper {
 
     Integer lock(SmtTsTaskLock lock);
 
-    Integer updateStatusByOldStatus(@Param("id") Long id, @Param("ip") String ip, @Param("newStatus") Integer newStatus, @Param("oldStatus") Integer oldStatus);
+    Integer updateStatusByOldStatus(@Param("startTime") Long startTime, @Param("id") Long id, @Param("ip") String ip, @Param("newStatus") Integer newStatus, @Param("oldStatus") Integer oldStatus);
 
     Integer updateStatusByIdList(@Param("idList") List<Long> idList, @Param("newStatus") Integer newStatus, @Param("oldStatus") Integer oldStatus);
 

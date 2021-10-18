@@ -72,6 +72,7 @@ public class CommonTraceTask extends TraceTask {
             lock.setSmcStatus(TaskExecEnum.EXEC_ING.getStatus());
             lock.setSmcIp(Ace.get().getLocalHost());
             lock.setSmcTimeOut(smtTsTaskDef.getSmcTimeout());
+            lock.setSmcStartTime(System.currentTimeMillis());
 
             Integer row = smtTsTaskLockWrapper.lock(lock);
             if(row > 0) {
@@ -89,8 +90,7 @@ public class CommonTraceTask extends TraceTask {
             return false;
         }
 
-
-        int row = smtTsTaskLockWrapper.updateStatusByOldStatus(smtTsTaskLock.getId(), Ace.get().getLocalHost(), TaskExecEnum.EXEC_ING.getStatus(), status);
+        int row = smtTsTaskLockWrapper.updateStatusByOldStatus(System.currentTimeMillis(), smtTsTaskLock.getId(), Ace.get().getLocalHost(), TaskExecEnum.EXEC_ING.getStatus(), status);
         if(row > 0) {
             return true;
         }

@@ -19,10 +19,6 @@
          and id = #{id,jdbcType=BIGINT}
       </if>
 
-      <if test="ltStartTime != null">
-         and smc_start_time &lt; #{ltStartTime} - smc_time_out
-      </if>
-
         <if test="smcDefId != null">
             and smc_def_id = #{smcDefId,jdbcType=BIGINT}
         </if>
@@ -49,6 +45,10 @@
 
       <if test="statusList != null and statusList.size() > 0">
          and smc_status in <foreach collection="statusList" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
+      </if>
+
+      <if test="ltStartTime != null">
+        or (smc_start_time &lt; (#{ltStartTime} - smc_time_out) and smc_status = 1)
       </if>
 
     </where>
@@ -244,7 +244,7 @@
   </insert>
 
   <update id="updateStatusByOldStatus">
-    update smt_ts_task_lock set smc_status = #{newStatus}, smc_ip = #{ip} where id = #{id} and smc_status = #{oldStatus}
+    update smt_ts_task_lock set smc_status = #{newStatus}, smc_ip = #{ip}, smc_start_time = #{startTime} where id = #{id} and smc_status = #{oldStatus}
   </update>
 
   <update id="updateStatusByIdList">
