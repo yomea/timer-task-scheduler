@@ -6,15 +6,19 @@ import com.shinemo.common.tools.result.ApiResult;
 import com.shinemo.task.ace.TaskSchedulerWorker;
 import com.shinemo.task.callback.AceTaskSchedulerCallback;
 import com.shinemo.task.callback.AceTaskSchedulerCallbackImpl;
+import com.shinemo.task.constant.TaskSchedulerCons;
 import com.shinemo.task.context.SchedulerContext;
 import com.shinemo.task.dal.model.SmtTsTaskDef;
 import com.shinemo.task.dal.model.SmtTsTaskLock;
 import com.shinemo.task.dal.model.SmtTsTaskLockQuery;
+import com.shinemo.task.dal.model.SmtTsTaskRecord;
 import com.shinemo.task.dal.wrapper.SmtTsTaskLockWrapper;
 import com.shinemo.task.enums.TaskExecEnum;
 import com.shinemo.task.model.TaskContext;
 import com.shinemo.task.utils.SchedulerContextUtils;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
 
 /**
  * Created by wuzhenhong on 10/7/21 11:41 AM
@@ -35,6 +39,14 @@ public class CommonTraceTask extends TraceTask {
         //如果被中断,那么不执行下面的逻辑并清除中断标志位
         if(Thread.interrupted()) {
             return;
+        }
+
+        Map<String, Object> extParams = taskContext.getExtParams();
+        if(extParams != null) {
+            SmtTsTaskRecord record = (SmtTsTaskRecord)extParams.get(TaskSchedulerCons.TASK_RECORD);
+            if(record != null) {
+                taskContext.setTaskExecInsId(record.getId());
+            }
         }
 
         String appServiceName = taskContext.getAppServiceName();

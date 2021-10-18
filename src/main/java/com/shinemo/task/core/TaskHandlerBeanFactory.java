@@ -20,6 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TaskHandlerBeanFactory implements EnvironmentAware {
 
     private static String ACE_URI;
+    private static final Object OBJECT = new Object();
+    private static final Map<String, Object> LOCK_MAP = new ConcurrentHashMap<>();
     private static final Map<String, TaskSchedulerWorker> APP_SERVICE_NAME_MAP_WORKER = new ConcurrentHashMap<>(16);
 
     public static void registryWorker(String appServiceName, TaskSchedulerWorker worker) {
@@ -29,18 +31,33 @@ public class TaskHandlerBeanFactory implements EnvironmentAware {
 
     public static void registryWorker(String appServiceName) {
 
-        String proxy = TaskScheduleConstant.WORKER_PROXY_NAME + appServiceName;
+        while (LOCK_MAP.putIfAbsent(appServiceName, OBJECT) != null) {
+            Thread.yield();
+        }
 
-        AaceClientConfig<TaskSchedulerWorker> config = new AaceClientConfig();
-        config.setInterfaceClass(TaskSchedulerWorker.class);
-        config.setUri(ACE_URI);
-        config.setCodec(Codec.ACE_PLUS);
-        config.setInterfaceName(TaskScheduleConstant.WORKER_INTERFACE_NAME);
-        config.setProxy(proxy);
+        try {
 
-        TaskSchedulerWorker worker = Ace.getAndStart().serviceLookup().lookup(config);
+            TaskSchedulerWorker worker = APP_SERVICE_NAME_MAP_WORKER.get(appServiceName);
+            if(worker != null) {
+                return;
+            }
 
-        registryWorker(appServiceName, worker);
+
+            String proxy = TaskScheduleConstant.WORKER_PROXY_NAME + appServiceName;
+
+            AaceClientConfig<TaskSchedulerWorker> config = new AaceClientConfig();
+            config.setInterfaceClass(TaskSchedulerWorker.class);
+            config.setUri(ACE_URI);
+            config.setCodec(Codec.ACE_PLUS);
+            config.setInterfaceName(TaskScheduleConstant.WORKER_INTERFACE_NAME);
+            config.setProxy(proxy);
+
+            worker = Ace.getAndStart().serviceLookup().lookup(config);
+
+            registryWorker(appServiceName, worker);
+        } finally {
+            LOCK_MAP.remove(appServiceName);
+        }
     }
 
     public static TaskSchedulerWorker getWorker(String appServiceName) {
