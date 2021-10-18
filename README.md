@@ -20,7 +20,7 @@
 
 根据公司现状与简化开发工作量，我们选择方案1，方案1的大体架构如下：
 
-![image](https://img-blog.csdnimg.cn/img_convert/80377d0dab2d2d687a4de53026553f94.png)
+![](https://global.uban360.com/sfs/file?digest=fid54f79ad195bd50c0434600041496b5c1&fileType=2)
 
 
 从架构上看，架构总体分为 调度中心（只调度，不做具体业务处理）与业务中心（把用户的机器当作worker处理任务），从技术选型上来看它只使用了MySql，rpc框架，这对于一个互联网公司来说是标配。
@@ -42,8 +42,7 @@
 
 调度中心某节点大致内部流程
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/e2aaf8c406664a689090dc5f614a3dee.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAemhlbl9ob25n,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
-
+![](https://global.uban360.com/sfs/file?digest=fid09adaaa6a3dbd943ef63503673995f4c&fileType=2)
 
 
 ## 五、数据库表设计
