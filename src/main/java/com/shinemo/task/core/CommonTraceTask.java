@@ -32,6 +32,11 @@ public class CommonTraceTask extends TraceTask {
     @Override
     protected void doRun(TaskContext taskContext) {
 
+        //如果被中断,那么不执行下面的逻辑并清除中断标志位
+        if(Thread.interrupted()) {
+            return;
+        }
+
         String appServiceName = taskContext.getAppServiceName();
 
         TaskSchedulerWorker worker = TaskHandlerBeanFactory.getWorker(appServiceName);
@@ -56,6 +61,11 @@ public class CommonTraceTask extends TraceTask {
 
     @Override
     protected boolean allowExec(TaskContext taskContext) {
+
+        //如果被中断,那么不执行下面的逻辑并清除中断标志位
+        if(Thread.interrupted()) {
+            return false;
+        }
 
         SmtTsTaskDef smtTsTaskDef = schedulerContext.getSmtTsTaskDef();
 

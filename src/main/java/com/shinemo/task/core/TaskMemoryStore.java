@@ -1,6 +1,7 @@
 package com.shinemo.task.core;
 
 import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.config.CancelTaskWithoutInterruptUtils;
 import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.scheduling.config.TriggerTask;
 
@@ -27,7 +28,9 @@ public class TaskMemoryStore {
             return;
         }
 
-        scheduledTask.cancel();
+        CancelTaskWithoutInterruptUtils.cancel(scheduledTask, false);
+        //spring提供的这个取消方法会中断线程，导致后续出现一些不可预知的错误，比如进行数据库操作时，会导致异常
+//        scheduledTask.cancel();
     }
 
     public static void cancelInvaildTask() {
