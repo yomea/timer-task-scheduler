@@ -17,6 +17,7 @@
 
 
 ## 三、架构设计
+
 根据公司现状与简化开发工作量，我们选择方案1，方案1的大体架构如下：
 
 ![image](https://img-blog.csdnimg.cn/img_convert/80377d0dab2d2d687a4de53026553f94.png)
