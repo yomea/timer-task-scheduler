@@ -20,7 +20,7 @@
 
 根据公司现状与简化开发工作量，我们选择方案1，方案1的大体架构如下：
 
-![](https://global.uban360.com/sfs/file?digest=fid54f79ad195bd50c0434600041496b5c1&fileType=2)
+![yuque_diagram (1)](https://user-images.githubusercontent.com/20855002/137705613-f8d7437c-8edf-4dfd-bdb9-6ba501c6ef27.jpg)
 
 
 从架构上看，架构总体分为 调度中心（只调度，不做具体业务处理）与业务中心（把用户的机器当作worker处理任务），从技术选型上来看它只使用了MySql，rpc框架，这对于一个互联网公司来说是标配。
@@ -42,8 +42,7 @@
 
 调度中心某节点大致内部流程
 
-![](https://global.uban360.com/sfs/file?digest=fid09adaaa6a3dbd943ef63503673995f4c&fileType=2)
-
+![yuque_diagram (2)](https://user-images.githubusercontent.com/20855002/137705664-934dc454-0ebf-4ed9-9f19-10aa2b3b79e9.jpg)
 
 ## 五、数据库表设计
 
