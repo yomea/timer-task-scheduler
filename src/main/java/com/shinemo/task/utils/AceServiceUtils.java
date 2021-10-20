@@ -1,7 +1,9 @@
 package com.shinemo.task.utils;
 
 import com.shinemo.ace4j.Ace;
+import com.shinemo.ace4j.client.AaceClientConfig;
 import com.shinemo.ace4j.common.service.dto.ServerInfoDTO;
+import com.shinemo.ace4j.srd.ServiceNode;
 import com.shinemo.common.tools.result.ApiResult;
 import com.shinemo.util.GsonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -16,16 +18,24 @@ import java.util.List;
 @Slf4j
 public class AceServiceUtils {
 
-    public static List<ServerInfoDTO> getServerInfoList(String proxy, String interfaceName) {
+    public static List<ServiceNode> getServerInfoList(String proxy, String interfaceName) {
 
-        ApiResult<List<ServerInfoDTO>> apiResult = Ace.get().aaceCenterClient().getProxy(proxy, interfaceName);
-        if (!apiResult.isSuccess() || CollectionUtils.isEmpty(apiResult.getData())) {
+
+        AaceClientConfig config = new AaceClientConfig();
+        config.setProxy(proxy);
+        config.setInterfaceName(interfaceName);
+
+        //走缓存
+        List<ServiceNode> serviceNodeList = Ace.get().serviceDiscovery().lookup(config.getAceUri());
+
+//        ApiResult<List<ServerInfoDTO>> apiResult = Ace.get().aaceCenterClient().getProxy(proxy, interfaceName);
+        if (CollectionUtils.isEmpty(serviceNodeList)) {
             log.error("getProxy error, result is empty. proxy:{}, interface:{}", proxy, interfaceName);
             return Collections.emptyList();
         }
 
-        log.debug("注册到注册中心的机器：{}", GsonUtil.toJson(apiResult.getData()));
+        log.debug("注册到注册中心的机器：{}", GsonUtil.toJson(serviceNodeList));
 
-        return apiResult.getData();
+        return serviceNodeList;
     }
 }

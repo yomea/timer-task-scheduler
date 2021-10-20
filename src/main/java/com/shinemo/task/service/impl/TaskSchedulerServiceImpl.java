@@ -3,6 +3,7 @@ package com.shinemo.task.service.impl;
 import com.google.common.collect.Lists;
 import com.shinemo.ace4j.Ace;
 import com.shinemo.ace4j.common.service.dto.ServerInfoDTO;
+import com.shinemo.ace4j.srd.ServiceNode;
 import com.shinemo.common.tools.exception.ApiException;
 import com.shinemo.common.tools.result.ApiResult;
 import com.shinemo.perform.common.mybatis.Page;
@@ -369,13 +370,13 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     @Override
     public void dealDownLineTask() {
 
-        List<ServerInfoDTO> list = AceServiceUtils.getServerInfoList(TaskScheduleConstant.WORKER_PROXY_NAME + appName + "$center", appName);
+        List<ServiceNode> list = AceServiceUtils.getServerInfoList(TaskScheduleConstant.WORKER_PROXY_NAME + appName + "$center", appName);
 
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
 
-        List<String> ipList = list.stream().map(ServerInfoDTO::getHostIp).collect(Collectors.toList());
+        List<String> ipList = list.stream().map(ServiceNode::getHost).collect(Collectors.toList());
 
         appDownLineDealBeforeShutDownTask(ipList);
     }
