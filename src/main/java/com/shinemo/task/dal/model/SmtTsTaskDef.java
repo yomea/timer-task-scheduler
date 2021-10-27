@@ -61,4 +61,6 @@ public class SmtTsTaskDef {
     private Boolean smcHasChild;
 
     private Long smcTopPid;
+
+    private String smcExt;
 }

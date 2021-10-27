@@ -59,4 +59,6 @@ public class SmtTsTaskDefQuery {
     private boolean exculeSubTask;
 
     private Boolean smcHasChild;
+
+    private String smcExt;
 }

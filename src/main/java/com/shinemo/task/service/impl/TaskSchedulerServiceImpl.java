@@ -292,7 +292,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
                 .smtTsTaskLockWrapper(smtTsTaskLockWrapper).smtTsTaskDefWrapper(smtTsTaskDefWrapper).transactionTemplate(transactionTemplate).build();
 
         TaskContext taskContext = TaskContext.builder().appServiceName(taskDef.getAppServiceName()).apiServiceName(taskDef.getApiServiceName())
-                .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(false).build();
+                .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(false).customerExtParams(taskDef.getSmcExt()).build();
 
         CommonTraceTask task = new CommonTraceTask(taskContext, schedulerContext);
 
@@ -346,7 +346,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
                         .smtTsTaskLockWrapper(smtTsTaskLockWrapper).smtTsTaskDefWrapper(smtTsTaskDefWrapper).transactionTemplate(transactionTemplate).build();
 
                 TaskContext taskContext = TaskContext.builder().appServiceName(taskDef.getAppServiceName()).apiServiceName(taskDef.getApiServiceName())
-                        .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(true).build();
+                        .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(true).customerExtParams(taskDef.getSmcExt()).build();
 
                 CommonTraceTask task = new CommonTraceTask(taskContext, schedulerContext);
 
@@ -673,5 +673,6 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         smtTsTaskDef.setApiServiceName(taskInfoConf.getApiServiceName());
         smtTsTaskDef.setApiMethodName(taskInfoConf.getApiMethodName());
         smtTsTaskDef.setSmcHasChild(!CollectionUtils.isEmpty(taskInfoConf.getSubTaskList()));
+        smtTsTaskDef.setSmcExt(taskInfoConf.getExtParams());
     }
 }
