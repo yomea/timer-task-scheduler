@@ -85,6 +85,8 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     @Override
     public ApiResult<Long> submitTimerTask(TimerTaskRequest timerTaskRequest) {
 
+        // TODO: 10/28/21 一般情况下每个服务每个job不太会出现同时提交相同id的任务，这里就不做分布式锁增加复杂性了，如果出现了，数据库报唯一键错误即可
+        // TODO: 10/28/21 目前用户自定义任务ID是必填的
         ApiResult<Void> apiResult = cronSubmitArgsCheck(timerTaskRequest);
         if(!apiResult.isSuccess()) {
             return ApiResult.fail(apiResult.getMsg(), apiResult.getCode());
@@ -96,7 +98,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         String customerId = taskInfoConf.getCustomerId();
 
         //获取已经存在的进行更新
-        SmtTsTaskDef smtTsTaskDef = getDefByUnique(taskInfoConf.getAppServiceName(), taskInfoConf.getApiServiceName(), taskInfoConf.getApiMethodName(), customerId);
+        SmtTsTaskDef smtTsTaskDef = getDefByUnique(taskInfoConf.getTaskId(), taskInfoConf.getAppServiceName(), taskInfoConf.getApiServiceName(), taskInfoConf.getApiMethodName(), customerId);
 
         if(smtTsTaskDef != null) {
 
@@ -331,7 +333,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
                 .smtTsTaskLockWrapper(smtTsTaskLockWrapper).smtTsTaskDefWrapper(smtTsTaskDefWrapper).transactionTemplate(transactionTemplate).build();
 
         TaskContext taskContext = TaskContext.builder().appServiceName(taskDef.getAppServiceName()).apiServiceName(taskDef.getApiServiceName())
-                .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(false).customerExtParams(taskDef.getSmcExt()).build();
+                .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(false).customerExtParams(taskDef.getSmcExt()).customerId(taskDef.getSmcCustomerId()).build();
 
         CommonTraceTask task = new CommonTraceTask(taskContext, schedulerContext);
 
@@ -396,7 +398,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
                         .smtTsTaskLockWrapper(smtTsTaskLockWrapper).smtTsTaskDefWrapper(smtTsTaskDefWrapper).transactionTemplate(transactionTemplate).build();
 
                 TaskContext taskContext = TaskContext.builder().appServiceName(taskDef.getAppServiceName()).apiServiceName(taskDef.getApiServiceName())
-                        .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(true).customerExtParams(taskDef.getSmcExt()).build();
+                        .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(true).customerExtParams(taskDef.getSmcExt()).customerId(taskDef.getSmcCustomerId()).build();
 
                 CommonTraceTask task = new CommonTraceTask(taskContext, schedulerContext);
 
@@ -700,7 +702,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
             return ApiResult.fail("任务 taskName 不能为空！", 500);
         }
         if(StringUtils.isEmpty(customerId)) {
-            return ApiResult.fail("任务 customerId 不能为空！", 500);
+            return ApiResult.fail("任务 customerId  不能为空！", 500);
         }
 
         Integer status = taskInfoConf.getStatus();
@@ -731,13 +733,21 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         smtTsTaskDef.setSmcCustomerId(taskInfoConf.getCustomerId());
     }
 
-    private SmtTsTaskDef getDefByUnique(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+    private SmtTsTaskDef getDefByUnique(Long taskId, String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+
+        if((taskId == null || taskId <= 0) && StringUtils.isEmpty(customerId)) {
+            return null;
+        }
 
         SmtTsTaskDefQuery query = new SmtTsTaskDefQuery();
-        query.setSmcCustomerId(customerId);
-        query.setAppServiceName(appServiceName);
-        query.setApiServiceName(apiServiceName);
-        query.setApiMethodName(apiMethodName);
+        if(taskId != null && taskId > 0) {
+            query.setId(taskId);
+        } else {
+            query.setSmcCustomerId(customerId);
+            query.setAppServiceName(appServiceName);
+            query.setApiServiceName(apiServiceName);
+            query.setApiMethodName(apiMethodName);
+        }
 
         //获取已经存在的进行更新
         SmtTsTaskDef smtTsTaskDef = smtTsTaskDefWrapper.getBy(query);
@@ -751,7 +761,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         if(!apiResult.isSuccess()) {
             return ApiResult.fail(apiResult.getMsg(), apiResult.getCode());
         }
-        SmtTsTaskDef smtTsTaskDef = getDefByUnique(appServiceName, apiServiceName, apiMethodName, customerId);
+        SmtTsTaskDef smtTsTaskDef = getDefByUnique(null, appServiceName, apiServiceName, apiMethodName, customerId);
         if(smtTsTaskDef == null) {
             return ApiResult.fail("该任务不存在！", 404);
         }
