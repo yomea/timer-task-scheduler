@@ -27,8 +27,18 @@ public class TaskSchedulerFacadeImpl implements TaskSchedulerFacade {
     }
 
     @Override
+    public ApiResult<Void> timerTaskDel(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+        return taskSchedulerService.timerTaskDel(appServiceName, apiServiceName, apiMethodName, customerId);
+    }
+
+    @Override
     public ApiResult<Void> disableTask(Long taskId) {
         return taskSchedulerService.disableTask(taskId);
+    }
+
+    @Override
+    public ApiResult<Void> disableTask(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+        return null;
     }
 
     @Override
@@ -37,7 +47,17 @@ public class TaskSchedulerFacadeImpl implements TaskSchedulerFacade {
     }
 
     @Override
+    public ApiResult<Void> enableTask(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+        return null;
+    }
+
+    @Override
     public ApiResult<Void> execTaskImmediately(Long taskId) {
         return taskSchedulerService.execTaskImmediately(taskId);
+    }
+
+    @Override
+    public ApiResult<Void> execTaskImmediately(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+        return null;
     }
 }

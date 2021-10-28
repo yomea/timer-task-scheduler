@@ -2,7 +2,6 @@ package com.shinemo.task.service.impl;
 
 import com.google.common.collect.Lists;
 import com.shinemo.ace4j.Ace;
-import com.shinemo.ace4j.common.service.dto.ServerInfoDTO;
 import com.shinemo.ace4j.srd.ServiceNode;
 import com.shinemo.common.tools.exception.ApiException;
 import com.shinemo.common.tools.result.ApiResult;
@@ -94,19 +93,18 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         TaskInfoConf taskInfoConf = timerTaskRequest.getTaskInfoConf();
         TaskScheduleConf taskScheduleConf = timerTaskRequest.getTaskScheduleConf();
 
-        Long taskId = taskInfoConf.getTaskId();
+        String customerId = taskInfoConf.getCustomerId();
 
-        if(taskId != null && taskId > 0) {
-            SmtTsTaskDefQuery query = new SmtTsTaskDefQuery();
-            query.setId(taskId);
-            SmtTsTaskDef smtTsTaskDef = smtTsTaskDefWrapper.getBy(query);
-            if(smtTsTaskDef == null) {
-                return ApiResult.fail("要修改的任务不存在！", 404);
-            }
+        //获取已经存在的进行更新
+        SmtTsTaskDef smtTsTaskDef = getDefByUnique(taskInfoConf.getAppServiceName(), taskInfoConf.getApiServiceName(), taskInfoConf.getApiMethodName(), customerId);
+
+        if(smtTsTaskDef != null) {
+
             Integer action = TaskActionEnum.MODIFY.getType();
             copyProperty(smtTsTaskDef, taskInfoConf);
             int row = smtTsTaskDefWrapper.updateById(smtTsTaskDef);
             if(row > 0) {
+                Long taskId = smtTsTaskDef.getId();
                 if(smtTsTaskDef.getSmcHasChild() != null || smtTsTaskDef.getSmcHasChild()) {
                     //如果当前任务是存在子任务的，那么通过topId全部清除
                     smtTsTaskDefWrapper.deleteByTopId(taskId);
@@ -134,9 +132,9 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
             Integer action = TaskActionEnum.NEW.getType();
 
             //构建任务定义
-            SmtTsTaskDef smtTsTaskDef = instanceByTaskInfoConf(taskInfoConf);
+            smtTsTaskDef = instanceByTaskInfoConf(taskInfoConf);
             int row = smtTsTaskDefWrapper.insertSelective(smtTsTaskDef);
-            taskId = smtTsTaskDef.getId();
+            Long taskId = smtTsTaskDef.getId();
             addSubTask(taskId, taskId, taskInfoConf.getSubTaskList());
             if(row > 0) {
                 List<SmtTsTaskTimer> taskTimerList = instanceByTaskScheduleConf(taskScheduleConf, smtTsTaskDef);
@@ -158,6 +156,13 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         throw new RuntimeException("提交任务失败！");
     }
 
+    /**
+     * 暂时先不弄子任务
+     * @param topTaskId
+     * @param parentTaskId
+     * @param list
+     */
+    @Deprecated
     private void addSubTask(Long topTaskId, Long parentTaskId, List<TaskInfoConf> list) {
 
         list.stream().forEach(taskInfoConf -> {
@@ -244,6 +249,18 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     }
 
     @Override
+    public ApiResult<Void> timerTaskDel(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+
+        ApiResult<SmtTsTaskDef> apiResult = getDefByUniqueWithCheck(appServiceName, apiServiceName, apiMethodName, customerId);
+        if(!apiResult.isSuccess()) {
+            return ApiResult.fail(apiResult.getMsg(), apiResult.getCode());
+        }
+        SmtTsTaskDef smtTsTaskDef = apiResult.getData();
+
+        return timerTaskDel(smtTsTaskDef.getId());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public ApiResult<Void> disableTask(Long taskId) {
 
@@ -251,9 +268,31 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     }
 
     @Override
+    public ApiResult<Void> disableTask(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+        ApiResult<SmtTsTaskDef> apiResult = getDefByUniqueWithCheck(appServiceName, apiServiceName, apiMethodName, customerId);
+        if(!apiResult.isSuccess()) {
+            return ApiResult.fail(apiResult.getMsg(), apiResult.getCode());
+        }
+        SmtTsTaskDef smtTsTaskDef = apiResult.getData();
+
+        return disableTask(smtTsTaskDef.getId());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public ApiResult<Void> enableTask(Long taskId) {
         return modifyTaskStatus(taskId, TaskStatusEnum.ENABLE.getStatus());
+    }
+
+    @Override
+    public ApiResult<Void> enableTask(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+        ApiResult<SmtTsTaskDef> apiResult = getDefByUniqueWithCheck(appServiceName, apiServiceName, apiMethodName, customerId);
+        if(!apiResult.isSuccess()) {
+            return ApiResult.fail(apiResult.getMsg(), apiResult.getCode());
+        }
+        SmtTsTaskDef smtTsTaskDef = apiResult.getData();
+
+        return enableTask(smtTsTaskDef.getId());
     }
 
     private ApiResult<Void> modifyTaskStatus(Long taskId, Integer status) {
@@ -304,6 +343,17 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         }
 
         return ApiResult.success();
+    }
+
+    @Override
+    public ApiResult<Void> execTaskImmediately(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+        ApiResult<SmtTsTaskDef> apiResult = getDefByUniqueWithCheck(appServiceName, apiServiceName, apiMethodName, customerId);
+        if(!apiResult.isSuccess()) {
+            return ApiResult.fail(apiResult.getMsg(), apiResult.getCode());
+        }
+        SmtTsTaskDef smtTsTaskDef = apiResult.getData();
+
+        return execTaskImmediately(smtTsTaskDef.getId());
     }
 
 
@@ -633,6 +683,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         String apiMethodName = taskInfoConf.getApiMethodName();
         String taskName = taskInfoConf.getTaskName();
         Long timeout = taskInfoConf.getTimeout();
+        String customerId = taskInfoConf.getCustomerId();
         if(StringUtils.isEmpty(appServiceName)) {
             return ApiResult.fail("应用服务名 appServiceName 不能为空！", 500);
         }
@@ -647,6 +698,9 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         }
         if(timeout == null || timeout <= 0L) {
             return ApiResult.fail("任务 taskName 不能为空！", 500);
+        }
+        if(StringUtils.isEmpty(customerId)) {
+            return ApiResult.fail("任务 customerId 不能为空！", 500);
         }
 
         Integer status = taskInfoConf.getStatus();
@@ -674,5 +728,52 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
         smtTsTaskDef.setApiMethodName(taskInfoConf.getApiMethodName());
         smtTsTaskDef.setSmcHasChild(!CollectionUtils.isEmpty(taskInfoConf.getSubTaskList()));
         smtTsTaskDef.setSmcExt(taskInfoConf.getExtParams());
+        smtTsTaskDef.setSmcCustomerId(taskInfoConf.getCustomerId());
+    }
+
+    private SmtTsTaskDef getDefByUnique(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+
+        SmtTsTaskDefQuery query = new SmtTsTaskDefQuery();
+        query.setSmcCustomerId(customerId);
+        query.setAppServiceName(appServiceName);
+        query.setApiServiceName(apiServiceName);
+        query.setApiMethodName(apiMethodName);
+
+        //获取已经存在的进行更新
+        SmtTsTaskDef smtTsTaskDef = smtTsTaskDefWrapper.getBy(query);
+
+        return smtTsTaskDef;
+    }
+
+    private ApiResult<SmtTsTaskDef> getDefByUniqueWithCheck(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+
+        ApiResult<Void> apiResult = uniqueCheck(appServiceName, apiServiceName, apiMethodName, customerId);
+        if(!apiResult.isSuccess()) {
+            return ApiResult.fail(apiResult.getMsg(), apiResult.getCode());
+        }
+        SmtTsTaskDef smtTsTaskDef = getDefByUnique(appServiceName, apiServiceName, apiMethodName, customerId);
+        if(smtTsTaskDef == null) {
+            return ApiResult.fail("该任务不存在！", 404);
+        }
+
+        return ApiResult.success(smtTsTaskDef);
+    }
+
+    private ApiResult<Void> uniqueCheck(String appServiceName, String apiServiceName, String apiMethodName, String customerId) {
+
+        if(StringUtils.isEmpty(appServiceName)) {
+            return ApiResult.fail("应用服务名  appServiceName 不能为空！", 500);
+        }
+        if(StringUtils.isEmpty(apiServiceName)) {
+            return ApiResult.fail("任务处理接口服务名  apiServiceName 不能为空！", 500);
+        }
+        if(StringUtils.isEmpty(apiMethodName)) {
+            return ApiResult.fail("任务处理方法名  apiMethodName 不能为空！", 500);
+        }
+        if(StringUtils.isEmpty(customerId)) {
+            return ApiResult.fail("任务 customerId  不能为空！", 500);
+        }
+
+        return ApiResult.success();
     }
 }
