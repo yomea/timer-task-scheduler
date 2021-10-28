@@ -43,6 +43,8 @@ public class SmtTsTaskDef {
      */
     private String apiMethodName;
 
+    private String smcCustomerId;
+
     /**
      * 配置标记,预留字段
      */
