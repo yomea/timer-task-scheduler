@@ -41,7 +41,7 @@ public class CommonTraceTask extends TraceTask {
             return;
         }
 
-        Map<String, Object> extParams = taskContext.getExtParams();
+        Map<String, Object> extParams = taskContext.getContextParams();
         if(extParams != null) {
             SmtTsTaskRecord record = (SmtTsTaskRecord)extParams.get(TaskSchedulerCons.TASK_RECORD);
             if(record != null) {

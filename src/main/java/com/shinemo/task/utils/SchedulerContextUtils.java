@@ -159,7 +159,7 @@ public class SchedulerContextUtils {
     public static void schedulerTask(List<AceTaskSchedulerListener> listenerList, ScheduledTaskRegistrar taskRegistrar, TransactionTemplate transactionTemplate, SmtTsTaskLockWrapper smtTsTaskLockWrapper, SmtTsTaskRecordWrapper smtTsTaskRecordWrapper, SmtTsTaskDefWrapper smtTsTaskDefWrapper, SmtTsTaskDef taskDef, SmtTsTaskTimer timer) {
 
         TaskContext taskContext = TaskContext.builder().appServiceName(taskDef.getAppServiceName()).apiServiceName(taskDef.getApiServiceName())
-                .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).customerExtParams(taskDef.getSmcExt()).customerId(taskDef.getSmcCustomerId()).build();
+                .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).contextParams(null).customerExtParams(taskDef.getSmcExt()).customerId(taskDef.getSmcCustomerId()).build();
 
 
         SchedulerContext schedulerContext = SchedulerContext.builder().listenerList(listenerList).smtTsTaskDef(taskDef).smtTsTaskRecordWrapper(smtTsTaskRecordWrapper)

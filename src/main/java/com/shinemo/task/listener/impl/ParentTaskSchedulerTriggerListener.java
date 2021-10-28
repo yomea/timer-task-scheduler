@@ -57,7 +57,7 @@ public class ParentTaskSchedulerTriggerListener implements AceTaskSchedulerListe
             taskDefList.stream().forEach(taskDef -> {
 
                 TaskContext tc = TaskContext.builder().appServiceName(taskDef.getAppServiceName()).apiServiceName(taskDef.getApiServiceName())
-                        .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).extParams(null).retry(false).customerExtParams(taskDef.getSmcExt()).customerId(taskDef.getSmcCustomerId()).build();
+                        .methodName(taskDef.getApiMethodName()).taskId(taskDef.getId()).contextParams(null).retry(false).customerExtParams(taskDef.getSmcExt()).customerId(taskDef.getSmcCustomerId()).build();
 
                 SchedulerContext sc = SchedulerContext.builder().listenerList(listenerList).smtTsTaskDef(taskDef).smtTsTaskRecordWrapper(schedulerContext.getSmtTsTaskRecordWrapper())
                         .smtTsTaskLockWrapper(schedulerContext.getSmtTsTaskLockWrapper()).smtTsTaskDefWrapper(smtTsTaskDefWrapper).transactionTemplate(schedulerContext.getTransactionTemplate()).build();
