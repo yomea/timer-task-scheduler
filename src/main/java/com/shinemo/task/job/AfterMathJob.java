@@ -26,16 +26,7 @@ public class AfterMathJob {
     @Scheduled(cron = "00 0/5 * * * ?")
     public void checkNeedRemoveTask() {
 
-        String lock = "com.shinemo.task.job.AfterMathJob.checkNeedRemoveTask";
-
-        if(!redisLock.tryLock(lock, 3 * 60)) {
-            return;
-        }
-        try {
-            TaskMemoryStore.cancelInvaildTask();
-        } finally {
-            redisLock.unlock(lock);
-        }
+        TaskMemoryStore.cancelInvaildTask();
     }
 
     /**
