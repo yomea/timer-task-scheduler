@@ -114,9 +114,11 @@
 
     </trim>
 
-    ON DUPLICATE KEY UPDATE
-
-    smc_msg_id = #{smcMsgId,jdbcType=BIGINT}
+    ON CONFLICT (smc_ip)
+    DO
+    UPDATE
+    SET smc_msg_id = EXCLUDED.smc_msg_id;
+    upsert
 
   </insert>
 

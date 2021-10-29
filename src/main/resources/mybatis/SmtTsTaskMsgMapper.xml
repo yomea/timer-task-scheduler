@@ -134,7 +134,7 @@
   </delete>
 
   <select id="getCurDbDate" resultType="string">
-    select `date` from ( select DATE_FORMAT(now(),"%Y-%m-%d %H:%i:%s") as `date`) as a
+    select cur_date from ( select TO_CHAR(now(),'yyyy-MM-dd HH24:MI:ss') as cur_date) as a
   </select>
 
 </mapper>

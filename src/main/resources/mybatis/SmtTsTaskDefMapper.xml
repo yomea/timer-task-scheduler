@@ -14,7 +14,7 @@
     <result column="smc_conf_flag" jdbcType="INTEGER" property="smcConfFlag" />
     <result column="smc_timeout" jdbcType="BIGINT" property="smcTimeout" />
     <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
-    <result column="smc_has_child" jdbcType="TINYINT" property="smcHasChild" />
+    <result column="smc_has_child" jdbcType="INTEGER" property="smcHasChild" />
     <result column="smc_ext" jdbcType="VARCHAR" property="smcExt" />
     <result column="smc_customer_id" jdbcType="VARCHAR" property="smcCustomerId" />
   </resultMap>
