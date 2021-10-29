@@ -510,7 +510,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
                     Integer action = smtTsTaskMsg.getSmcAction();
                     //新增
                     if(TaskActionEnum.NEW.getType().equals(action)) {
-                        //避免重复消费导致问题
+                        //避免重复消费导致的bug
                         TaskMemoryStore.cancelByTaskDefId(defId);
                         timerList.stream().forEach(timer -> {
                             SchedulerContextUtils.schedulerTask(listenerList, scheduledTaskRegistrar, transactionTemplate, smtTsTaskLockWrapper, smtTsTaskRecordWrapper, smtTsTaskDefWrapper, smtTsTaskDef, timer);
