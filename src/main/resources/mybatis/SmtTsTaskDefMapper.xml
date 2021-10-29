@@ -81,7 +81,7 @@
   <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_def
+    from shinemo_im.smt_ts_task_def
     <include refid="conditions" />
     limit 1
   </select>
@@ -89,17 +89,17 @@
   <select id="selectBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_def
+    from shinemo_im.smt_ts_task_def
     <include refid="conditions" />
   </select>
 
   <select id="countBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefQuery" resultType="java.lang.Integer">
-    select count(0) from smt_ts_task_def
+    select count(0) from shinemo_im.smt_ts_task_def
     <include refid="conditions" />
   </select>
 
   <update id="updateById" parameterType="com.shinemo.task.dal.model.SmtTsTaskDef">
-    update smt_ts_task_def
+    update shinemo_im.smt_ts_task_def
     <set>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -159,22 +159,22 @@
   </update>
 
   <delete id="deleteById">
-    delete from smt_ts_task_def where id  = #{id,jdbcType=BIGINT}
+    delete from shinemo_im.smt_ts_task_def where id  = #{id,jdbcType=BIGINT}
   </delete>
 
   <delete id="deleteByTopId">
-    delete from smt_ts_task_def where smc_top_pid  = #{topId,jdbcType=BIGINT}
+    delete from shinemo_im.smt_ts_task_def where smc_top_pid  = #{topId,jdbcType=BIGINT}
   </delete>
 
   <select id="pageBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_def
+    from shinemo_im.smt_ts_task_def
     <include refid="conditions" />
   </select>
 
   <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskDef" useGeneratedKeys="true">
-    insert into smt_ts_task_def
+    insert into shinemo_im.smt_ts_task_def
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,
       gmt_modified,

@@ -1,5 +1,6 @@
 package com.shinemo.task;
 
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import com.shinemo.ace4j.Ace;
 import com.shinemo.ace4j.srd.AaceServiceNode;
 import com.shinemo.ace4j.srd.ServiceNode;
@@ -9,9 +10,11 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -20,11 +23,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author zhaoyn
  * @Date 2019/9/20
  */
-@SpringBootApplication
-@ComponentScan(basePackages = {"com.shinemo.task"})
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, DruidDataSourceAutoConfigure.class})
 @EnableScheduling
 @EnableTransactionManagement(proxyTargetClass = true)
 @MapperScan(basePackages = {"com.shinemo.task.dal.mapper"})
+@ImportResource("classpath:spring/*.xml")
 @Slf4j
 public class Application implements ApplicationListener<ContextRefreshedEvent> {
 

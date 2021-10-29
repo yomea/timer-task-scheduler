@@ -55,4 +55,14 @@ public class SmtTsTaskRecordWrapper {
 
         smtTsTaskRecordCommonMapper.createMontTable(newTableName);
     }
+
+    public void createMontTableIndex(String newTableName) {
+
+        smtTsTaskRecordCommonMapper.createMontTableIndex(newTableName);
+    }
+
+    public Integer checkTableExists(String newTableName) {
+
+        return smtTsTaskRecordCommonMapper.checkTableExists(newTableName);
+    }
 }

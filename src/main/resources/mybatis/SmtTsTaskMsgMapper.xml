@@ -46,7 +46,7 @@
   <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskMsgQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_msg
+    from shinemo_im.smt_ts_task_msg
     <include refid="conditions" />
     limit 1
   </select>
@@ -54,17 +54,17 @@
   <select id="selectBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskMsgQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_msg
+    from shinemo_im.smt_ts_task_msg
     <include refid="conditions" />
   </select>
 
   <select id="countBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskMsgQuery" resultType="java.lang.Integer">
-    select count(0) from smt_ts_task_msg
+    select count(0) from shinemo_im.smt_ts_task_msg
     <include refid="conditions" />
   </select>
 
   <update id="updateById" parameterType="com.shinemo.task.dal.model.SmtTsTaskMsg">
-    update smt_ts_task_msg
+    update shinemo_im.smt_ts_task_msg
     <set>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -88,18 +88,18 @@
   </update>
 
   <delete id="deleteById">
-    delete from smt_ts_task_msg where id  = #{id,jdbcType=BIGINT}
+    delete from shinemo_im.smt_ts_task_msg where id  = #{id,jdbcType=BIGINT}
   </delete>
 
   <select id="pageBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskMsgQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_msg
+    from shinemo_im.smt_ts_task_msg
     <include refid="conditions" />
   </select>
 
   <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskMsg" useGeneratedKeys="true">
-    insert into smt_ts_task_msg
+    insert into shinemo_im.smt_ts_task_msg
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,
       gmt_modified,
@@ -130,7 +130,7 @@
 
   <delete id="cleanOldTaskUpdateMsg" parameterType="com.shinemo.task.dal.model.SmtTsTaskMsgQuery">
 
-      delete from smt_ts_task_msg where gmt_create &lt; #{ltDate}
+      delete from shinemo_im.smt_ts_task_msg where gmt_create &lt; #{ltDate}
   </delete>
 
   <select id="getCurDbDate" resultType="string">

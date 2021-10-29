@@ -35,6 +35,19 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.11</version>
+        </dependency>
+
+        <!-- 人大金仓-->
+        <dependency>
+            <groupId>com.kingbase</groupId>
+            <artifactId>kingbase8-driver</artifactId>
+            <version>8.2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.shinemo</groupId>
             <artifactId>ub-mybatis-common</artifactId>
             <version>1.0.0-SNAPSHOT</version>

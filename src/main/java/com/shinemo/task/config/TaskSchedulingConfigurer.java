@@ -122,7 +122,11 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
 
         if(processorList != null) {
             processorList.stream().forEach(processor -> {
-                processor.beforeConfigure(taskRegistrar);
+                try {
+                    processor.beforeConfigure(taskRegistrar);
+                } catch (Exception e) {
+                    log.error("processor.beforeConfigure 配置处理错误！", e);
+                }
             });
         }
     }
@@ -131,7 +135,11 @@ public class TaskSchedulingConfigurer implements SchedulingConfigurer {
 
         if(processorList != null) {
             processorList.stream().forEach(processor -> {
-                processor.afterConfigure(taskRegistrar);
+                try {
+                    processor.afterConfigure(taskRegistrar);
+                } catch (Exception e) {
+                    log.error("processor.afterConfigure 配置处理错误！", e);
+                }
             });
         }
     }

@@ -14,7 +14,11 @@
     <typeHandlers>
     </typeHandlers>
     <plugins>
-        <plugin interceptor="com.shinemo.perform.common.mybatis.PageInterceptor"></plugin>
+        <plugin interceptor="com.shinemo.perform.common.mybatis.PageInterceptor">
+            <!-- 指定方言为 pgsql -->
+            <property name="helperDialect" value="com.shinemo.task.dialect.PgSqlDialect"></property>
+
+        </plugin>
         <plugin interceptor="com.shinemo.mybatis.common.interceptor.SplitTableInterceptor">
         </plugin>
     </plugins>

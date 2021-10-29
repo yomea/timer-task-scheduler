@@ -70,7 +70,7 @@
   <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_record
+    from shinemo_im.smt_ts_task_record
     <include refid="conditions" />
     limit 1
   </select>
@@ -78,17 +78,17 @@
   <select id="selectBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_record
+    from shinemo_im.smt_ts_task_record
     <include refid="conditions" />
   </select>
 
   <select id="countBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecordQuery" resultType="java.lang.Integer">
-    select count(0) from smt_ts_task_record
+    select count(0) from shinemo_im.smt_ts_task_record
     <include refid="conditions" />
   </select>
 
   <update id="updateById" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecord">
-    update smt_ts_task_record
+    update shinemo_im.smt_ts_task_record
     <set>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -140,18 +140,18 @@
   </update>
 
   <delete id="deleteById">
-    delete from smt_ts_task_record where id  = #{id,jdbcType=BIGINT}
+    delete from shinemo_im.smt_ts_task_record where id  = #{id,jdbcType=BIGINT}
   </delete>
 
   <select id="pageBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_record
+    from shinemo_im.smt_ts_task_record
     <include refid="conditions" />
   </select>
 
   <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecord" useGeneratedKeys="true">
-    insert into smt_ts_task_record
+    insert into shinemo_im.smt_ts_task_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,
       gmt_modified,

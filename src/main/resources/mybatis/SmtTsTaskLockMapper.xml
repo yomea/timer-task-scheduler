@@ -62,7 +62,7 @@
   <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_lock
+    from shinemo_im.smt_ts_task_lock
     <include refid="conditions" />
     limit 1
   </select>
@@ -70,17 +70,17 @@
   <select id="selectBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_lock
+    from shinemo_im.smt_ts_task_lock
     <include refid="conditions" />
   </select>
 
   <select id="countBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskLockQuery" resultType="java.lang.Integer">
-    select count(0) from smt_ts_task_lock
+    select count(0) from shinemo_im.smt_ts_task_lock
     <include refid="conditions" />
   </select>
 
   <update id="updateById" parameterType="com.shinemo.task.dal.model.SmtTsTaskLock">
-    update smt_ts_task_lock
+    update shinemo_im.smt_ts_task_lock
     <set>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -119,18 +119,18 @@
   </update>
 
   <delete id="deleteById">
-    delete from smt_ts_task_lock where id  = #{id,jdbcType=BIGINT}
+    delete from shinemo_im.smt_ts_task_lock where id  = #{id,jdbcType=BIGINT}
   </delete>
 
   <select id="pageBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_lock
+    from shinemo_im.smt_ts_task_lock
     <include refid="conditions" />
   </select>
 
   <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskLock" useGeneratedKeys="true">
-    insert into smt_ts_task_lock
+    insert into shinemo_im.smt_ts_task_lock
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,
       gmt_modified,
@@ -192,7 +192,7 @@
   </insert>
 
   <insert id="lock" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskLock" useGeneratedKeys="true">
-    insert ignore into smt_ts_task_lock
+    insert into shinemo_im.smt_ts_task_lock
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,
       gmt_modified,
@@ -241,19 +241,22 @@
 
     </trim>
 
+    ON CONFLICT (smc_def_id)
+    DO NOTHING
+
   </insert>
 
   <update id="updateStatusByOldStatus">
-    update smt_ts_task_lock set smc_status = #{newStatus}, smc_ip = #{ip}, smc_start_time = #{startTime} where id = #{id} and smc_status = #{oldStatus}
+    update shinemo_im.smt_ts_task_lock set smc_status = #{newStatus}, smc_ip = #{ip}, smc_start_time = #{startTime} where id = #{id} and smc_status = #{oldStatus}
   </update>
 
   <update id="updateStatusByIdList">
-    update smt_ts_task_lock set smc_status = #{newStatus} where id in <foreach collection="idList" separator="," index="index" close=")" open="(" item="item">#{item}</foreach> and smc_status = #{oldStatus}
+    update shinemo_im.smt_ts_task_lock set smc_status = #{newStatus} where id in <foreach collection="idList" separator="," index="index" close=")" open="(" item="item">#{item}</foreach> and smc_status = #{oldStatus}
   </update>
 
   <delete id="deleteByDefIdList" parameterType="list">
 
-    delete from smt_ts_task_lock where smc_def_id in <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">#{item}</foreach>
+    delete from shinemo_im.smt_ts_task_lock where smc_def_id in <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">#{item}</foreach>
 
   </delete>
 

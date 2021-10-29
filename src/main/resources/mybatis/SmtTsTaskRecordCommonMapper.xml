@@ -69,7 +69,7 @@
 
     <update id="createMontTable" parameterType="string">
 
-        CREATE TABLE shinemo_im.${tableName} (
+        CREATE TABLE if not exists shinemo_im.${tableName} (
           id BIGSERIAL NOT NULL PRIMARY KEY,
           gmt_create timestamp NOT NULL ,
           gmt_modified timestamp DEFAULT NULL ,
@@ -84,8 +84,18 @@
           smc_ip varchar(16) NOT NULL
         );
 
-        create index idx_${tableName} on shinemo_im.${tableName}(smc_def_id);
 
   </update>
+
+    <update id="createMontTableIndex" parameterType="string">
+        create index idx_${tableName} on shinemo_im.${tableName}(smc_def_id);
+    </update>
+
+    <select id="checkTableExists" parameterType="string" resultType="int">
+
+        select count(1) from information_schema.tables where table_schema = 'shinemo_im' and table_name = #{tableName} and table_type = 'BASE TABLE'
+
+
+    </select>
 
 </mapper>
