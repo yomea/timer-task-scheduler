@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.shinemo.task.dal.mapper.SmtTsTaskTimerMapper">
-    <resultMap id="BaseResultMap" type="com.shinemo.task.dal.model.SmtTsTaskTimer">
+<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskTimerMapper">
+    <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskTimer">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
@@ -78,28 +78,28 @@
     smc_start_day, smc_end_day, smc_period, smc_cron, smc_status
   </sql>
 
-    <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
+    <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from shinemo_im.smt_ts_task_timer
+        from xxx_im.smt_ts_task_timer
         <include refid="conditions"/>
         limit 1
     </select>
 
-    <select id="selectBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
+    <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from shinemo_im.smt_ts_task_timer
+        from xxx_im.smt_ts_task_timer
         <include refid="conditions"/>
     </select>
 
-    <select id="countBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultType="java.lang.Integer">
-        select count(0) from shinemo_im.smt_ts_task_timer
+    <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsTaskTimerQuery" resultType="java.lang.Integer">
+        select count(0) from xxx_im.smt_ts_task_timer
         <include refid="conditions"/>
     </select>
 
-    <update id="updateById" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimer">
-        update shinemo_im.smt_ts_task_timer
+    <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsTaskTimer">
+        update xxx_im.smt_ts_task_timer
         <set>
             <if test="gmtCreate != null">
                 gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -151,19 +151,19 @@
     </update>
 
     <delete id="deleteById">
-    delete from shinemo_im.smt_ts_task_timer where id  = #{id,jdbcType=BIGINT}
+    delete from xxx_im.smt_ts_task_timer where id  = #{id,jdbcType=BIGINT}
   </delete>
 
-    <select id="pageBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
+    <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from shinemo_im.smt_ts_task_timer
+        from xxx_im.smt_ts_task_timer
         <include refid="conditions"/>
     </select>
 
-    <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskTimer"
+    <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskTimer"
             useGeneratedKeys="true">
-        insert into shinemo_im.smt_ts_task_timer
+        insert into xxx_im.smt_ts_task_timer
         <trim prefix="(" suffix=")" suffixOverrides=",">
             gmt_create,
             gmt_modified,
@@ -250,7 +250,7 @@
 
 
     <insert id="batchSave" keyProperty="id" parameterType="list" useGeneratedKeys="true">
-        insert into shinemo_im.smt_ts_task_timer
+        insert into xxx_im.smt_ts_task_timer
         (
         gmt_create,
         gmt_modified,
@@ -288,17 +288,17 @@
 
     <delete id="deleteByTaskId" parameterType="long">
 
-        delete from shinemo_im.smt_ts_task_timer where smc_def_id = #{_parameter}
+        delete from xxx_im.smt_ts_task_timer where smc_def_id = #{_parameter}
     </delete>
 
     <delete id="deleteByIdList" parameterType="list">
 
-        delete from shinemo_im.smt_ts_task_timer where id in <foreach collection="list" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
+        delete from xxx_im.smt_ts_task_timer where id in <foreach collection="list" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
     </delete>
 
     <update id="modifyStatusByIdList">
 
-        update shinemo_im.smt_ts_task_timer set smc_status = #{status} where id in <foreach collection="list" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
+        update xxx_im.smt_ts_task_timer set smc_status = #{status} where id in <foreach collection="list" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
     </update>
 
 </mapper>

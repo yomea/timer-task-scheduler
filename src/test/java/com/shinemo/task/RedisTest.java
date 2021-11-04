@@ -1,7 +1,7 @@
-//package com.shinemo.task;
+//package com.xxx.task;
 //
-//import com.shinemo.common.tools.redis.RedisLock;
-//import com.shinemo.util.GsonUtil;
+//import com.xxx.common.tools.redis.RedisLock;
+//import com.xxx.util.GsonUtil;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
 //import org.springframework.beans.factory.annotation.Autowired;

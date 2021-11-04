@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.shinemo.task</groupId>
+    <groupId>com.xxx.task</groupId>
     <artifactId>task-scheduler</artifactId>
     <packaging>jar</packaging>
     <name>task-scheduler</name>
     <version>1.0.0-SNAPSHOT</version>
 
     <parent>
-        <groupId>com.shinemo</groupId>
+        <groupId>com.xxx</groupId>
         <artifactId>parent</artifactId>
         <version>1.0.0</version>
     </parent>
@@ -48,7 +48,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.shinemo</groupId>
+            <groupId>com.xxx</groupId>
             <artifactId>ub-mybatis-common</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
@@ -66,7 +66,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.shinemo.portalapp</groupId>
+            <groupId>com.xxx.portalapp</groupId>
             <artifactId>perform-common</artifactId>
             <version>${perform-common-version}</version>
             <exclusions>
@@ -78,14 +78,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.shinemo.task</groupId>
+            <groupId>com.xxx.task</groupId>
             <artifactId>task-scheduler-starter</artifactId>
             <version>${task-scheduler-starter.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.shinemo.utils</groupId>
-            <artifactId>shinemo-utils</artifactId>
+            <groupId>com.xxx.utils</groupId>
+            <artifactId>xxx-utils</artifactId>
             <version>1.1.43-SNAPSHOT</version>
         </dependency>
 
@@ -221,7 +221,7 @@
 
 
         <dependency>
-            <groupId>com.shinemo.aace</groupId>
+            <groupId>com.xxx.aace</groupId>
             <artifactId>aace</artifactId>
             <version>${aace.version}</version>
             <exclusions>
@@ -230,8 +230,8 @@
                     <groupId>com.google.guava</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>shinemo-utils</artifactId>
-                    <groupId>com.shinemo.utils</groupId>
+                    <artifactId>xxx-utils</artifactId>
+                    <groupId>com.xxx.utils</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -253,7 +253,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.shinemo.ds</groupId>
+            <groupId>com.xxx.ds</groupId>
             <artifactId>datasource</artifactId>
             <version>2.0.2-SNAPSHOT</version>
             <exclusions>
@@ -265,13 +265,13 @@
         </dependency>
 
         <dependency>
-            <groupId>com.shinemo.springboot</groupId>
+            <groupId>com.xxx.springboot</groupId>
             <artifactId>smcache-spring-boot-starter</artifactId>
             <version>1.0.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>shinemo-utils</artifactId>
-                    <groupId>com.shinemo.utils</groupId>
+                    <artifactId>xxx-utils</artifactId>
+                    <groupId>com.xxx.utils</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -339,7 +339,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.shinemo.task.Application</mainClass>
+                    <mainClass>com.xxx.task.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -375,7 +375,7 @@
     <repositories>
         <repository>
             <id>central</id>
-            <url>https://maven.shinemo.com/nexus/content/groups/public/</url>
+            <url>https://maven.xxx.com/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -387,7 +387,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>central</id>
-            <url>https://maven.shinemo.com/nexus/content/groups/public/</url>
+            <url>https://maven.xxx.com/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -400,11 +400,11 @@
     <distributionManagement>
         <repository>
             <id>releases</id>
-            <url>https://maven.shinemo.com/nexus/content/repositories/releases/</url>
+            <url>https://maven.xxx.com/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
-            <url>https://maven.shinemo.com/nexus/content/repositories/snapshots/</url>
+            <url>https://maven.xxx.com/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

@@ -166,7 +166,7 @@
         <appender-ref ref="SQL"/>
     </logger>
 
-	<logger name="com.shinemo.Aace.Logger" additivity="false">
+	<logger name="com.xxx.Aace.Logger" additivity="false">
      	<level value="${loglevel}"/>
      	<appender-ref ref="AACE"/>
   </logger>
@@ -176,17 +176,17 @@
 		<appender-ref ref="ACCESS_LOG" />
 	</logger>
 
-	<logger name="com.shinemo.Aace.Logger.access" additivity="false">
+	<logger name="com.xxx.Aace.Logger.access" additivity="false">
 		<level value="info"/>
 		<appender-ref ref="AACE_ACCESS"/>
 	</logger>
 
-	<logger name="com.shinemo.Aace.Logger.message" additivity="false">
+	<logger name="com.xxx.Aace.Logger.message" additivity="false">
 		<level value="info"/>
 		<appender-ref ref="AACE_MSG"/>
 	</logger>
 
-	<logger name="com.shinemo.Aace.Logger.conn" additivity="false">
+	<logger name="com.xxx.Aace.Logger.conn" additivity="false">
 		<level value="info"/>
 		<appender-ref ref="AACE_CONN"/>
 	</logger>

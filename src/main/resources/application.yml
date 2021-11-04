@@ -12,14 +12,14 @@ server:
       min-spare: 10 # Minimum amount of worker threads.
 aace:
   center:
-    uri: aace://aace.shinemo.net:16999/center
+    uri: aace://aace.xxx.net:16999/center
 
 mybatis:
   mapper-locations: classpath*:/mybatis/*.xml
   config-location: classpath:mybatis-config.xml
 
 spring:
-  datasource.dbKey: shinemo_im_kingbase
+  datasource.dbKey: xxx_im_kingbase
   application.name: ${app.name}
   mvc:
     format:

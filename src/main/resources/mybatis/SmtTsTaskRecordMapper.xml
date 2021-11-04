@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.shinemo.task.dal.mapper.SmtTsTaskRecordMapper">
-  <resultMap id="BaseResultMap" type="com.shinemo.task.dal.model.SmtTsTaskRecord">
+<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskRecordMapper">
+  <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
@@ -67,28 +67,28 @@
     smc_status, smc_error, smc_desc, smc_ip
   </sql>
 
-  <select id="getBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
+  <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from shinemo_im.smt_ts_task_record
+    from xxx_im.smt_ts_task_record
     <include refid="conditions" />
     limit 1
   </select>
 
-  <select id="selectBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
+  <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from shinemo_im.smt_ts_task_record
+    from xxx_im.smt_ts_task_record
     <include refid="conditions" />
   </select>
 
-  <select id="countBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecordQuery" resultType="java.lang.Integer">
-    select count(0) from shinemo_im.smt_ts_task_record
+  <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultType="java.lang.Integer">
+    select count(0) from xxx_im.smt_ts_task_record
     <include refid="conditions" />
   </select>
 
-  <update id="updateById" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecord">
-    update shinemo_im.smt_ts_task_record
+  <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsTaskRecord">
+    update xxx_im.smt_ts_task_record
     <set>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -140,18 +140,18 @@
   </update>
 
   <delete id="deleteById">
-    delete from shinemo_im.smt_ts_task_record where id  = #{id,jdbcType=BIGINT}
+    delete from xxx_im.smt_ts_task_record where id  = #{id,jdbcType=BIGINT}
   </delete>
 
-  <select id="pageBy" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
+  <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from shinemo_im.smt_ts_task_record
+    from xxx_im.smt_ts_task_record
     <include refid="conditions" />
   </select>
 
-  <insert id="insertSelective" keyProperty="id" parameterType="com.shinemo.task.dal.model.SmtTsTaskRecord" useGeneratedKeys="true">
-    insert into shinemo_im.smt_ts_task_record
+  <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskRecord" useGeneratedKeys="true">
+    insert into xxx_im.smt_ts_task_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,
       gmt_modified,

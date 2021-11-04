@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.shinemo.task.dal.mapper.SmtTsTaskRecordCommonMapper">
-    <resultMap id="BaseResultMap" type="com.shinemo.task.dal.model.SmtTsTaskRecord">
+<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskRecordCommonMapper">
+    <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskRecord">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
@@ -69,7 +69,7 @@
 
     <update id="createMontTable" parameterType="string">
 
-        CREATE TABLE if not exists shinemo_im.${tableName} (
+        CREATE TABLE if not exists xxx_im.${tableName} (
           id BIGSERIAL NOT NULL PRIMARY KEY,
           gmt_create timestamp NOT NULL ,
           gmt_modified timestamp DEFAULT NULL ,
@@ -88,12 +88,12 @@
   </update>
 
     <update id="createMontTableIndex" parameterType="string">
-        create index idx_${tableName} on shinemo_im.${tableName}(smc_def_id);
+        create index idx_${tableName} on xxx_im.${tableName}(smc_def_id);
     </update>
 
     <select id="checkTableExists" parameterType="string" resultType="int">
 
-        select count(1) from information_schema.tables where table_schema = 'shinemo_im' and table_name = #{tableName} and table_type = 'BASE TABLE'
+        select count(1) from information_schema.tables where table_schema = 'xxx_im' and table_name = #{tableName} and table_type = 'BASE TABLE'
 
 
     </select>

@@ -1,4 +1,4 @@
-package com.shinemo.task;
+package com.xxx.task;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

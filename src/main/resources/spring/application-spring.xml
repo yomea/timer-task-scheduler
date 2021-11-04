@@ -5,9 +5,9 @@
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <!-- data source -->
-    <bean id="dataSource" class="com.shinemo.ds.SMDataSource" init-method="init" destroy-method="close">
-        <!--<property name="dbKey" value="shinemo_im"/>-->
-        <property name="dbKey" value="shinemo_im_kingbase"/>
+    <bean id="dataSource" class="com.xxx.ds.SMDataSource" init-method="init" destroy-method="close">
+        <!--<property name="dbKey" value="xxx_im"/>-->
+        <property name="dbKey" value="xxx_im_kingbase"/>
         <property name="initialSize" value="2"/>
         <property name="minIdle" value="2"/>
         <property name="maxActive" value="5"/>
