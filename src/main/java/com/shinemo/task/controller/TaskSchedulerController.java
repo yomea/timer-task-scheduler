@@ -1,15 +1,13 @@
 package com.shinemo.task.controller;
 
 import com.shinemo.common.tools.result.ApiResult;
+import com.shinemo.task.core.TaskMemoryStore;
 import com.shinemo.task.model.TimerTaskRequest;
 import com.shinemo.task.service.TaskSchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
@@ -48,4 +46,41 @@ public class TaskSchedulerController {
     public ApiResult<Void> execTaskImmediately(Long taskId) {
         return taskSchedulerService.execTaskImmediately(taskId);
     }
+
+    /**
+     * curl 'http://127.0.0.1/task-scheduler/task/getExecTaskList'
+     * @return
+     */
+    @GetMapping("/getExecTaskList")
+    @ResponseBody
+    public ApiResult getExecTaskList() {
+
+        return ApiResult.success(TaskMemoryStore.getDefIdMapScheduleTask());
+    }
+
+    /**
+     * curl 'http://127.0.0.1/task-scheduler/task/getTaskLock'
+     * @return
+     */
+    @GetMapping("/getTaskLock")
+    @ResponseBody
+    public ApiResult getTaskLock() {
+
+        return ApiResult.success(TaskMemoryStore.getLockMap());
+    }
+
+    /**
+     * curl 'http://127.0.0.1/task-scheduler/task/cancelInvaildTask'
+     * @return
+     */
+    @GetMapping("/cancelInvaildTask")
+    @ResponseBody
+    public ApiResult cancelInvaildTask() {
+
+        TaskMemoryStore.cancelInvaildTask();
+
+        return ApiResult.success();
+    }
+
+
 }
