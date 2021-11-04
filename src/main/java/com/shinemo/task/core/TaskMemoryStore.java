@@ -122,4 +122,12 @@ public class TaskMemoryStore {
 
         taskList.add(scheduledTask);
     }
+
+    public static Map<Long, Object> getLockMap() {
+        return LOCK_MAP;
+    }
+
+    public static Map<Long, List<ScheduledTask>> getDefIdMapScheduleTask() {
+        return DEF_ID_MAP_SCHEDULE_TASK;
+    }
 }
