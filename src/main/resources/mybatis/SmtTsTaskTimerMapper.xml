@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskTimerMapper">
+    <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskTimer">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="smc_def_id" jdbcType="BIGINT" property="smcDefId"/>
+        <result column="smc_timer_type" jdbcType="INTEGER" property="smcTimerType"/>
+        <result column="smc_init_delay" jdbcType="BIGINT" property="smcInitDelay"/>
+        <result column="smc_once_delay" jdbcType="BIGINT" property="smcOnceDelay"/>
+        <result column="smc_start_day" jdbcType="TIMESTAMP" property="smcStartDay"/>
+        <result column="smc_end_day" jdbcType="TIMESTAMP" property="smcEndDay"/>
+        <result column="smc_period" jdbcType="BIGINT" property="smcPeriod"/>
+        <result column="smc_cron" jdbcType="VARCHAR" property="smcCron"/>
+        <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
+    </resultMap>
+
+    <sql id="conditions">
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=BIGINT}
+            </if>
+
+            <if test="smcDefId != null">
+                and smc_def_id = #{smcDefId,jdbcType=BIGINT}
+            </if>
+
+            <if test="smcDefIdList != null and smcDefIdList.size() > 0">
+                and smc_def_id in
+                <foreach collection="smcDefIdList" item="item" open="(" close=")" index="index" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+
+            <if test="smcTimerType != null">
+                and smc_timer_type = #{smcTimerType,jdbcType=INTEGER}
+            </if>
+
+            <if test="smcInitDelay != null">
+                and smc_init_delay = #{smcInitDelay,jdbcType=BIGINT}
+            </if>
+
+            <if test="smcOnceDelay != null">
+                and smc_once_delay = #{smcOnceDelay,jdbcType=BIGINT}
+            </if>
+
+            <if test="smcStartDay != null">
+                and smc_start_day = #{smcStartDay,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="smcEndDay != null">
+                and smc_end_day = #{smcEndDay,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="triggerDate != null">
+                and (smc_end_day &gt; #{triggerDate,jdbcType=TIMESTAMP} or smc_end_day is null)
+            </if>
+
+            <if test="smcPeriod != null">
+                and smc_period = #{smcPeriod,jdbcType=BIGINT}
+            </if>
+
+            <if test="smcCron != null">
+                and smc_cron = #{smcCron,jdbcType=VARCHAR}
+            </if>
+
+            <if test="smcStatus != null">
+                and smc_status = #{smcStatus,jdbcType=INTEGER}
+            </if>
+
+        </where>
+
+    </sql>
+
+    <sql id="Base_Column_List">
+    id, gmt_create, gmt_modified, smc_def_id, smc_timer_type, smc_init_delay, smc_once_delay, 
+    smc_start_day, smc_end_day, smc_period, smc_cron, smc_status
+  </sql>
+
+    <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from smt_ts_task_timer
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from smt_ts_task_timer
+        <include refid="conditions"/>
+    </select>
+
+    <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsTaskTimerQuery" resultType="java.lang.Integer">
+        select count(0) from smt_ts_task_timer
+        <include refid="conditions"/>
+    </select>
+
+    <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsTaskTimer">
+        update smt_ts_task_timer
+        <set>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+
+            gmt_modified = now(),
+            <if test="smcDefId != null">
+                smc_def_id = #{smcDefId,jdbcType=BIGINT},
+            </if>
+
+            <if test="smcTimerType != null">
+                smc_timer_type = #{smcTimerType,jdbcType=INTEGER},
+            </if>
+
+            <if test="smcInitDelay != null">
+                smc_init_delay = #{smcInitDelay,jdbcType=BIGINT},
+            </if>
+
+            <if test="smcOnceDelay != null">
+                smc_once_delay = #{smcOnceDelay,jdbcType=BIGINT},
+            </if>
+
+            <if test="smcStartDay != null">
+                smc_start_day = #{smcStartDay,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="smcEndDay != null">
+                smc_end_day = #{smcEndDay,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="smcPeriod != null">
+                smc_period = #{smcPeriod,jdbcType=BIGINT},
+            </if>
+
+            <if test="smcCron != null">
+                smc_cron = #{smcCron,jdbcType=VARCHAR},
+            </if>
+
+            <if test="smcStatus != null">
+                smc_status = #{smcStatus,jdbcType=INTEGER},
+            </if>
+
+        </set>
+
+        <where>
+            id = #{id,jdbcType=BIGINT}
+        </where>
+
+    </update>
+
+    <delete id="deleteById">
+    delete from smt_ts_task_timer where id  = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsTaskTimerQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from smt_ts_task_timer
+        <include refid="conditions"/>
+    </select>
+
+    <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskTimer"
+            useGeneratedKeys="true">
+        insert into smt_ts_task_timer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            gmt_create,
+            gmt_modified,
+            <if test="smcDefId != null">
+                smc_def_id,
+            </if>
+
+            <if test="smcTimerType != null">
+                smc_timer_type,
+            </if>
+
+            <if test="smcInitDelay != null">
+                smc_init_delay,
+            </if>
+
+            <if test="smcOnceDelay != null">
+                smc_once_delay,
+            </if>
+
+            <if test="smcStartDay != null">
+                smc_start_day,
+            </if>
+
+            <if test="smcEndDay != null">
+                smc_end_day,
+            </if>
+
+            <if test="smcPeriod != null">
+                smc_period,
+            </if>
+
+            <if test="smcCron != null">
+                smc_cron,
+            </if>
+
+            <if test="smcStatus != null">
+                smc_status,
+            </if>
+
+        </trim>
+
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            now(),
+            now(),
+            <if test="smcDefId != null">
+                #{smcDefId,jdbcType=BIGINT},
+            </if>
+
+            <if test="smcTimerType != null">
+                #{smcTimerType,jdbcType=INTEGER},
+            </if>
+
+            <if test="smcInitDelay != null">
+                #{smcInitDelay,jdbcType=BIGINT},
+            </if>
+
+            <if test="smcOnceDelay != null">
+                #{smcOnceDelay,jdbcType=BIGINT},
+            </if>
+
+            <if test="smcStartDay != null">
+                #{smcStartDay,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="smcEndDay != null">
+                #{smcEndDay,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="smcPeriod != null">
+                #{smcPeriod,jdbcType=BIGINT},
+            </if>
+
+            <if test="smcCron != null">
+                #{smcCron,jdbcType=VARCHAR},
+            </if>
+
+            <if test="smcStatus != null">
+                #{smcStatus},
+            </if>
+
+        </trim>
+
+    </insert>
+
+
+    <insert id="batchSave" keyProperty="id" parameterType="list" useGeneratedKeys="true">
+        insert into smt_ts_task_timer
+        (
+        gmt_create,
+        gmt_modified,
+        smc_def_id,
+        smc_timer_type,
+        smc_init_delay,
+        smc_once_delay,
+        smc_start_day,
+        smc_end_day,
+        smc_period,
+        smc_cron,
+        smc_status
+        )
+        values
+        <foreach collection="list" separator="," index="index" close="" open="" item="item">
+
+            (
+            now(),
+            now(),
+            #{item.smcDefId,jdbcType=BIGINT},
+            #{item.smcTimerType,jdbcType=INTEGER},
+            #{item.smcInitDelay,jdbcType=BIGINT},
+            #{item.smcOnceDelay,jdbcType=BIGINT},
+            #{item.smcStartDay,jdbcType=TIMESTAMP},
+            #{item.smcEndDay,jdbcType=TIMESTAMP},
+            #{item.smcPeriod,jdbcType=BIGINT},
+            #{item.smcCron,jdbcType=VARCHAR},
+            #{item.smcStatus}
+
+            )
+
+        </foreach>
+
+    </insert>
+
+    <delete id="deleteByTaskId" parameterType="long">
+
+        delete from smt_ts_task_timer where smc_def_id = #{_parameter}
+    </delete>
+
+    <delete id="deleteByIdList" parameterType="list">
+
+        delete from smt_ts_task_timer where id in <foreach collection="list" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
+    </delete>
+
+    <update id="modifyStatusByIdList">
+
+        update smt_ts_task_timer set smc_status = #{status} where id in <foreach collection="list" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
+    </update>
+
+</mapper>

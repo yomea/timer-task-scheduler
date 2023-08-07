@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskRecordCommonMapper">
+  <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="smc_stime" jdbcType="TIMESTAMP" property="smcStime" />
+    <result column="smc_etime" jdbcType="TIMESTAMP" property="smcEtime" />
+    <result column="smc_def_id" jdbcType="BIGINT" property="smcDefId" />
+    <result column="smc_task_name" jdbcType="VARCHAR" property="smcTaskName" />
+    <result column="smc_timeout" jdbcType="BIGINT" property="smcTimeout" />
+    <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
+    <result column="smc_error" jdbcType="VARCHAR" property="smcError" />
+    <result column="smc_desc" jdbcType="VARCHAR" property="smcDesc" />
+    <result column="smc_ip" jdbcType="VARCHAR" property="smcIp" />
+  </resultMap>
+
+  <sql id="conditions">
+    <where>
+      <if test="id != null">
+         and id = #{id,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcStime != null">
+         and smc_stime = #{smcStime,jdbcType=TIMESTAMP}
+      </if>
+
+      <if test="smcEtime != null">
+         and smc_etime = #{smcEtime,jdbcType=TIMESTAMP}
+      </if>
+
+      <if test="smcDefId != null">
+         and smc_def_id = #{smcDefId,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcTaskName != null">
+         and smc_task_name = #{smcTaskName,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcTimeout != null">
+         and smc_timeout = #{smcTimeout,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcStatus != null">
+         and smc_status = #{smcStatus,jdbcType=INTEGER}
+      </if>
+
+      <if test="smcError != null">
+         and smc_error = #{smcError,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcDesc != null">
+         and smc_desc = #{smcDesc,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcIp != null">
+         and smc_ip = #{smcIp,jdbcType=VARCHAR}
+      </if>
+
+    </where>
+
+  </sql>
+
+  <sql id="Base_Column_List">
+    id, gmt_create, gmt_modified, smc_stime, smc_etime, smc_def_id, smc_task_name, smc_timeout, 
+    smc_status, smc_error, smc_desc, smc_ip
+  </sql>
+
+  <update id="createMontTable" parameterType="string">
+
+    create table if not exists xxx_im.${tableName} (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `gmt_create` datetime NOT NULL COMMENT '创建时间',
+      `gmt_modified` datetime DEFAULT NULL COMMENT '更新时间',
+        `smc_stime` datetime COMMENT '执行开始时间',
+        `smc_etime` datetime COMMENT '执行结束时间',
+    `smc_def_id` bigint  not null COMMENT '任务定义ID',
+        `smc_task_name` varchar(512) not null COMMENT '任务名称',
+        `smc_timeout` bigint(20) not null default -1 COMMENT '任务执行超时时间，超时将视为执行失败，会重跑',
+        `smc_status` int not null COMMENT '任务状态，-1:失败，1:执行中，2:执行超时，3:执行完成',
+        `smc_error` varchar(1024) COMMENT '失败原因',
+        `smc_desc` varchar(1024) COMMENT '描述',
+        `smc_ip` varchar(16) not null COMMENT '调度的机器ip',
+  PRIMARY KEY (`id`),
+    key idx_def_id(smc_def_id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+  </update>
+
+</mapper>

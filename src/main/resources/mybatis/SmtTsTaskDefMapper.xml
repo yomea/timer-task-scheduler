@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskDefMapper">
+  <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskDef">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="smc_def_pid" jdbcType="BIGINT" property="smcDefPid" />
+    <result column="smc_top_pid" jdbcType="BIGINT" property="smcTopPid" />
+    <result column="smc_task_name" jdbcType="VARCHAR" property="smcTaskName" />
+    <result column="app_service_name" jdbcType="VARCHAR" property="appServiceName" />
+    <result column="api_service_name" jdbcType="VARCHAR" property="apiServiceName" />
+    <result column="api_method_name" jdbcType="VARCHAR" property="apiMethodName" />
+    <result column="smc_conf_flag" jdbcType="INTEGER" property="smcConfFlag" />
+    <result column="smc_timeout" jdbcType="BIGINT" property="smcTimeout" />
+    <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
+    <result column="smc_has_child" jdbcType="TINYINT" property="smcHasChild" />
+    <result column="smc_ext" jdbcType="VARCHAR" property="smcExt" />
+    <result column="smc_customer_id" jdbcType="VARCHAR" property="smcCustomerId" />
+  </resultMap>
+
+  <sql id="conditions">
+    <where>
+      <if test="id != null">
+         and id = #{id,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcDefPid != null">
+        and smc_def_pid = #{smcDefPid,jdbcType=BIGINT}
+      </if>
+
+      <if test="exculeSubTask == true">
+        and (smc_def_pid &lt;= 0 or smc_def_pid is null)
+      </if>
+
+      <if test="idList != null and idList.size() > 0">
+         and id in <foreach collection="idList" item="item" open="(" close=")" index="index" separator=",">#{item}</foreach>
+      </if>
+
+      <if test="smcTaskName != null">
+         and smc_task_name = #{smcTaskName,jdbcType=VARCHAR}
+      </if>
+
+      <if test="appServiceName != null">
+         and app_service_name = #{appServiceName,jdbcType=VARCHAR}
+      </if>
+
+      <if test="apiServiceName != null">
+         and api_service_name = #{apiServiceName,jdbcType=VARCHAR}
+      </if>
+
+      <if test="apiMethodName != null">
+         and api_method_name = #{apiMethodName,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcCustomerId != null">
+         and smc_customer_id = #{smcCustomerId,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcConfFlag != null">
+         and smc_conf_flag = #{smcConfFlag,jdbcType=INTEGER}
+      </if>
+
+      <if test="smcTimeout != null">
+         and smc_timeout = #{smcTimeout,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcStatus != null">
+         and smc_status = #{smcStatus,jdbcType=INTEGER}
+      </if>
+
+    </where>
+
+  </sql>
+
+  <sql id="Base_Column_List">
+    id, gmt_create, gmt_modified, smc_def_pid, smc_task_name, app_service_name, api_service_name,
+    api_method_name, smc_conf_flag, smc_timeout, smc_status, smc_has_child, smc_ext, smc_customer_id
+  </sql>
+
+  <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_task_def
+    <include refid="conditions" />
+    limit 1
+  </select>
+
+  <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_task_def
+    <include refid="conditions" />
+  </select>
+
+  <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsTaskDefQuery" resultType="java.lang.Integer">
+    select count(0) from smt_ts_task_def
+    <include refid="conditions" />
+  </select>
+
+  <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsTaskDef">
+    update smt_ts_task_def
+    <set>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+
+      gmt_modified = now(),
+      <if test="smcDefPid != null">
+        smc_def_pid = #{smcDefPid,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcTaskName != null">
+        smc_task_name = #{smcTaskName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="appServiceName != null">
+        app_service_name = #{appServiceName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="apiServiceName != null">
+        api_service_name = #{apiServiceName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="apiMethodName != null">
+        api_method_name = #{apiMethodName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcCustomerId != null">
+        smc_customer_id = #{smcCustomerId,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcConfFlag != null">
+        smc_conf_flag = #{smcConfFlag,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcTimeout != null">
+        smc_timeout = #{smcTimeout,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcStatus != null">
+        smc_status = #{smcStatus,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcHasChild != null">
+        smc_has_child = #{smcHasChild},
+      </if>
+
+      <if test="smcExt != null">
+        smc_ext = #{smcExt},
+      </if>
+
+    </set>
+
+    <where>
+       id  = #{id,jdbcType=BIGINT}
+    </where>
+
+  </update>
+
+  <delete id="deleteById">
+    delete from smt_ts_task_def where id  = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deleteByTopId">
+    delete from smt_ts_task_def where smc_top_pid  = #{topId,jdbcType=BIGINT}
+  </delete>
+
+  <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_task_def
+    <include refid="conditions" />
+  </select>
+
+  <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskDef" useGeneratedKeys="true">
+    insert into smt_ts_task_def
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      gmt_create,
+      gmt_modified,
+      <if test="smcDefPid != null">
+        smc_def_pid,
+      </if>
+      <if test="smcTaskName != null">
+        smc_task_name,
+      </if>
+
+      <if test="appServiceName != null">
+        app_service_name,
+      </if>
+
+      <if test="apiServiceName != null">
+        api_service_name,
+      </if>
+
+      <if test="apiMethodName != null">
+        api_method_name,
+      </if>
+
+      <if test="smcCustomerId != null">
+        smc_customer_id,
+      </if>
+
+      <if test="smcConfFlag != null">
+        smc_conf_flag,
+      </if>
+
+      <if test="smcTimeout != null">
+        smc_timeout,
+      </if>
+
+      <if test="smcStatus != null">
+        smc_status,
+      </if>
+
+      <if test="smcHasChild != null">
+        smc_has_child,
+      </if>
+
+       <if test="smcExt != null">
+         smc_ext,
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      now(),
+      now(),
+      <if test="smcDefPid != null">
+        #{smcDefPid,jdbcType=BIGINT},
+      </if>
+      <if test="smcTaskName != null">
+        #{smcTaskName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="appServiceName != null">
+        #{appServiceName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="apiServiceName != null">
+        #{apiServiceName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="apiMethodName != null">
+        #{apiMethodName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcCustomerId != null">
+        #{smcCustomerId,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcConfFlag != null">
+        #{smcConfFlag,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcTimeout != null">
+        #{smcTimeout,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcStatus != null">
+        #{smcStatus,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcHasChild != null">
+        #{smcHasChild},
+      </if>
+
+      <if test="smcExt != null">
+        #{smcExt},
+      </if>
+
+    </trim>
+
+  </insert>
+
+</mapper>

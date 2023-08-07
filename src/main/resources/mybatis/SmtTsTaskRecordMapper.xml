@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskRecordMapper">
+  <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="smc_stime" jdbcType="TIMESTAMP" property="smcStime" />
+    <result column="smc_etime" jdbcType="TIMESTAMP" property="smcEtime" />
+    <result column="smc_def_id" jdbcType="BIGINT" property="smcDefId" />
+    <result column="smc_task_name" jdbcType="VARCHAR" property="smcTaskName" />
+    <result column="smc_timeout" jdbcType="BIGINT" property="smcTimeout" />
+    <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
+    <result column="smc_error" jdbcType="VARCHAR" property="smcError" />
+    <result column="smc_desc" jdbcType="VARCHAR" property="smcDesc" />
+    <result column="smc_ip" jdbcType="VARCHAR" property="smcIp" />
+  </resultMap>
+
+  <sql id="conditions">
+    <where>
+      <if test="id != null">
+         and id = #{id,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcStime != null">
+         and smc_stime = #{smcStime,jdbcType=TIMESTAMP}
+      </if>
+
+      <if test="smcEtime != null">
+         and smc_etime = #{smcEtime,jdbcType=TIMESTAMP}
+      </if>
+
+      <if test="smcDefId != null">
+         and smc_def_id = #{smcDefId,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcTaskName != null">
+         and smc_task_name = #{smcTaskName,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcTimeout != null">
+         and smc_timeout = #{smcTimeout,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcStatus != null">
+         and smc_status = #{smcStatus,jdbcType=INTEGER}
+      </if>
+
+      <if test="smcError != null">
+         and smc_error = #{smcError,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcDesc != null">
+         and smc_desc = #{smcDesc,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcIp != null">
+         and smc_ip = #{smcIp,jdbcType=VARCHAR}
+      </if>
+
+    </where>
+
+  </sql>
+
+  <sql id="Base_Column_List">
+    id, gmt_create, gmt_modified, smc_stime, smc_etime, smc_def_id, smc_task_name, smc_timeout, 
+    smc_status, smc_error, smc_desc, smc_ip
+  </sql>
+
+  <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_task_record
+    <include refid="conditions" />
+    limit 1
+  </select>
+
+  <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_task_record
+    <include refid="conditions" />
+  </select>
+
+  <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultType="java.lang.Integer">
+    select count(0) from smt_ts_task_record
+    <include refid="conditions" />
+  </select>
+
+  <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsTaskRecord">
+    update smt_ts_task_record
+    <set>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+
+      gmt_modified = now(),
+      <if test="smcStime != null">
+        smc_stime = #{smcStime,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="smcEtime != null">
+        smc_etime = #{smcEtime,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="smcDefId != null">
+        smc_def_id = #{smcDefId,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcTaskName != null">
+        smc_task_name = #{smcTaskName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcTimeout != null">
+        smc_timeout = #{smcTimeout,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcStatus != null">
+        smc_status = #{smcStatus,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcError != null">
+        smc_error = #{smcError,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcDesc != null">
+        smc_desc = #{smcDesc,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcIp != null">
+        smc_ip = #{smcIp,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+
+    <where>
+       id  = #{id,jdbcType=BIGINT}
+    </where>
+
+  </update>
+
+  <delete id="deleteById">
+    delete from smt_ts_task_record where id  = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_task_record
+    <include refid="conditions" />
+  </select>
+
+  <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskRecord" useGeneratedKeys="true">
+    insert into smt_ts_task_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      gmt_create,
+      gmt_modified,
+      <if test="smcStime != null">
+        smc_stime,
+      </if>
+
+      <if test="smcEtime != null">
+        smc_etime,
+      </if>
+
+      <if test="smcDefId != null">
+        smc_def_id,
+      </if>
+
+      <if test="smcTaskName != null">
+        smc_task_name,
+      </if>
+
+      <if test="smcTimeout != null">
+        smc_timeout,
+      </if>
+
+      <if test="smcStatus != null">
+        smc_status,
+      </if>
+
+      <if test="smcError != null">
+        smc_error,
+      </if>
+
+      <if test="smcDesc != null">
+        smc_desc,
+      </if>
+
+      <if test="smcIp != null">
+        smc_ip,
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      now(),
+      now(),
+      <if test="smcStime != null">
+        #{smcStime,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="smcEtime != null">
+        #{smcEtime,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="smcDefId != null">
+        #{smcDefId,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcTaskName != null">
+        #{smcTaskName,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcTimeout != null">
+        #{smcTimeout,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcStatus != null">
+        #{smcStatus,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcError != null">
+        #{smcError,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcDesc != null">
+        #{smcDesc,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcIp != null">
+        #{smcIp,jdbcType=VARCHAR},
+      </if>
+
+    </trim>
+
+  </insert>
+
+</mapper>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+	<springProperty scope="context" name="loglevel" source="loglevel" defaultValue="info"/>
+  <springProperty scope="context" name="log.home" source="log.home" defaultValue="/data/logs/task-scheduler"/>
+
+	<appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <file>${log.home}/error.log</file>
+	    <append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${log.home}/error.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>error</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+	<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %X{session} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${log.home}/info.log</file>
+			<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${log.home}/info.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>info</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %X{session} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="PROJECT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${log.home}/debug.log</file>
+			<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${log.home}/debug.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>2GB</totalSizeCap>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>debug</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %X{session} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <file>${log.home}/sql.log</file>
+	    <append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${log.home}/sql.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+  	<appender name="AACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <file>${log.home}/aace.log</file>
+	    <append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${log.home}/aace.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="ACCESS_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <file>${log.home}/access.log</file>
+	    <append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${log.home}/access.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>1GB</totalSizeCap>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="AACE_ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<file>${log.home}/aace-access.log</file>
+	<append>true</append>
+	<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+		<FileNamePattern>${log.home}/aace-param.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+		<maxFileSize>500MB</maxFileSize>
+		<maxHistory>30</maxHistory>
+		<totalSizeCap>5GB</totalSizeCap>
+	</rollingPolicy>
+	<layout class="ch.qos.logback.classic.PatternLayout">
+		<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %X{session} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+	</layout>
+</appender>
+
+
+	<appender name="AACE_MSG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.home}/aace-msg.log</file>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${log.home}/aace-msg.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %X{session} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="AACE_CONN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.home}/aace-conn.log</file>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${log.home}/aace-conn.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %X{session} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="SLOW_SQL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.home}/slow-sql.log</file>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${log.home}/slow-sql.log.%d{yyyy-MM-dd}-%i.gz</FileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] %-5level - %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+
+	<logger name="mapper" additivity="false">
+  	   	<level value="debug"/>
+        <appender-ref ref="SQL"/>
+    </logger>
+
+	<logger name="com.xxx.Aace.Logger" additivity="false">
+     	<level value="${loglevel}"/>
+     	<appender-ref ref="AACE"/>
+  </logger>
+
+	<logger name="App-Api" additivity="false">
+		<level value="info" />
+		<appender-ref ref="ACCESS_LOG" />
+	</logger>
+
+	<logger name="com.xxx.Aace.Logger.access" additivity="false">
+		<level value="info"/>
+		<appender-ref ref="AACE_ACCESS"/>
+	</logger>
+
+	<logger name="com.xxx.Aace.Logger.message" additivity="false">
+		<level value="info"/>
+		<appender-ref ref="AACE_MSG"/>
+	</logger>
+
+	<logger name="com.xxx.Aace.Logger.conn" additivity="false">
+		<level value="info"/>
+		<appender-ref ref="AACE_CONN"/>
+	</logger>
+
+	<!--slow sql-->
+	<Logger name="com.alibaba.druid.filter.stat.StatFilter" additivity="false">
+		<level value="error" />
+		<appender-ref ref="SLOW_SQL_LOG" />
+	</Logger>
+
+	<root>
+		<level value="${loglevel}" />
+		<appender-ref ref="PROJECT" />
+		<appender-ref ref="ERROR_LOG" />
+		<appender-ref ref="INFO_LOG" />
+	</root>
+</configuration>

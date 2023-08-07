@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxx.task.dal.mapper.SmtTsConsumeProgressMapper">
+  <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsConsumeProgress">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="smc_ip" jdbcType="VARCHAR" property="smcIp" />
+    <result column="smc_msg_id" jdbcType="BIGINT" property="smcMsgId" />
+  </resultMap>
+
+  <sql id="conditions">
+    <where>
+      <if test="id != null">
+         and id = #{id,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcIp != null">
+         and smc_ip = #{smcIp,jdbcType=VARCHAR}
+      </if>
+
+      <if test="smcMsgId != null">
+         and smc_msg_id = #{smcMsgId,jdbcType=BIGINT}
+      </if>
+
+    </where>
+
+  </sql>
+
+  <sql id="Base_Column_List">
+    id, gmt_create, gmt_modified, smc_ip, smc_msg_id
+  </sql>
+
+  <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsConsumeProgressQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_consume_progress
+    <include refid="conditions" />
+    limit 1
+  </select>
+
+  <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsConsumeProgressQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_consume_progress
+    <include refid="conditions" />
+  </select>
+
+  <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsConsumeProgressQuery" resultType="java.lang.Integer">
+    select count(0) from smt_ts_consume_progress
+    <include refid="conditions" />
+  </select>
+
+  <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsConsumeProgress">
+    update smt_ts_consume_progress
+    <set>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+
+      gmt_modified = now(),
+      <if test="smcIp != null">
+        smc_ip = #{smcIp,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcMsgId != null">
+        smc_msg_id = #{smcMsgId,jdbcType=BIGINT},
+      </if>
+
+    </set>
+
+    <where>
+       id  = #{id,jdbcType=BIGINT}
+    </where>
+
+  </update>
+
+  <delete id="deleteById">
+    delete from smt_ts_consume_progress where id  = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsConsumeProgressQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_consume_progress
+    <include refid="conditions" />
+  </select>
+
+  <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsConsumeProgress" useGeneratedKeys="true">
+    insert into smt_ts_consume_progress
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      gmt_create,
+      gmt_modified,
+      <if test="smcIp != null">
+        smc_ip,
+      </if>
+
+      <if test="smcMsgId != null">
+        smc_msg_id,
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      now(),
+      now(),
+      <if test="smcIp != null">
+        #{smcIp,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcMsgId != null">
+        #{smcMsgId,jdbcType=BIGINT},
+      </if>
+
+    </trim>
+
+    ON DUPLICATE KEY UPDATE
+
+    smc_msg_id = #{smcMsgId,jdbcType=BIGINT}
+
+  </insert>
+
+</mapper>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskLockMapper">
+    <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskLock">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+        <result column="smc_start_time" jdbcType="BIGINT" property="smcStartTime" />
+        <result column="smc_def_id" jdbcType="BIGINT" property="smcDefId" />
+        <result column="smc_def_pid" jdbcType="BIGINT" property="smcDefPid" />
+        <result column="smc_time_out" jdbcType="BIGINT" property="smcTimeOut" />
+        <result column="smc_ip" jdbcType="VARCHAR" property="smcIp" />
+        <result column="smc_status" jdbcType="INTEGER" property="smcStatus" />
+    </resultMap>
+
+  <sql id="conditions">
+    <where>
+      <if test="id != null">
+         and id = #{id,jdbcType=BIGINT}
+      </if>
+
+        <if test="smcDefId != null">
+            and smc_def_id = #{smcDefId,jdbcType=BIGINT}
+        </if>
+
+        <if test="smcDefPid != null">
+            and smc_def_pid = #{smcDefPid,jdbcType=BIGINT}
+        </if>
+
+      <if test="smcTimeOut != null">
+         and smc_time_out = #{smcTimeOut,jdbcType=BIGINT}
+      </if>
+
+      <if test="smcIp != null">
+         and smc_ip = #{smcIp,jdbcType=VARCHAR}
+      </if>
+
+      <if test="notInIps != null and notInIps.size() > 0">
+         and smc_ip not in <foreach collection="notInIps" item="item" open="(" close=")" index="index" separator=",">#{item}</foreach>
+      </if>
+
+      <if test="smcStatus != null">
+         and smc_status = #{smcStatus,jdbcType=INTEGER}
+      </if>
+
+      <if test="statusList != null and statusList.size() > 0">
+         and smc_status in <foreach collection="statusList" separator="," index="index" close=")" open="(" item="item">#{item}</foreach>
+      </if>
+
+      <if test="ltStartTime != null">
+        or (smc_start_time &lt; (#{ltStartTime} - smc_time_out) and smc_status = 1)
+      </if>
+
+    </where>
+
+  </sql>
+
+  <sql id="Base_Column_List">
+    id, gmt_create, gmt_modified, smc_def_id, smc_def_pid, smc_time_out, smc_ip, smc_status,smc_start_time
+  </sql>
+
+  <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_task_lock
+    <include refid="conditions" />
+    limit 1
+  </select>
+
+  <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_task_lock
+    <include refid="conditions" />
+  </select>
+
+  <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsTaskLockQuery" resultType="java.lang.Integer">
+    select count(0) from smt_ts_task_lock
+    <include refid="conditions" />
+  </select>
+
+  <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsTaskLock">
+    update smt_ts_task_lock
+    <set>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+
+      gmt_modified = now(),
+      <if test="smcDefId != null">
+        smc_def_id = #{smcDefId,jdbcType=BIGINT},
+      </if>
+        <if test="smcDefPid != null">
+            smc_def_pid = #{smcDefPid,jdbcType=BIGINT},
+        </if>
+
+      <if test="smcTimeOut != null">
+        smc_time_out = #{smcTimeOut,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcIp != null">
+        smc_ip = #{smcIp,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcStatus != null">
+        smc_status = #{smcStatus,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcStartTime != null">
+        smc_start_time = #{smcStartTime,jdbcType=BIGINT},
+      </if>
+
+    </set>
+
+    <where>
+       id  = #{id,jdbcType=BIGINT}
+    </where>
+
+  </update>
+
+  <delete id="deleteById">
+    delete from smt_ts_task_lock where id  = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smt_ts_task_lock
+    <include refid="conditions" />
+  </select>
+
+  <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskLock" useGeneratedKeys="true">
+    insert into smt_ts_task_lock
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      gmt_create,
+      gmt_modified,
+      <if test="smcDefId != null">
+        smc_def_id,
+      </if>
+
+        <if test="smcDefPid != null">
+            smc_def_pid,
+        </if>
+
+      <if test="smcTimeOut != null">
+        smc_time_out,
+      </if>
+
+      <if test="smcIp != null">
+        smc_ip,
+      </if>
+
+      <if test="smcStatus != null">
+        smc_status,
+      </if>
+
+      <if test="smcStartTime != null">
+        smc_start_time,
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      now(),
+      now(),
+      <if test="smcDefId != null">
+        #{smcDefId,jdbcType=BIGINT},
+      </if>
+
+        <if test="smcDefId != null">
+            #{smcDefId,jdbcType=BIGINT},
+        </if>
+
+      <if test="smcTimeOut != null">
+        #{smcTimeOut,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcIp != null">
+        #{smcIp,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcStatus != null">
+        #{smcStatus,jdbcType=INTEGER},
+      </if>
+
+      <if test="smcStartTime != null">
+        #{smcStartTime},
+      </if>
+
+    </trim>
+
+  </insert>
+
+  <insert id="lock" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskLock" useGeneratedKeys="true">
+    insert ignore into smt_ts_task_lock
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      gmt_create,
+      gmt_modified,
+      <if test="smcDefId != null">
+        smc_def_id,
+      </if>
+
+      <if test="smcTimeOut != null">
+        smc_time_out,
+      </if>
+
+      <if test="smcIp != null">
+        smc_ip,
+      </if>
+
+      <if test="smcStatus != null">
+        smc_status,
+      </if>
+      <if test="smcStartTime != null">
+        smc_start_time,
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      now(),
+      now(),
+      <if test="smcDefId != null">
+        #{smcDefId,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcTimeOut != null">
+        #{smcTimeOut,jdbcType=BIGINT},
+      </if>
+
+      <if test="smcIp != null">
+        #{smcIp,jdbcType=VARCHAR},
+      </if>
+
+      <if test="smcStatus != null">
+        #{smcStatus,jdbcType=INTEGER},
+      </if>
+      <if test="smcStartTime != null">
+        #{smcStartTime},
+      </if>
+
+    </trim>
+
+  </insert>
+
+  <update id="updateStatusByOldStatus">
+    update smt_ts_task_lock set smc_status = #{newStatus}, smc_ip = #{ip}, smc_start_time = #{startTime} where id = #{id} and smc_status = #{oldStatus}
+  </update>
+
+  <update id="updateStatusByIdList">
+    update smt_ts_task_lock set smc_status = #{newStatus} where id in <foreach collection="idList" separator="," index="index" close=")" open="(" item="item">#{item}</foreach> and smc_status = #{oldStatus}
+  </update>
+
+  <delete id="deleteByDefIdList" parameterType="list">
+
+    delete from smt_ts_task_lock where smc_def_id in <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">#{item}</foreach>
+
+  </delete>
+
+</mapper>
