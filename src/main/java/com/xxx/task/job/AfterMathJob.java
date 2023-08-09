@@ -1,8 +1,9 @@
 package com.xxx.task.job;
 
-import com.xxx.common.tools.redis.RedisLock;
 import com.xxx.task.core.TaskMemoryStore;
 import com.xxx.task.service.TaskSchedulerService;
+import com.xxx.task.utils.RedissonLock;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class AfterMathJob {
 
     @Autowired
-    private RedisLock redisLock;
+    private RedissonLock redisLock;
 
     @Autowired
     private TaskSchedulerService taskSchedulerService;
@@ -36,17 +37,9 @@ public class AfterMathJob {
     public void checkNeedRetryTask() {
 
         String lock = "com.xxx.task.job.AfterMathJob.checkNeedRetryTask";
-        if(!redisLock.tryLock(lock, 60)) {
-            return;
-        }
-
-        try {
+        redisLock.tryLock(lock, 0L, 60L, TimeUnit.SECONDS, () -> {
             taskSchedulerService.taskRetry();
-        } finally {
-
-            redisLock.unlock(lock);
-        }
-
+        });
     }
 
     /**
@@ -57,18 +50,9 @@ public class AfterMathJob {
 
         String lock = "com.xxx.task.job.AfterMathJob.checkDownLineTask";
 
-        if(!redisLock.tryLock(lock, 60)) {
-            return;
-        }
-
-        try {
-
+        redisLock.tryLock(lock, 0L, 60L, TimeUnit.SECONDS, () -> {
             taskSchedulerService.dealDownLineTask();
-
-        } finally {
-            redisLock.unlock(lock);
-        }
-
+        });
     }
 
     /**
@@ -88,14 +72,8 @@ public class AfterMathJob {
 
         String lock = "com.xxx.task.job.AfterMathJob.cleanOldTaskUpdateMsg";
 
-        if(!redisLock.tryLock(lock, 60)) {
-            return;
-        }
-
-        try {
+        redisLock.tryLock(lock, 0L, 60L, TimeUnit.SECONDS, () -> {
             taskSchedulerService.cleanOldTaskUpdateMsg();
-        } finally {
-            redisLock.unlock(lock);
-        }
+        });
     }
 }

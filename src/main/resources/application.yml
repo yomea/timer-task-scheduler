@@ -1,6 +1,6 @@
 log.home: /data/logs/task-scheduler
 app.version: 1.0.0
-loglevel: info
+loglevel: debug
 app.name: task-scheduler
 server:
   port: 9222
@@ -10,9 +10,6 @@ server:
     threads:
       max: 200 # Maximum amount of worker threads.
       min-spare: 10 # Minimum amount of worker threads.
-aace:
-  center:
-    uri: aace://aace.xxx.net:16999/center
 
 mybatis:
   mapper-locations: classpath*:/mybatis/*.xml
@@ -31,19 +28,6 @@ spring:
     default-property-inclusion: NON_NULL
     #https://www.cnblogs.com/woshimrf/p/LocalDate-serialize-json-springboot.html
     serialization.WRITE_DATES_AS_TIMESTAMPS: false
-  # REDIS (RedisProperties)
-  redis:
-    confKey: main
-    database: 0 # Database index used by the connection factory.
-  jedis.pool:
-    max-total: 100 # Max number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.
-    max-idle: 8 # Max number of "idle" connections in the pool. Use a negative value to indicate an unlimited number of idle connections.
-    min-idle: 4
-    max-wait-millis: 5000 # Maximum amount of time (in milliseconds) a connection allocation should block before throwing an exception when the pool is exhausted. Use a negative value to block indefinitely.
-    minEvictableIdleTimeMillis: 300000
-    testOnBorrow: false
-    testOnReturn: false
-    testWhileIdle: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
@@ -66,3 +50,16 @@ spring:
       maxOpenPreparedStatements: 20
       useGlobalDataSourceStat: false
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000;druid.stat.logSlowSql=true
+      url: jdbc:mysql://xxx:3306/openerp_jiantou_platform?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
+      username: xxx
+      password: xxx
+public.redis.sentinel.node: redis1.public.banksteel.local:26379,redis2.public.banksteel.local:26379,redis3.public.banksteel.local:26379
+public.redis.sentinel.master: xxx
+public.redis.sentinel.password: xxx!
+
+hangu:
+  rpc:
+    provider:
+      port: 8089
+    registry:
+      protocol: redis

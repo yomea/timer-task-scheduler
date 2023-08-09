@@ -67,28 +67,33 @@
     smc_status, smc_error, smc_desc, smc_ip
   </sql>
 
+  <sql id="tableName">
+    smt_ts_task_record_${splitKey}
+  </sql>
+
   <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from smt_ts_task_record
-    <include refid="conditions" />
+    from <include refid="tableName"/>
+
+    <include refid="conditions"/>
     limit 1
   </select>
 
   <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
-    from smt_ts_task_record
+    from <include refid="tableName"/>
     <include refid="conditions" />
   </select>
 
   <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultType="java.lang.Integer">
-    select count(0) from smt_ts_task_record
+    select count(0) from <include refid="tableName" />
     <include refid="conditions" />
   </select>
 
   <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsTaskRecord">
-    update smt_ts_task_record
+    update <include refid="tableName" />
     <set>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -140,18 +145,18 @@
   </update>
 
   <delete id="deleteById">
-    delete from smt_ts_task_record where id  = #{id,jdbcType=BIGINT}
+    delete from <include refid="tableName"/> where id  = #{id,jdbcType=BIGINT}
   </delete>
 
   <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsTaskRecordQuery" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
-    from smt_ts_task_record
+    from <include refid="tableName"/>
     <include refid="conditions" />
   </select>
 
   <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskRecord" useGeneratedKeys="true">
-    insert into smt_ts_task_record
+    insert into <include refid="tableName"/>
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,
       gmt_modified,

@@ -3,11 +3,9 @@ package com.xxx.task.processor.impl;
 import cn.hutool.core.date.DateUtil;
 import com.xxx.task.dal.wrapper.SmtTsTaskRecordWrapper;
 import com.xxx.task.processor.TaskConfigurePostProcessor;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Component;
@@ -20,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class SplitTableGenPostProcessor implements TaskConfigurePostProcessor {
 
     private static final String TABLE_NAME = "smt_ts_task_record";
-
     @Resource
     private SmtTsTaskRecordWrapper smtTsTaskRecordWrapper;
 
@@ -45,7 +42,7 @@ public class SplitTableGenPostProcessor implements TaskConfigurePostProcessor {
 
     public void splitTableMothGen(String tableName) {
 
-        Date curDate = new Date();
+        LocalDateTime curDate = LocalDateTime.now();
 
         //当月分表
         String newTableName = tableName + "_" + DateUtil.format(curDate, "yyyyMM");
@@ -53,8 +50,8 @@ public class SplitTableGenPostProcessor implements TaskConfigurePostProcessor {
         smtTsTaskRecordWrapper.createMontTable(newTableName);
 
         //下月分表，避免时间接近导致表不存在的错误
-        Date nextMonth = DateUtil.addMonths(curDate, 1);
-        String nextNewTableName = tableName + "_" + DateUtil.format(nextMonth, "yyyyMM");
+        LocalDateTime nextMonthLdt = curDate.plusMonths(1);
+        String nextNewTableName = tableName + "_" + DateUtil.format(nextMonthLdt, "yyyyMM");
 
         smtTsTaskRecordWrapper.createMontTable(nextNewTableName);
     }

@@ -1,11 +1,9 @@
 package com.xxx.task.service.impl;
 
+import cn.hutool.core.net.NetUtil;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
-import com.xxx.ace4j.Ace;
-import com.xxx.ace4j.srd.ServiceNode;
-import com.xxx.common.tools.exception.ApiException;
-import com.xxx.perform.common.mybatis.Page;
+import com.hanggu.common.manager.HanguRpcManager;
 import com.xxx.task.constant.TaskScheduleConstant;
 import com.xxx.task.context.SchedulerContext;
 import com.xxx.task.core.CommonTraceTask;
@@ -39,7 +37,7 @@ import com.xxx.task.model.TaskScheduleConf;
 import com.xxx.task.model.TimerTask;
 import com.xxx.task.model.TimerTaskRequest;
 import com.xxx.task.service.TaskSchedulerService;
-import com.xxx.task.utils.AceServiceUtils;
+import com.xxx.task.utils.RedisSearchServiceUtils;
 import com.xxx.task.utils.SchedulerContextUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -445,29 +443,27 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     @Override
     public void dealDownLineTask() {
 
-        List<ServiceNode> list = AceServiceUtils.getServerInfoList(TaskScheduleConstant.WORKER_PROXY_NAME + appName + "$center", appName);
+        List<String> list = RedisSearchServiceUtils.getServerInfoList(TaskScheduleConstant.WORKER_PROXY_NAME + appName + "$center");
 
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
 
-        List<String> ipList = list.stream().map(ServiceNode::getHost).collect(Collectors.toList());
-
-        appDownLineDealBeforeShutDownTask(ipList);
+        appDownLineDealBeforeShutDownTask(list);
     }
 
     @Override
     public void taskUpdateMsg() {
 
         SmtTsConsumeProgressQuery progressQuery = new SmtTsConsumeProgressQuery();
-        progressQuery.setSmcIp(Ace.get().getLocalHost());
+        progressQuery.setSmcIp(HanguRpcManager.getLocalHost().getHost());
 
         //获取该机器的消费进度
         SmtTsConsumeProgress smtTsConsumeProgress = smtTsConsumeProgressWrapper.getBy(progressQuery);
 
         if(smtTsConsumeProgress == null) {
             smtTsConsumeProgress = new SmtTsConsumeProgress();
-            smtTsConsumeProgress.setSmcIp(Ace.get().getLocalHost());
+            smtTsConsumeProgress.setSmcIp(HanguRpcManager.getLocalHost().getHost());
             smtTsConsumeProgress.setSmcMsgId(0L);
             smtTsConsumeProgressWrapper.insertSelective(smtTsConsumeProgress);
         }
@@ -594,7 +590,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     private void appStartDealBeforeShutDownTask() {
 
         SmtTsTaskLockQuery query = new SmtTsTaskLockQuery();
-        query.setSmcIp(Ace.get().getLocalHost());
+        query.setSmcIp(HanguRpcManager.getLocalHost().getHost());
 
         doDealBeforeShutDownTask(query);
     }
@@ -682,7 +678,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
                     return ApiResult.fail("延时定时任务的延时时间 delay 不能小于零！", 500);
                 }
             } else {
-                throw new ApiException(String.format("不支持的定时任务类型！class = [%s]", timerTask.getClass().getName()), 500);
+                throw new RuntimeException(String.format("不支持的定时任务类型！class = [%s]", timerTask.getClass().getName()));
             }
 
         }

@@ -1,8 +1,8 @@
 package com.xxx.task.core;
 
+import com.hanggu.common.context.HanguContext;
 import com.hanggu.common.manager.HanguRpcManager;
 import com.hanggu.consumer.callback.RpcResponseCallback;
-import com.xxx.Aace.context.AaceContext;
 import com.xxx.task.callback.HanguTaskSchedulerCallbackImpl;
 import com.xxx.task.constant.TaskSchedulerCons;
 import com.xxx.task.context.SchedulerContext;
@@ -58,16 +58,20 @@ public class CommonTraceTask extends TraceTask {
 
         SmtTsTaskDef smtTsTaskDef = schedulerContext.getSmtTsTaskDef();
 
-        AaceContext aaceContext = new AaceContext();
+        HanguContext hanguContext = new HanguContext();
         Long timeout = smtTsTaskDef.getSmcTimeout();
         timeout = timeout == null || timeout == -1L ? 5000 : timeout;
         //设置超时时间
-        aaceContext.setTimeout(timeout.intValue());
+        hanguContext.putValue(HanguContext.DYNAMIC_TIME_OUT, timeout.intValue());
 
         RpcResponseCallback callback = new HanguTaskSchedulerCallbackImpl(schedulerContext);
         //透传调度该任务的机器 IP
         taskContext.setScheduleIp(HanguRpcManager.getLocalHost().getHost());
-        worker.asyncDealTask(taskContext, callback, aaceContext);
+        try {
+            worker.asyncDealTask(taskContext, callback);
+        } finally {
+            hanguContext.remove();
+        }
     }
 
     @Override
