@@ -1,13 +1,15 @@
 package com.xxx.task;
 
-import ch.qos.logback.classic.Logger;
 import cn.hutool.core.net.NetUtil;
-import com.hanggu.common.manager.HanguRpcManager;
 import com.xxx.task.constant.TaskScheduleConstant;
-import com.xxx.task.utils.LogUtils;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
     private static final int SELF_EXPORT_TIME_OUT = 24 * 60 * 60;
 
     private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
-        new ScheduledThreadPoolExecutor(1);
+        new ScheduledThreadPoolExecutor(2);
 
     @Value("${app.name}")
     private String appName;
@@ -80,6 +82,26 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
                 j.close();
             }
         }, 2, TimeUnit.SECONDS);
+
+        SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
+            Jedis j = jedisSentinelPool.getResource();
+            try {
+                Map<String, String> map = j.hgetAll(groupName);
+                if (Objects.isNull(map) || map.isEmpty()) {
+                    return;
+                }
+                long curTime = System.currentTimeMillis();
+                List<String> fields = map.entrySet().stream().filter(entry -> {
+                    Long e = Long.parseLong(entry.getValue());
+                    return curTime > e;
+                }).map(Entry::getKey).distinct().collect(Collectors.toList());
+                j.hdel(groupName, fields.toArray(new String[0]));
+            } finally {
+                j.close();
+            }
+
+        }, 24, TimeUnit.HOURS);
+
     }
 }
 
