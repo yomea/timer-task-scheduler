@@ -1,5 +1,6 @@
 package com.xxx.task.core;
 
+import com.hanggu.common.properties.HanguProperties;
 import com.hanggu.common.registry.RegistryService;
 import com.hanggu.consumer.factory.ReferenceFactoryBean;
 import com.xxx.task.constant.TaskScheduleConstant;
@@ -17,8 +18,16 @@ import org.springframework.stereotype.Component;
 public class TaskHandlerBeanFactory implements EnvironmentAware {
 
     private static RegistryService registryService;
-    public TaskHandlerBeanFactory(RegistryService registryService) {
-        this.registryService = registryService;
+    private static HanguProperties hanguProperties;
+
+    /**
+     * 从 hanggu-rpc 自动装配
+     * @param registryService
+     * @param hanguProperties
+     */
+    public TaskHandlerBeanFactory(RegistryService registryService, HanguProperties hanguProperties) {
+        TaskHandlerBeanFactory.registryService = registryService;
+        TaskHandlerBeanFactory.hanguProperties = hanguProperties;
     }
 
     private static final Object OBJECT = new Object();
@@ -48,7 +57,7 @@ public class TaskHandlerBeanFactory implements EnvironmentAware {
             ReferenceFactoryBean<TaskSchedulerWorker> config =
                 new ReferenceFactoryBean<>(groupName,
                     TaskScheduleConstant.WORKER_INTERFACE_NAME,
-                    "", TaskSchedulerWorker.class, registryService);
+                    "", TaskSchedulerWorker.class, registryService, hanguProperties);
 
             // 初始化
             config.afterPropertiesSet();
