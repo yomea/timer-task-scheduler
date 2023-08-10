@@ -12,13 +12,13 @@
 
 ### 2.2 方案2：基于master选举的分布式定时任务调度方案
 
-（可使用开源项目框架，但目前基本都是ZK的，受限与公司现状，可自行开发redis版本） -》分布式任务调度：https://blog.csdn.net/qq_27785239/article/details/120578171?spm=1001.2014.3001.5502
+（可使用开源项目框架，但目前基本都是ZK的，受限与大部分小公司现状，可自行开发redis版本） -》分布式任务调度：https://blog.csdn.net/qq_27785239/article/details/120578171?spm=1001.2014.3001.5502
 <br /> 注意：定时任务调度任务唯一标识：任务id
 
 
 ## 三、架构设计
 
-根据公司现状与简化开发工作量，我们选择方案1，方案1的大体架构如下：
+根据大部分小公司现状与简化开发工作量，我们选择方案1，方案1的大体架构如下：
 
 ![yuque_diagram (1)](https://user-images.githubusercontent.com/20855002/137705613-f8d7437c-8edf-4dfd-bdb9-6ba501c6ef27.jpg)
 
@@ -179,10 +179,10 @@ create table ts_consume_progress (
 ```
 
 ## 六、快速开始
-- springboot worker端自动装配 jar 工程 git地址：https://github.com/yomea/TaskSchedulerStarter
-- 调度中心 git地址：https://github.com/yomea/timer-task-scheduler
+- springboot worker端自动装配 jar 工程 git地址：https://gitee.com/yomea/task-scheduler-starter
+- 调度中心 git地址：https://gitee.com/yomea/timer-task-scheduler
 
-代码中使用的rpc框架为公司内部自研框架，但是原理与外边开源的rpc框架是一样的
+代码中使用的rpc框架为本人自己开发的rpc框架（https://gitee.com/yomea/hanggu-rpc），原理与其他开源的rpc框架是一样的
 
 ### 6.1 引入jar
 
@@ -236,7 +236,7 @@ public interface Ixxx {
 
 ### 6.4 任务新增或修改
 
-- rpc 接口： com.xxx.task.ace.impl.TaskSchedulerFacade#submitTimerTask
+- rpc 接口： com.xxx.task.hangu.impl.TaskSchedulerFacade#submitTimerTask
 
 代码演示：
 
@@ -328,7 +328,7 @@ http:
 
 ### 6.5 任务删除
 
-- rpc：com.xxx.task.ace.impl.TaskSchedulerFacade#timerTaskDel
+- rpc：com.xxx.task.hangu.impl.TaskSchedulerFacade#timerTaskDel
 - http：http://localhost:9222/task-scheduler/task/timerTaskDel
 
 ```json
@@ -339,21 +339,21 @@ http:
 
 ### 6.6 任务禁用
 
-- rpc：com.xxx.task.ace.impl.TaskSchedulerFacade#disableTask
+- rpc：com.xxx.task.hangu.impl.TaskSchedulerFacade#disableTask
 - http：http://localhost:9222/task-scheduler/task/disableTask
 
 参数 taskId
 
 ### 6.7 任务启用
 
-- rpc：com.xxx.task.ace.impl.TaskSchedulerFacade#enableTask
+- rpc：com.xxx.task.hangu.impl.TaskSchedulerFacade#enableTask
 - http：http://localhost:9222/task-scheduler/task/enableTask
 
 参数 taskId
 
 ### 6.8 立即执行某任务
 
-- rpc：com.xxx.task.ace.impl.TaskSchedulerFacade#execTaskImmediately
+- rpc：com.xxx.task.hangu.impl.TaskSchedulerFacade#execTaskImmediately
 - http：http://localhost:9222/task-scheduler/task/execTaskImmediately
 
 参数 taskId
