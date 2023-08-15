@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.xxx.task</groupId>
+  <groupId>com.hangu.task</groupId>
   <artifactId>task-scheduler</artifactId>
   <packaging>jar</packaging>
   <name>task-scheduler</name>
@@ -69,7 +69,7 @@
 
 
     <dependency>
-      <groupId>com.xxx.task</groupId>
+      <groupId>com.hangu.task</groupId>
       <artifactId>task-scheduler-starter</artifactId>
       <version>${task-scheduler-starter.version}</version>
     </dependency>
@@ -285,7 +285,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${spring.boot.version}</version>
         <configuration>
-          <mainClass>com.xxx.task.Application</mainClass>
+          <mainClass>com.hangu.task.Application</mainClass>
         </configuration>
         <executions>
           <execution>
@@ -322,7 +322,7 @@
   <repositories>
     <repository>
       <id>central</id>
-      <url>https://maven.xxx.com/nexus/content/groups/public/</url>
+      <url>https://maven.hangu.com/nexus/content/groups/public/</url>
       <releases>
         <enabled>true</enabled>
       </releases>

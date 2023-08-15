@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskDefMapper">
-  <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskDef">
+<mapper namespace="com.hangu.task.dal.mapper.SmtTsTaskDefMapper">
+  <resultMap id="BaseResultMap" type="com.hangu.task.dal.model.SmtTsTaskDef">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
@@ -78,7 +78,7 @@
     api_method_name, smc_conf_flag, smc_timeout, smc_status, smc_has_child, smc_ext, smc_customer_id
   </sql>
 
-  <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
+  <select id="getBy" parameterType="com.hangu.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from smt_ts_task_def
@@ -86,19 +86,19 @@
     limit 1
   </select>
 
-  <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
+  <select id="selectBy" parameterType="com.hangu.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from smt_ts_task_def
     <include refid="conditions" />
   </select>
 
-  <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsTaskDefQuery" resultType="java.lang.Integer">
+  <select id="countBy" parameterType="com.hangu.task.dal.model.SmtTsTaskDefQuery" resultType="java.lang.Integer">
     select count(0) from smt_ts_task_def
     <include refid="conditions" />
   </select>
 
-  <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsTaskDef">
+  <update id="updateById" parameterType="com.hangu.task.dal.model.SmtTsTaskDef">
     update smt_ts_task_def
     <set>
       <if test="gmtCreate != null">
@@ -166,14 +166,14 @@
     delete from smt_ts_task_def where smc_top_pid  = #{topId,jdbcType=BIGINT}
   </delete>
 
-  <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
+  <select id="pageBy" parameterType="com.hangu.task.dal.model.SmtTsTaskDefQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from smt_ts_task_def
     <include refid="conditions" />
   </select>
 
-  <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskDef" useGeneratedKeys="true">
+  <insert id="insertSelective" keyProperty="id" parameterType="com.hangu.task.dal.model.SmtTsTaskDef" useGeneratedKeys="true">
     insert into smt_ts_task_def
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,

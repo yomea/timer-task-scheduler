@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskLockMapper">
-    <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskLock">
+<mapper namespace="com.hangu.task.dal.mapper.SmtTsTaskLockMapper">
+    <resultMap id="BaseResultMap" type="com.hangu.task.dal.model.SmtTsTaskLock">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
         <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
@@ -59,7 +59,7 @@
     id, gmt_create, gmt_modified, smc_def_id, smc_def_pid, smc_time_out, smc_ip, smc_status,smc_start_time
   </sql>
 
-  <select id="getBy" parameterType="com.xxx.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
+  <select id="getBy" parameterType="com.hangu.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from smt_ts_task_lock
@@ -67,19 +67,19 @@
     limit 1
   </select>
 
-  <select id="selectBy" parameterType="com.xxx.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
+  <select id="selectBy" parameterType="com.hangu.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from smt_ts_task_lock
     <include refid="conditions" />
   </select>
 
-  <select id="countBy" parameterType="com.xxx.task.dal.model.SmtTsTaskLockQuery" resultType="java.lang.Integer">
+  <select id="countBy" parameterType="com.hangu.task.dal.model.SmtTsTaskLockQuery" resultType="java.lang.Integer">
     select count(0) from smt_ts_task_lock
     <include refid="conditions" />
   </select>
 
-  <update id="updateById" parameterType="com.xxx.task.dal.model.SmtTsTaskLock">
+  <update id="updateById" parameterType="com.hangu.task.dal.model.SmtTsTaskLock">
     update smt_ts_task_lock
     <set>
       <if test="gmtCreate != null">
@@ -122,14 +122,14 @@
     delete from smt_ts_task_lock where id  = #{id,jdbcType=BIGINT}
   </delete>
 
-  <select id="pageBy" parameterType="com.xxx.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
+  <select id="pageBy" parameterType="com.hangu.task.dal.model.SmtTsTaskLockQuery" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from smt_ts_task_lock
     <include refid="conditions" />
   </select>
 
-  <insert id="insertSelective" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskLock" useGeneratedKeys="true">
+  <insert id="insertSelective" keyProperty="id" parameterType="com.hangu.task.dal.model.SmtTsTaskLock" useGeneratedKeys="true">
     insert into smt_ts_task_lock
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,
@@ -191,7 +191,7 @@
 
   </insert>
 
-  <insert id="lock" keyProperty="id" parameterType="com.xxx.task.dal.model.SmtTsTaskLock" useGeneratedKeys="true">
+  <insert id="lock" keyProperty="id" parameterType="com.hangu.task.dal.model.SmtTsTaskLock" useGeneratedKeys="true">
     insert ignore into smt_ts_task_lock
     <trim prefix="(" suffix=")" suffixOverrides=",">
       gmt_create,

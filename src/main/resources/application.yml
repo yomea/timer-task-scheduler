@@ -16,7 +16,7 @@ mybatis:
   config-location: classpath:mybatis-config.xml
 
 spring:
-  datasource.confKey: xxx_im
+  datasource.confKey: hangu_im
   application.name: ${app.name}
   mvc:
     format:
@@ -50,12 +50,12 @@ spring:
       maxOpenPreparedStatements: 20
       useGlobalDataSourceStat: false
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000;druid.stat.logSlowSql=true
-      url: jdbc:mysql://xxx:3306/openerp_jiantou_platform?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
-      username: xxx
-      password: xxx
+      url: jdbc:mysql://hangu:3306/openerp_jiantou_platform?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
+      username: hangu
+      password: hangu
 public.redis.sentinel.node: redis1.public.banksteel.local:26379,redis2.public.banksteel.local:26379,redis3.public.banksteel.local:26379
-public.redis.sentinel.master: xxx
-public.redis.sentinel.password: xxx!
+public.redis.sentinel.master: hangu
+public.redis.sentinel.password: hangu!
 
 hangu:
   rpc:

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxx.task.dal.mapper.SmtTsTaskRecordCommonMapper">
-  <resultMap id="BaseResultMap" type="com.xxx.task.dal.model.SmtTsTaskRecord">
+<mapper namespace="com.hangu.task.dal.mapper.SmtTsTaskRecordCommonMapper">
+  <resultMap id="BaseResultMap" type="com.hangu.task.dal.model.SmtTsTaskRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
@@ -69,7 +69,7 @@
 
   <update id="createMontTable" parameterType="string">
 
-    create table if not exists xxx_im.${tableName} (
+    create table if not exists hangu_im.${tableName} (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `gmt_create` datetime NOT NULL COMMENT '创建时间',
       `gmt_modified` datetime DEFAULT NULL COMMENT '更新时间',

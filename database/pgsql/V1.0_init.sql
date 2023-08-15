@@ -1,5 +1,5 @@
 
-CREATE TABLE xxx_im.smt_ts_task_lock (
+CREATE TABLE hangu_im.smt_ts_task_lock (
   id BIGSERIAL NOT NULL PRIMARY KEY,
   gmt_create timestamp NOT NULL ,
   gmt_modified timestamp DEFAULT NULL ,
@@ -11,9 +11,9 @@ CREATE TABLE xxx_im.smt_ts_task_lock (
   smc_status int NOT NULL
 );
 
-create unique index on xxx_im.smt_ts_task_lock(smc_def_id);
+create unique index on hangu_im.smt_ts_task_lock(smc_def_id);
 
-CREATE TABLE xxx_im.smt_ts_task_def (
+CREATE TABLE hangu_im.smt_ts_task_def (
   id BIGSERIAL NOT NULL PRIMARY KEY,
   gmt_create timestamp NOT NULL ,
   gmt_modified timestamp DEFAULT NULL ,
@@ -31,10 +31,10 @@ CREATE TABLE xxx_im.smt_ts_task_def (
   smc_ext varchar(1024) DEFAULT NULL
 );
 
-create unique index on xxx_im.smt_ts_task_def(smc_customer_id,app_service_name,api_service_name,api_method_name);
-create index on xxx_im.smt_ts_task_def(smc_top_pid);
+create unique index on hangu_im.smt_ts_task_def(smc_customer_id,app_service_name,api_service_name,api_method_name);
+create index on hangu_im.smt_ts_task_def(smc_top_pid);
 
-CREATE TABLE xxx_im.smt_ts_task_timer (
+CREATE TABLE hangu_im.smt_ts_task_timer (
   id BIGSERIAL NOT NULL PRIMARY KEY,
   gmt_create timestamp NOT NULL ,
   gmt_modified timestamp DEFAULT NULL ,
@@ -49,10 +49,10 @@ CREATE TABLE xxx_im.smt_ts_task_timer (
   smc_status int DEFAULT '1'
 );
 
-create index on xxx_im.smt_ts_task_timer(smc_def_id,smc_start_day,smc_end_day);
+create index on hangu_im.smt_ts_task_timer(smc_def_id,smc_start_day,smc_end_day);
 
 -- 月表 smt_ts_task_record_202110 smt_ts_task_record_202111
-CREATE TABLE xxx_im.smt_ts_task_record (
+CREATE TABLE hangu_im.smt_ts_task_record (
   id BIGSERIAL NOT NULL PRIMARY KEY,
   gmt_create timestamp NOT NULL ,
   gmt_modified timestamp DEFAULT NULL ,
@@ -67,10 +67,10 @@ CREATE TABLE xxx_im.smt_ts_task_record (
   smc_ip varchar(16) NOT NULL
 );
 
-create index on xxx_im.smt_ts_task_record(smc_def_id);
+create index on hangu_im.smt_ts_task_record(smc_def_id);
 
 
-CREATE TABLE xxx_im.smt_ts_task_msg (
+CREATE TABLE hangu_im.smt_ts_task_msg (
   id BIGSERIAL NOT NULL PRIMARY KEY,
   gmt_create timestamp NOT NULL ,
   gmt_modified timestamp DEFAULT NULL ,
@@ -78,12 +78,12 @@ CREATE TABLE xxx_im.smt_ts_task_msg (
   smc_action int NOT NULL
 ) ;
 
-create unique index on xxx_im.smt_ts_task_msg(id,gmt_create);
-create index  on xxx_im.smt_ts_task_msg(gmt_create);
-create index on xxx_im.smt_ts_task_msg(smc_def_id);
+create unique index on hangu_im.smt_ts_task_msg(id,gmt_create);
+create index  on hangu_im.smt_ts_task_msg(gmt_create);
+create index on hangu_im.smt_ts_task_msg(smc_def_id);
 
 
-CREATE TABLE xxx_im.smt_ts_consume_progress (
+CREATE TABLE hangu_im.smt_ts_consume_progress (
   id BIGSERIAL NOT NULL PRIMARY KEY,
   gmt_create timestamp NOT NULL ,
   gmt_modified timestamp DEFAULT NULL ,
@@ -91,7 +91,7 @@ CREATE TABLE xxx_im.smt_ts_consume_progress (
   smc_msg_id bigint NOT NULL
 );
 
-create unique index on xxx_im.smt_ts_consume_progress(smc_ip);
+create unique index on hangu_im.smt_ts_consume_progress(smc_ip);
 
 
 

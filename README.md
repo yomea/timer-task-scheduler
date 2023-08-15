@@ -188,7 +188,7 @@ create table ts_consume_progress (
 
 ```xml
 <dependency>
-	<groupId>com.xxx.task</groupId>
+	<groupId>com.hangu.task</groupId>
   <artifactId>task-scheduler-starter</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 </dependency>
@@ -213,8 +213,8 @@ task:
 ### 6.3 任务实现
 
 ```java
-@TaskScheduleService(apiServiceName="xxx")
-public interface Ixxx {
+@TaskScheduleService(apiServiceName="hangu")
+public interface Ihangu {
 	
 	//返回值为void，如果调用完成不抛出错误，即任务任务执行成功
 	@TaskScheduleMethod(name="task1")
@@ -236,7 +236,7 @@ public interface Ixxx {
 
 ### 6.4 任务新增或修改
 
-- rpc 接口： com.xxx.task.ace.impl.TaskSchedulerFacade#submitTimerTask
+- rpc 接口： com.hangu.task.ace.impl.TaskSchedulerFacade#submitTimerTask
 
 代码演示：
 
@@ -264,7 +264,7 @@ http:
 	"taskInfoConf":{
 		"status":TaskStatusEnum.ENABLE.getStatus(),//任务是否启动，1:启动，-1:禁用
 		"taskId":123,//如果是新增，这个字段不传，如果是修改请加上这个参数
-		"taskName":"xxx",
+		"taskName":"hangu",
 		"timeout":1000,//超时时间，单位ms
 		"appServiceName":"das-sources",//注册到注册中心的服务名
 		"apiServiceName":"apiDataSourceGet",//接口服务名
@@ -273,7 +273,7 @@ http:
 			{
 			"status":TaskStatusEnum.ENABLE.getStatus(),//任务是否启动，1:启动，-1:禁用
 			"taskId":123,//如果是新增，这个字段不传，如果是修改请加上这个参数
-			"taskName":"xxx",
+			"taskName":"hangu",
 			"timeout":1000,//超时时间，单位ms
 			"appServiceName":"das-sources",//注册到注册中心的服务名
 			"apiServiceName":"apiDataSourceGet",//接口服务名
@@ -282,7 +282,7 @@ http:
 				{
 				"status":TaskStatusEnum.ENABLE.getStatus(),//任务是否启动，1:启动，-1:禁用
 				"taskId":123,//如果是新增，这个字段不传，如果是修改请加上这个参数
-				"taskName":"xxx",
+				"taskName":"hangu",
 				"timeout":1000,//超时时间，单位ms
 				"appServiceName":"das-sources",//注册到注册中心的服务名
 				"apiServiceName":"apiDataSourceGet",//接口服务名
@@ -328,7 +328,7 @@ http:
 
 ### 6.5 任务删除
 
-- rpc：com.xxx.task.ace.impl.TaskSchedulerFacade#timerTaskDel
+- rpc：com.hangu.task.ace.impl.TaskSchedulerFacade#timerTaskDel
 - http：http://localhost:9222/task-scheduler/task/timerTaskDel
 
 ```json
@@ -339,21 +339,21 @@ http:
 
 ### 6.6 任务禁用
 
-- rpc：com.xxx.task.ace.impl.TaskSchedulerFacade#disableTask
+- rpc：com.hangu.task.ace.impl.TaskSchedulerFacade#disableTask
 - http：http://localhost:9222/task-scheduler/task/disableTask
 
 参数 taskId
 
 ### 6.7 任务启用
 
-- rpc：com.xxx.task.ace.impl.TaskSchedulerFacade#enableTask
+- rpc：com.hangu.task.ace.impl.TaskSchedulerFacade#enableTask
 - http：http://localhost:9222/task-scheduler/task/enableTask
 
 参数 taskId
 
 ### 6.8 立即执行某任务
 
-- rpc：com.xxx.task.ace.impl.TaskSchedulerFacade#execTaskImmediately
+- rpc：com.hangu.task.ace.impl.TaskSchedulerFacade#execTaskImmediately
 - http：http://localhost:9222/task-scheduler/task/execTaskImmediately
 
 参数 taskId
