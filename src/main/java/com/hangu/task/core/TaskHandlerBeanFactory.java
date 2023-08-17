@@ -1,8 +1,10 @@
 package com.hangu.task.core;
 
-import com.hanggu.common.properties.HanguProperties;
-import com.hanggu.common.registry.RegistryService;
-import com.hanggu.consumer.factory.ReferenceFactoryBean;
+import com.hangu.common.entity.ServerInfo;
+import com.hangu.common.properties.HanguProperties;
+import com.hangu.common.registry.RegistryService;
+import com.hangu.consumer.reference.ReferenceBean;
+import com.hangu.consumer.reference.ServiceReference;
 import com.hangu.task.constant.TaskScheduleConstant;
 import com.hangu.task.hangu.TaskSchedulerWorker;
 import java.util.Map;
@@ -22,6 +24,7 @@ public class TaskHandlerBeanFactory implements EnvironmentAware {
 
     /**
      * 从 hanggu-rpc 自动装配
+     *
      * @param registryService
      * @param hanguProperties
      */
@@ -48,21 +51,20 @@ public class TaskHandlerBeanFactory implements EnvironmentAware {
         try {
 
             TaskSchedulerWorker worker = APP_SERVICE_NAME_MAP_WORKER.get(appServiceName);
-            if(worker != null) {
+            if (worker != null) {
                 return;
             }
 
             String groupName = TaskScheduleConstant.WORKER_PROXY_NAME + appServiceName;
 
-            ReferenceFactoryBean<TaskSchedulerWorker> config =
-                new ReferenceFactoryBean<>(groupName,
-                    TaskScheduleConstant.WORKER_INTERFACE_NAME,
-                    "", TaskSchedulerWorker.class, registryService, hanguProperties);
+            ServerInfo serverInfo = new ServerInfo();
+            serverInfo.setGroupName(groupName);
+            serverInfo.setInterfaceName(TaskScheduleConstant.WORKER_INTERFACE_NAME);
+            serverInfo.setVersion("");
 
-            // 初始化
-            config.afterPropertiesSet();
-
-            worker = config.getObject();
+            ReferenceBean<TaskSchedulerWorker> referenceBean = new ReferenceBean<>(serverInfo,
+                TaskSchedulerWorker.class, registryService, hanguProperties);
+            worker = ServiceReference.reference(referenceBean);
 
             registryWorker(appServiceName, worker);
         } catch (Exception e) {
@@ -75,7 +77,7 @@ public class TaskHandlerBeanFactory implements EnvironmentAware {
     public static TaskSchedulerWorker getWorker(String appServiceName) {
 
         TaskSchedulerWorker worker = APP_SERVICE_NAME_MAP_WORKER.get(appServiceName);
-        if(worker == null) {
+        if (worker == null) {
             registryWorker(appServiceName);
         }
         return APP_SERVICE_NAME_MAP_WORKER.get(appServiceName);

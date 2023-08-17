@@ -2,7 +2,7 @@ package com.hangu.task.service.impl;
 
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
-import com.hanggu.common.manager.HanguRpcManager;
+import com.hangu.common.manager.HanguRpcManager;
 import com.hangu.task.constant.TaskScheduleConstant;
 import com.hangu.task.context.SchedulerContext;
 import com.hangu.task.core.CommonTraceTask;

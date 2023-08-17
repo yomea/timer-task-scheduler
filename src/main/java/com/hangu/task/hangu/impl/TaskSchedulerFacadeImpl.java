@@ -1,6 +1,6 @@
 package com.hangu.task.hangu.impl;
 
-import com.hanggu.provider.annotation.HangguService;
+import com.hangu.provider.annotation.HanguService;
 import com.hangu.task.hangu.TaskSchedulerFacade;
 import com.hangu.task.model.ApiResult;
 import com.hangu.task.model.TimerTaskRequest;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by wuzhenhong on 10/12/21 5:34 PM
  */
-@HangguService
+@HanguService
 public class TaskSchedulerFacadeImpl implements TaskSchedulerFacade {
 
     @Autowired

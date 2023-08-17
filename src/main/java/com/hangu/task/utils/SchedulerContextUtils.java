@@ -1,7 +1,7 @@
 package com.hangu.task.utils;
 
 import com.google.common.collect.Maps;
-import com.hanggu.common.manager.HanguRpcManager;
+import com.hangu.common.manager.HanguRpcManager;
 import com.hangu.task.constant.TaskSchedulerCons;
 import com.hangu.task.context.SchedulerContext;
 import com.hangu.task.core.CommonTraceTask;
