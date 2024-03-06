@@ -12,8 +12,8 @@
 
 构建一个统一的调度系统，用于触发定时任务的调度。
 
-spring自动装配启动starter的github地址：https://github.com/yomea/task-scheduler-starter
-spring自动装配启动starter的gitee同步地址：https://gitee.com/yomea/task-scheduler-starter
+- spring自动装配启动starter的github地址：https://github.com/yomea/task-scheduler-starter
+- spring自动装配启动starter的gitee同步地址：https://gitee.com/yomea/task-scheduler-starter
 
 
 ## 二、方案设计
