@@ -2,6 +2,7 @@ package com.hangu.task.utils;
 
 import com.google.common.collect.Maps;
 import com.hangu.common.manager.HanguRpcManager;
+import com.hangu.provider.manager.NettyServerSingleManager;
 import com.hangu.task.constant.TaskSchedulerCons;
 import com.hangu.task.context.SchedulerContext;
 import com.hangu.task.core.CommonTraceTask;
@@ -145,7 +146,7 @@ public class SchedulerContextUtils {
         smtTsTaskRecord.setSmcTaskName(smtTsTaskDef.getSmcTaskName());
         smtTsTaskRecord.setSmcStime(new Date());
         smtTsTaskRecord.setSmcStatus(TaskExecEnum.EXEC_ING.getStatus());
-        smtTsTaskRecord.setSmcIp(HanguRpcManager.getLocalHost().getHost());
+        smtTsTaskRecord.setSmcIp(NettyServerSingleManager.getLocalHost().getHost());
         smtTsTaskRecord.setSmcDesc(taskContext.isRetry() ? "该任务为重试调度线程调度" : null);
 
         SmtTsTaskRecordWrapper smtTsTaskRecordWrapper = schedulerContext.getSmtTsTaskRecordWrapper();

@@ -3,6 +3,7 @@ package com.hangu.task.core;
 import com.hangu.common.callback.RpcResponseCallback;
 import com.hangu.common.context.HanguContext;
 import com.hangu.common.manager.HanguRpcManager;
+import com.hangu.provider.manager.NettyServerSingleManager;
 import com.hangu.task.callback.HanguTaskSchedulerCallbackImpl;
 import com.hangu.task.constant.TaskSchedulerCons;
 import com.hangu.task.context.SchedulerContext;
@@ -66,7 +67,7 @@ public class CommonTraceTask extends TraceTask {
 
         RpcResponseCallback callback = new HanguTaskSchedulerCallbackImpl(schedulerContext);
         //透传调度该任务的机器 IP
-        taskContext.setScheduleIp(HanguRpcManager.getLocalHost().getHost());
+        taskContext.setScheduleIp(NettyServerSingleManager.getLocalHost().getHost());
         try {
             worker.asyncDealTask(taskContext, callback);
         } finally {
@@ -95,7 +96,7 @@ public class CommonTraceTask extends TraceTask {
             SmtTsTaskLock lock = new SmtTsTaskLock();
             lock.setSmcDefId(smtTsTaskDef.getId());
             lock.setSmcStatus(TaskExecEnum.EXEC_ING.getStatus());
-            lock.setSmcIp(HanguRpcManager.getLocalHost().getHost());
+            lock.setSmcIp(NettyServerSingleManager.getLocalHost().getHost());
             lock.setSmcTimeOut(smtTsTaskDef.getSmcTimeout());
             lock.setSmcStartTime(System.currentTimeMillis());
 
@@ -115,7 +116,7 @@ public class CommonTraceTask extends TraceTask {
             return false;
         }
 
-        int row = smtTsTaskLockWrapper.updateStatusByOldStatus(System.currentTimeMillis(), smtTsTaskLock.getId(), HanguRpcManager.getLocalHost().getHost(), TaskExecEnum.EXEC_ING.getStatus(), status);
+        int row = smtTsTaskLockWrapper.updateStatusByOldStatus(System.currentTimeMillis(), smtTsTaskLock.getId(), NettyServerSingleManager.getLocalHost().getHost(), TaskExecEnum.EXEC_ING.getStatus(), status);
         if(row > 0) {
             return true;
         }

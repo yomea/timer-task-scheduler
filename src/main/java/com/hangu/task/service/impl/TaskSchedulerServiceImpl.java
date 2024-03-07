@@ -3,6 +3,7 @@ package com.hangu.task.service.impl;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import com.hangu.common.manager.HanguRpcManager;
+import com.hangu.provider.manager.NettyServerSingleManager;
 import com.hangu.task.constant.TaskScheduleConstant;
 import com.hangu.task.context.SchedulerContext;
 import com.hangu.task.core.CommonTraceTask;
@@ -455,14 +456,14 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     public void taskUpdateMsg() {
 
         SmtTsConsumeProgressQuery progressQuery = new SmtTsConsumeProgressQuery();
-        progressQuery.setSmcIp(HanguRpcManager.getLocalHost().getHost());
+        progressQuery.setSmcIp(NettyServerSingleManager.getLocalHost().getHost());
 
         //获取该机器的消费进度
         SmtTsConsumeProgress smtTsConsumeProgress = smtTsConsumeProgressWrapper.getBy(progressQuery);
 
         if(smtTsConsumeProgress == null) {
             smtTsConsumeProgress = new SmtTsConsumeProgress();
-            smtTsConsumeProgress.setSmcIp(HanguRpcManager.getLocalHost().getHost());
+            smtTsConsumeProgress.setSmcIp(NettyServerSingleManager.getLocalHost().getHost());
             smtTsConsumeProgress.setSmcMsgId(0L);
             smtTsConsumeProgressWrapper.insertSelective(smtTsConsumeProgress);
         }
@@ -589,7 +590,7 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService, Applicati
     private void appStartDealBeforeShutDownTask() {
 
         SmtTsTaskLockQuery query = new SmtTsTaskLockQuery();
-        query.setSmcIp(HanguRpcManager.getLocalHost().getHost());
+        query.setSmcIp(NettyServerSingleManager.getLocalHost().getHost());
 
         doDealBeforeShutDownTask(query);
     }

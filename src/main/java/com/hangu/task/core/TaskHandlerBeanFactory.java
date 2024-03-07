@@ -1,6 +1,8 @@
 package com.hangu.task.core;
 
+import com.hangu.common.entity.RequestHandlerInfo;
 import com.hangu.common.entity.ServerInfo;
+import com.hangu.common.properties.ExecutorProperties;
 import com.hangu.common.properties.HanguProperties;
 import com.hangu.common.registry.RegistryService;
 import com.hangu.consumer.reference.ReferenceBean;
@@ -62,8 +64,13 @@ public class TaskHandlerBeanFactory implements EnvironmentAware {
             serverInfo.setInterfaceName(TaskScheduleConstant.WORKER_INTERFACE_NAME);
             serverInfo.setVersion("");
 
-            ReferenceBean<TaskSchedulerWorker> referenceBean = new ReferenceBean<>(serverInfo,
-                TaskSchedulerWorker.class, registryService, hanguProperties);
+            ExecutorProperties executorProperties = new ExecutorProperties();
+            executorProperties.setMaxNum(hanguProperties.getMaxNum());
+            executorProperties.setCoreNum(hanguProperties.getCoreNum());
+            RequestHandlerInfo requestHandlerInfo = new RequestHandlerInfo();
+            requestHandlerInfo.setServerInfo(serverInfo);
+            ReferenceBean<TaskSchedulerWorker> referenceBean = new ReferenceBean<>(requestHandlerInfo,
+                TaskSchedulerWorker.class, registryService, executorProperties);
             worker = ServiceReference.reference(referenceBean);
 
             registryWorker(appServiceName, worker);
