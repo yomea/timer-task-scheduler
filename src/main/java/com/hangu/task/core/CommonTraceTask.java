@@ -1,9 +1,8 @@
 package com.hangu.task.core;
 
-import com.hangu.common.callback.RpcResponseCallback;
-import com.hangu.common.context.HanguContext;
-import com.hangu.common.manager.HanguRpcManager;
-import com.hangu.provider.manager.NettyServerSingleManager;
+import com.hangu.rpc.common.callback.RpcResponseCallback;
+import com.hangu.rpc.common.context.HanguContext;
+import com.hangu.rpc.provider.manager.NettyServerSingleManager;
 import com.hangu.task.callback.HanguTaskSchedulerCallbackImpl;
 import com.hangu.task.constant.TaskSchedulerCons;
 import com.hangu.task.context.SchedulerContext;

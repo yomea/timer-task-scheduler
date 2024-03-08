@@ -1,12 +1,12 @@
 package com.hangu.task.core;
 
-import com.hangu.common.entity.RequestHandlerInfo;
-import com.hangu.common.entity.ServerInfo;
-import com.hangu.common.properties.ExecutorProperties;
-import com.hangu.common.properties.HanguProperties;
-import com.hangu.common.registry.RegistryService;
-import com.hangu.consumer.reference.ReferenceBean;
-import com.hangu.consumer.reference.ServiceReference;
+import com.hangu.rpc.common.entity.RequestHandlerInfo;
+import com.hangu.rpc.common.entity.ServerInfo;
+import com.hangu.rpc.common.properties.ExecutorProperties;
+import com.hangu.rpc.common.properties.HanguProperties;
+import com.hangu.rpc.common.registry.RegistryService;
+import com.hangu.rpc.consumer.reference.ReferenceBean;
+import com.hangu.rpc.consumer.reference.ServiceReference;
 import com.hangu.task.constant.TaskScheduleConstant;
 import com.hangu.task.hangu.TaskSchedulerWorker;
 import java.util.Map;

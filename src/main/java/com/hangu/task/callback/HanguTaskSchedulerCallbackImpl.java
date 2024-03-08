@@ -1,8 +1,8 @@
 package com.hangu.task.callback;
 
-import com.hangu.common.callback.RpcResponseCallback;
-import com.hangu.common.entity.RpcResult;
-import com.hangu.common.enums.ErrorCodeEnum;
+import com.hangu.rpc.common.callback.RpcResponseCallback;
+import com.hangu.rpc.common.entity.RpcResult;
+import com.hangu.rpc.common.enums.ErrorCodeEnum;
 import com.hangu.task.context.SchedulerContext;
 import com.hangu.task.listener.HanguTaskSchedulerListener;
 import com.hangu.task.model.ApiResult;

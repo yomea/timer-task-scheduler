@@ -1,8 +1,8 @@
 package com.hangu.task.utils;
 
 import com.google.common.collect.Maps;
-import com.hangu.common.manager.HanguRpcManager;
-import com.hangu.provider.manager.NettyServerSingleManager;
+import com.hangu.rpc.common.manager.HanguRpcManager;
+import com.hangu.rpc.provider.manager.NettyServerSingleManager;
 import com.hangu.task.constant.TaskSchedulerCons;
 import com.hangu.task.context.SchedulerContext;
 import com.hangu.task.core.CommonTraceTask;

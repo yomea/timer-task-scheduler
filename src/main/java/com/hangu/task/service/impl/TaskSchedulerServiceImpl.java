@@ -2,8 +2,8 @@ package com.hangu.task.service.impl;
 
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
-import com.hangu.common.manager.HanguRpcManager;
-import com.hangu.provider.manager.NettyServerSingleManager;
+import com.hangu.rpc.common.manager.HanguRpcManager;
+import com.hangu.rpc.provider.manager.NettyServerSingleManager;
 import com.hangu.task.constant.TaskScheduleConstant;
 import com.hangu.task.context.SchedulerContext;
 import com.hangu.task.core.CommonTraceTask;

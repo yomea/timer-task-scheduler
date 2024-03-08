@@ -1,6 +1,6 @@
 package com.hangu.task.hangu.impl;
 
-import com.hangu.provider.annotation.HanguService;
+import com.hangu.rpc.starter.provider.annotation.HanguService;
 import com.hangu.task.hangu.TaskSchedulerFacade;
 import com.hangu.task.model.ApiResult;
 import com.hangu.task.model.TimerTaskRequest;
